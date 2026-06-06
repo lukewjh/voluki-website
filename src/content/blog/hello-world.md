@@ -1,8 +1,11 @@
 ---
-title: "第一篇博客"
-description: "这是 Voluki 的第一篇文章，也是一块安静的起点。"
-date: "2026-06-06"
-tags: ["随笔", "开始"]
+title: "Why I Built Voluki.com"
+description: "记录我创建这个个人网站的初衷、过程和想法。"
+date: "2026-06-06T12:00:00"
+tags: ["Life"]
+category: "Life"
+image: "https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=900&q=80"
+imageAlt: "一本打开的笔记本和一支笔放在桌面上"
 ---
 
 这里是我的个人博客。

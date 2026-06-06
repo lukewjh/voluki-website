@@ -22,17 +22,40 @@ const pageTitle = title === siteTitle ? siteTitle : `${title} - ${siteTitle}`;
   <body>
     <header class="site-header">
       <a class="brand" href="/">Voluki</a>
-      <nav aria-label="主导航">
-        <a href="/blog">文章</a>
-        <a href="/about">关于</a>
-      </nav>
+      <div class="header-actions">
+        <nav aria-label="主导航">
+          <a href="/blog">文章</a>
+          <a href="/about">关于</a>
+        </nav>
+        <button class="theme-toggle" type="button" aria-label="切换深色模式">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M21 13.2A7.2 7.2 0 0 1 10.8 3 8.7 8.7 0 1 0 21 13.2Z" />
+          </svg>
+        </button>
+      </div>
     </header>
     <main>
       <slot />
     </main>
     <footer class="site-footer">
       <span>© {new Date().getFullYear()} Voluki</span>
+      <a href="https://github.com/lukewjh" rel="noreferrer">GitHub</a>
+      <a href="https://twitter.com" rel="noreferrer">Twitter</a>
+      <a href="/blog">RSS</a>
       <span>Built with Astro.</span>
     </footer>
+    <script>
+      const root = document.documentElement;
+      const storedTheme = localStorage.getItem("theme");
+      if (storedTheme === "dark") {
+        root.dataset.theme = "dark";
+      }
+
+      document.querySelector(".theme-toggle")?.addEventListener("click", () => {
+        const nextTheme = root.dataset.theme === "dark" ? "light" : "dark";
+        root.dataset.theme = nextTheme === "dark" ? "dark" : "";
+        localStorage.setItem("theme", nextTheme);
+      });
+    </script>
   </body>
 </html>
