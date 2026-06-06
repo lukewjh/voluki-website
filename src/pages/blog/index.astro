@@ -1,0 +1,38 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const posts = (await getCollection("blog"))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout title="文章" description="Voluki 的文章列表。">
+  <section class="page-head">
+    <h1>文章</h1>
+    <p>所有公开发布的文字都会在这里。</p>
+  </section>
+
+  <div class="post-list">
+    {posts.map((post) => (
+      <article class="post-item">
+        <a href={`/blog/${post.slug}/`}>
+          <time datetime={post.data.date.toISOString()}>
+            {post.data.date.toLocaleDateString("zh-CN", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit"
+            })}
+          </time>
+          <h2>{post.data.title}</h2>
+          <p>{post.data.description}</p>
+          {post.data.tags.length > 0 && (
+            <div class="tags">
+              {post.data.tags.map((tag) => <span>{tag}</span>)}
+            </div>
+          )}
+        </a>
+      </article>
+    ))}
+  </div>
+</BaseLayout>

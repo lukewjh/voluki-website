@@ -1,0 +1,43 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const posts = (await getCollection("blog"))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+---
+
+<BaseLayout title="Voluki" description="Voluki 的个人博客，记录想法、项目和生活片段。">
+  <section class="hero">
+    <p class="eyebrow">Personal Blog</p>
+    <h1>Voluki</h1>
+    <p class="intro">
+      一个安静、清楚、轻盈的个人空间。写想法，记项目，也收纳一些正在长出来的东西。
+    </p>
+  </section>
+
+  <section class="section">
+    <div class="section-heading">
+      <h2>最近文章</h2>
+      <a href="/blog">查看全部</a>
+    </div>
+    <div class="post-list">
+      {posts.map((post) => (
+        <article class="post-item">
+          <a href={`/blog/${post.slug}/`}>
+            <time datetime={post.data.date.toISOString()}>
+              {post.data.date.toLocaleDateString("zh-CN", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit"
+              })}
+            </time>
+            <h3>{post.data.title}</h3>
+            <p>{post.data.description}</p>
+          </a>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
