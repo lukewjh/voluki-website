@@ -1,3 +1,10 @@
+---
+title: "edu-Gap-a-year"
+description: "edu-Gap-a-year writing practice"
+date: "2026-06-06"
+tags: ["学习", "写作"]
+---
+
 1. *虽然有些人高中毕业后会直接进入大学，但也有一些人会选择先休学一年，去旅行或工作。*
 
 个人：
