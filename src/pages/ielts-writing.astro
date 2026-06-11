@@ -9,10 +9,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   <section class="writing-lab" data-writing-lab>
     <div class="lab-hero">
       <p class="eyebrow">IELTS Writing Lab</p>
-      <h1>逐句回译练习台</h1>
+      <h1>SRT Console</h1>
       <p>
-        粘贴一篇英文范文，先拆成中文句子，再逐句翻回英文。最后用 AI 对照原文、
-        你的表达和建议版本，沉淀语法、表达、chunk 与句型。
+        Sentence Reverse Translation Console. 粘贴一篇英文范文，先拆成中文句子，
+        再逐句翻回英文。最后用 AI 对照原文、你的表达和建议版本，沉淀语法、
+        表达、chunk 与句型。
       </p>
     </div>
 
@@ -448,15 +449,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       line-height: 1.55;
     }
 
-    .writing-lab .structure-line {
-      margin: 8px 0 0;
-      border-left: 3px solid var(--accent);
-      padding-left: 10px;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.55;
-    }
-
     .writing-lab .answer-box {
       border: 1px solid var(--line);
       border-radius: 10px;
@@ -582,12 +574,38 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     .writing-lab .markdown-body p,
-    .writing-lab .markdown-body ul {
+    .writing-lab .markdown-body ul,
+    .writing-lab .markdown-body table {
       margin: 0 0 10px;
     }
 
     .writing-lab .markdown-body ul {
       padding-left: 20px;
+    }
+
+    .writing-lab .markdown-body li + li {
+      margin-top: 8px;
+    }
+
+    .writing-lab .markdown-body table {
+      display: block;
+      width: 100%;
+      overflow-x: auto;
+      border-collapse: collapse;
+    }
+
+    .writing-lab .markdown-body th,
+    .writing-lab .markdown-body td {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .writing-lab .markdown-body th {
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 800;
     }
 
     .writing-lab .markdown-body pre {
@@ -696,7 +714,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
                 <span class="sentence-number">${index + 1}</span>
                 <div>
                   <p class="chinese-line">${escapeHtml(item.chinese_text)}</p>
-                  <p class="structure-line">主干结构：${escapeHtml(item.structure)}</p>
                 </div>
               </header>
               <div class="answer-box">
@@ -751,98 +768,144 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         .join("\n");
     };
 
+    const buildIntroMarkdown = (item, answer) => `## 原题展示
+
+| 类型 | 内容 |
+| --- | --- |
+| 原来的范文 | ${item.english_text} |
+| 对应中文 | ${item.chinese_text} |
+| 你的翻译 | ${answer || "未填写"} |
+`;
+
+    const buildLevelRewriteMarkdown = (analysis) => `## ${analysis.level_rewrite?.target_band ?? "6.5-7.0"} 改写
+
+**${analysis.level_rewrite?.sentence ?? "暂无改写。"}**
+
+${analysis.level_rewrite?.comment ?? "暂无说明。"}
+`;
+
+    const buildOverallMarkdown = (analysis) => `## 整体评价
+
+${analysis.overall_comment ?? "暂无整体评价。"}
+`;
+
+    const buildExpressionMarkdown = (analysis) => {
+      if (!Array.isArray(analysis.expression_comparison) || !analysis.expression_comparison.length) {
+        return "## 表达对比\n\n暂无明显表达问题。";
+      }
+
+      return `## 表达对比
+
+${analysis.expression_comparison
+  .map(
+    (item) => `- **用户表达**：${item.user_exp}
+  - **更适合当前阶段**：${item.better_exp}
+  - **参考原文**：${item.original_exp}
+  - **语感差异**：${item.nuance_difference}`
+  )
+  .join("\n\n")}
+`;
+    };
+
+    const buildStructureMarkdown = (analysis) => {
+      const structure = analysis.logic_and_sentence_structure ?? {};
+
+      return `## 逻辑与句子结构
+
+- **你的结构**：${structure.user_structure ?? "暂无说明。"}
+- **优化结构**：${structure.better_structure ?? "暂无说明。"}
+
+${structure.analysis ?? "暂无结构分析。"}
+`;
+    };
+
+    const buildChunksMarkdown = (analysis) => {
+      if (!Array.isArray(analysis.chunks) || !analysis.chunks.length) {
+        return "## Chunk 收集\n\n暂无特别需要积累的 chunk。";
+      }
+
+      return `## Chunk 收集
+
+${analysis.chunks
+  .map(
+    (chunk) => `- **${chunk.english}**：${chunk.chinese}
+  - 使用场景：${chunk.note}`
+  )
+  .join("\n\n")}
+`;
+    };
+
+    const buildPatternsMarkdown = (analysis) => {
+      if (!Array.isArray(analysis.sentence_patterns) || !analysis.sentence_patterns.length) {
+        return "## 句型收集\n\n暂无特别需要积累的句型。";
+      }
+
+      return `## 句型收集
+
+${analysis.sentence_patterns
+  .map(
+    (pattern) => `- **结构**：${pattern.structure}
+  - **用法**：${pattern.usage}
+  - **例句**：${pattern.example}`
+  )
+  .join("\n\n")}
+`;
+    };
+
+    const buildRewritesMarkdown = (analysis) => `## 改写建议
+
+- **基础改法**：${analysis.rewrites?.basic ?? "暂无基础改法。"}
+- **地道改法**：${analysis.rewrites?.idiomatic ?? "暂无地道改法。"}
+- **学术升级**：${analysis.rewrites?.advanced ?? "暂无学术升级。"}
+`;
+
+    const buildLearningFocusMarkdown = (analysis) => {
+      if (!Array.isArray(analysis.learning_focus) || !analysis.learning_focus.length) {
+        return "## 学习重点\n\n暂无学习重点。";
+      }
+
+      return `## 学习重点
+
+${analysis.learning_focus.map((item) => `- ${item}`).join("\n")}
+`;
+    };
+
     const buildAnalysis = (item, answer, analysis, index) => `
       <div class="analysis-title">
         <span class="analysis-tag">AI 分析 ${index + 1}</span>
         <span class="analysis-tag">Score ${escapeHtml(analysis.score ?? "-")}</span>
       </div>
       <section class="analysis-section">
-        <h3>原题展示</h3>
-        <div class="compare-grid">
-          <div class="compare-item">
-            <span>原来的范文</span>
-            <p>${escapeHtml(item.english_text)}</p>
-          </div>
-          <div class="compare-item">
-            <span>对应中文</span>
-            <p>${escapeHtml(item.chinese_text)}</p>
-          </div>
-          <div class="compare-item">
-            <span>你的翻译</span>
-            <p>${escapeHtml(answer || "未填写")}</p>
-          </div>
-        </div>
+        <div class="markdown-body">${markdown.render(buildIntroMarkdown(item, answer))}</div>
       </section>
       <section class="analysis-section">
-        <h3>6.5–7.0 改写</h3>
-        <p><strong>${escapeHtml(analysis.level_rewrite?.sentence ?? "暂无改写。")}</strong></p>
-        <p>${escapeHtml(analysis.level_rewrite?.comment ?? "暂无说明。")}</p>
+        <div class="markdown-body">${markdown.render(buildLevelRewriteMarkdown(analysis))}</div>
       </section>
       <section class="analysis-section">
-        <h3>整体评价</h3>
-        <p>${escapeHtml(analysis.overall_comment ?? "暂无整体评价。")}</p>
+        <div class="markdown-body">${markdown.render(buildOverallMarkdown(analysis))}</div>
       </section>
       <section class="analysis-section">
-        <h3>语法分析区</h3>
         <div class="markdown-body">
           ${markdown.render(buildGrammarMarkdown(analysis))}
         </div>
       </section>
       <section class="analysis-section">
-        <h3>表达对比区</h3>
-        <ul>
-          ${renderList(analysis.expression_comparison, (item) => `
-            <li>
-              用户：${escapeHtml(item.user_exp)}<br />
-              更适合当前阶段：${escapeHtml(item.better_exp)}<br />
-              参考原文：${escapeHtml(item.original_exp)}<br />
-              ${escapeHtml(item.nuance_difference)}
-            </li>
-          `)}
-        </ul>
+        <div class="markdown-body">${markdown.render(buildExpressionMarkdown(analysis))}</div>
       </section>
       <section class="analysis-section">
-        <h3>逻辑与句子结构</h3>
-        <p><strong>你的结构：</strong>${escapeHtml(analysis.logic_and_sentence_structure?.user_structure ?? "暂无说明。")}</p>
-        <p><strong>优化结构：</strong>${escapeHtml(analysis.logic_and_sentence_structure?.better_structure ?? "暂无说明。")}</p>
-        <p>${escapeHtml(analysis.logic_and_sentence_structure?.analysis ?? "暂无结构分析。")}</p>
+        <div class="markdown-body">${markdown.render(buildStructureMarkdown(analysis))}</div>
       </section>
       <section class="analysis-section">
-        <h3>chunk 收集区</h3>
-        <ul>
-          ${renderList(analysis.chunks, (chunk) => `
-            <li>
-              ${escapeHtml(chunk.english)}：${escapeHtml(chunk.chinese)}
-              <br />${escapeHtml(chunk.note)}
-            </li>
-          `)}
-        </ul>
+        <div class="markdown-body">${markdown.render(buildChunksMarkdown(analysis))}</div>
       </section>
       <section class="analysis-section">
-        <h3>句型收集区</h3>
-        <ul>
-          ${renderList(analysis.sentence_patterns, (pattern) => `
-            <li>
-              <strong>${escapeHtml(pattern.structure)}</strong><br />
-              用法：${escapeHtml(pattern.usage)}<br />
-              例句：${escapeHtml(pattern.example)}
-            </li>
-          `)}
-        </ul>
+        <div class="markdown-body">${markdown.render(buildPatternsMarkdown(analysis))}</div>
       </section>
       <section class="analysis-section">
-        <h3>改写建议</h3>
-        <ul>
-          <li>${escapeHtml(analysis.rewrites?.basic ?? "暂无基础改法。")}</li>
-          <li>${escapeHtml(analysis.rewrites?.idiomatic ?? "暂无地道改法。")}</li>
-          <li>${escapeHtml(analysis.rewrites?.advanced ?? "暂无学术升级。")}</li>
-        </ul>
+        <div class="markdown-body">${markdown.render(buildRewritesMarkdown(analysis))}</div>
       </section>
       <section class="analysis-section">
-        <h3>学习重点</h3>
-        <ul>
-          ${renderList(analysis.learning_focus, (item) => `<li>${escapeHtml(item)}</li>`)}
-        </ul>
+        <div class="markdown-body">${markdown.render(buildLearningFocusMarkdown(analysis))}</div>
       </section>
     `;
 
