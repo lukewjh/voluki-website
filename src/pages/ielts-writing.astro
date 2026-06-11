@@ -1,0 +1,790 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="IELTS Writing Lab"
+  description="雅思写作底层能力练习：逐句拆解、回译训练与 AI 分析检查。"
+>
+  <section class="writing-lab" data-writing-lab>
+    <div class="lab-hero">
+      <p class="eyebrow">IELTS Writing Lab</p>
+      <h1>逐句回译练习台</h1>
+      <p>
+        粘贴一篇英文范文，先拆成中文句子，再逐句翻回英文。最后用 AI 对照原文、
+        你的表达和建议版本，沉淀语法、表达、chunk 与句型。
+      </p>
+    </div>
+
+    <div class="lab-panel input-panel">
+      <div class="panel-head">
+        <div>
+          <span class="step">01</span>
+          <h2>粘贴范文</h2>
+        </div>
+        <button class="ghost-button" type="button" data-load-example>载入示例</button>
+      </div>
+      <textarea
+        data-source-text
+        rows="9"
+        placeholder="在这里粘贴任意英文文章或雅思范文..."
+      ></textarea>
+      <div class="action-row">
+        <p data-source-meta>等待输入文章</p>
+        <button class="primary-button" type="button" data-split-text>AI 拆解为中文</button>
+      </div>
+    </div>
+
+    <div class="lab-panel sentence-panel" hidden data-practice-panel>
+      <div class="panel-head">
+        <div>
+          <span class="step">02</span>
+          <h2>根据中文逐句回译</h2>
+        </div>
+        <span class="status-pill" data-sentence-count>0 句</span>
+      </div>
+      <div class="sentence-list" data-sentence-list></div>
+      <div class="check-bar">
+        <div>
+          <strong>完成后进行检查</strong>
+          <p>分析结果会出现在每一句下面，方便你逐句修正。</p>
+        </div>
+        <button class="primary-button" type="button" data-analyze>AI 分析检查</button>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .writing-lab {
+      padding: 58px 0 88px;
+    }
+
+    .lab-hero {
+      max-width: 760px;
+      padding-bottom: 34px;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .lab-hero h1 {
+      margin-bottom: 16px;
+      font-size: clamp(38px, 6vw, 64px);
+    }
+
+    .lab-hero p {
+      max-width: 680px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .lab-panel {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--surface) 90%, transparent);
+      padding: 24px;
+    }
+
+    .lab-panel + .lab-panel {
+      margin-top: 18px;
+    }
+
+    .panel-head,
+    .action-row,
+    .check-bar,
+    .analysis-row,
+    .analysis-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .panel-head {
+      margin-bottom: 18px;
+    }
+
+    .panel-head h2 {
+      margin: 4px 0 0;
+      font-size: 24px;
+    }
+
+    .step,
+    .status-pill,
+    .analysis-tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border-radius: 8px;
+      background: var(--surface-soft);
+      padding: 0 10px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    textarea,
+    .answer-input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 14px 16px;
+      outline: none;
+      resize: vertical;
+    }
+
+    .answer-box {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background:
+        linear-gradient(
+          180deg,
+          color-mix(in srgb, var(--surface-soft) 56%, transparent),
+          var(--surface) 34%
+        );
+      padding: 12px;
+      transition:
+        border-color 160ms ease,
+        box-shadow 160ms ease,
+        background 160ms ease;
+    }
+
+    .answer-box:focus-within {
+      border-color: var(--accent);
+      background: var(--surface);
+      box-shadow: 0 12px 30px color-mix(in srgb, var(--accent) 14%, transparent);
+    }
+
+    .answer-box-head,
+    .answer-box-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 0 2px;
+    }
+
+    .answer-box-head {
+      margin-bottom: 9px;
+    }
+
+    .answer-box-head span {
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .answer-box-head small,
+    .answer-box-foot {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .answer-box-foot {
+      justify-content: flex-end;
+      margin-top: 8px;
+      line-height: 1.45;
+    }
+
+    .answer-box .answer-input {
+      display: block;
+      min-height: 118px;
+      border-color: transparent;
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      padding: 15px 16px;
+      line-height: 1.65;
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--line) 76%, transparent);
+    }
+
+    .answer-box .answer-input::placeholder {
+      color: color-mix(in srgb, var(--muted) 70%, transparent);
+    }
+
+    .answer-box .answer-input:focus {
+      border-color: transparent;
+      box-shadow:
+        inset 0 0 0 1px var(--accent),
+        0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
+    }
+
+    textarea:focus,
+    .answer-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+
+    .action-row {
+      margin-top: 14px;
+    }
+
+    .action-row p,
+    .check-bar p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .primary-button,
+    .ghost-button {
+      min-height: 44px;
+      border-radius: 8px;
+      padding: 0 18px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .primary-button {
+      border: 0;
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    .ghost-button {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--text);
+    }
+
+    .sentence-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .sentence-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface);
+      padding: 18px;
+    }
+
+    .sentence-card header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .sentence-number {
+      display: grid;
+      flex: 0 0 34px;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--text);
+      color: var(--bg);
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .chinese-line {
+      margin: 0;
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 750;
+      line-height: 1.55;
+    }
+
+    .answer-input {
+      min-height: 92px;
+    }
+
+    .check-bar {
+      position: sticky;
+      bottom: 16px;
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--surface) 96%, transparent);
+      padding: 16px;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.08);
+    }
+
+    .check-bar strong {
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .analysis-box {
+      display: grid;
+      gap: 14px;
+      margin-top: 16px;
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+    }
+
+    .analysis-section {
+      border-radius: 8px;
+      background: var(--surface-soft);
+      padding: 14px;
+    }
+
+    .analysis-section h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    .analysis-section p,
+    .analysis-section li {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .analysis-section p,
+    .analysis-section ul {
+      margin: 0;
+    }
+
+    .analysis-section ul {
+      padding-left: 20px;
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .compare-item {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      padding: 12px;
+    }
+
+    .compare-item span {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .compare-item p {
+      color: var(--text);
+    }
+
+    .error-message {
+      margin: 12px 0 0;
+      border: 1px solid color-mix(in srgb, #d33 42%, var(--line));
+      border-radius: 8px;
+      background: color-mix(in srgb, #d33 8%, var(--surface));
+      padding: 10px 12px;
+      color: #b42318;
+      font-size: 14px;
+    }
+
+    @media (max-width: 760px) {
+      .writing-lab {
+        padding-top: 36px;
+      }
+
+      .lab-panel {
+        padding: 18px;
+      }
+
+      .panel-head,
+      .action-row,
+      .check-bar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .primary-button,
+      .ghost-button {
+        width: 100%;
+      }
+
+      .compare-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <style is:global>
+    .writing-lab .sentence-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface);
+      padding: 18px;
+    }
+
+    .writing-lab .sentence-card header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .writing-lab .sentence-number {
+      display: grid;
+      flex: 0 0 34px;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--text);
+      color: var(--bg);
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .writing-lab .chinese-line {
+      margin: 0;
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 750;
+      line-height: 1.55;
+    }
+
+    .writing-lab .answer-box {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background:
+        linear-gradient(
+          180deg,
+          color-mix(in srgb, var(--surface-soft) 56%, transparent),
+          var(--surface) 36%
+        );
+      padding: 12px;
+      transition:
+        border-color 160ms ease,
+        box-shadow 160ms ease,
+        background 160ms ease;
+    }
+
+    .writing-lab .answer-box:focus-within {
+      border-color: var(--accent);
+      background: var(--surface);
+      box-shadow: 0 12px 30px color-mix(in srgb, var(--accent) 14%, transparent);
+    }
+
+    .writing-lab .answer-box-head,
+    .writing-lab .answer-box-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 0 2px;
+    }
+
+    .writing-lab .answer-box-head {
+      margin-bottom: 9px;
+    }
+
+    .writing-lab .answer-box-head span {
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .writing-lab .answer-box-head small,
+    .writing-lab .answer-box-foot {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .writing-lab .answer-box-foot {
+      justify-content: flex-end;
+      margin-top: 8px;
+      line-height: 1.45;
+    }
+
+    .writing-lab .answer-input {
+      display: block;
+      width: 100%;
+      min-height: 118px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      color: var(--text);
+      padding: 15px 16px;
+      font: inherit;
+      line-height: 1.65;
+      outline: none;
+      resize: vertical;
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--line) 76%, transparent);
+    }
+
+    .writing-lab .answer-input::placeholder {
+      color: color-mix(in srgb, var(--muted) 70%, transparent);
+    }
+
+    .writing-lab .answer-input:focus {
+      border-color: transparent;
+      box-shadow:
+        inset 0 0 0 1px var(--accent),
+        0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
+    }
+
+    .writing-lab .analysis-box {
+      display: grid;
+      gap: 14px;
+      margin-top: 16px;
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+    }
+
+    .writing-lab .analysis-section {
+      border-radius: 8px;
+      background: var(--surface-soft);
+      padding: 14px;
+    }
+
+    .writing-lab .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .writing-lab .compare-item {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      padding: 12px;
+    }
+
+    @media (max-width: 760px) {
+      .writing-lab .compare-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <script>
+    const lab = document.querySelector("[data-writing-lab]");
+    const sourceText = lab?.querySelector("[data-source-text]");
+    const sourceMeta = lab?.querySelector("[data-source-meta]");
+    const splitButton = lab?.querySelector("[data-split-text]");
+    const exampleButton = lab?.querySelector("[data-load-example]");
+    const practicePanel = lab?.querySelector("[data-practice-panel]");
+    const sentenceList = lab?.querySelector("[data-sentence-list]");
+    const sentenceCount = lab?.querySelector("[data-sentence-count]");
+    const analyzeButton = lab?.querySelector("[data-analyze]");
+
+    const exampleText =
+      "In many countries, young people are encouraged to take a gap year before starting university. This experience can help them develop independence and a clearer sense of purpose. However, without a concrete plan, a gap year may become an excuse to delay important decisions.";
+
+    let currentSentences = [];
+
+    const splitIntoSentences = (text) =>
+      text
+        .replace(/\s+/g, " ")
+        .match(/[^.!?]+[.!?]+|[^.!?]+$/g)
+        ?.map((sentence) => sentence.trim())
+        .filter(Boolean) ?? [];
+
+    const escapeHtml = (value) => {
+      const div = document.createElement("div");
+      div.textContent = value ?? "";
+      return div.innerHTML;
+    };
+
+    const setError = (message) => {
+      lab?.querySelector("[data-error]")?.remove();
+      if (!message) return;
+
+      const error = document.createElement("p");
+      error.className = "error-message";
+      error.dataset.error = "";
+      error.textContent = message;
+      sourceText?.insertAdjacentElement("afterend", error);
+    };
+
+    const postJson = async (url, body) => {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error ?? "请求失败，请稍后重试。");
+      }
+
+      return data;
+    };
+
+    const renderSentences = () => {
+      if (!sentenceList || !practicePanel || !sentenceCount) return;
+
+      sentenceList.innerHTML = currentSentences
+        .map(
+          (item, index) => `
+            <article class="sentence-card" data-sentence-card data-index="${index}">
+              <header>
+                <span class="sentence-number">${index + 1}</span>
+                <p class="chinese-line">${escapeHtml(item.zh)}</p>
+              </header>
+              <div class="answer-box">
+                <div class="answer-box-head">
+                  <span>你的英文回译</span>
+                  <small>Sentence ${index + 1}</small>
+                </div>
+                <textarea
+                  class="answer-input"
+                  data-user-answer
+                  rows="4"
+                  placeholder="Type your English translation here..."
+                ></textarea>
+                <div class="answer-box-foot">
+                  <span>尽量保留原句逻辑，再尝试换成更自然的表达。</span>
+                </div>
+              </div>
+              <div class="analysis-box" hidden data-analysis-box></div>
+            </article>
+          `
+        )
+        .join("");
+
+      sentenceCount.textContent = `${currentSentences.length} 句`;
+      practicePanel.hidden = false;
+    };
+
+    const buildAnalysis = (item, answer, analysis, index) => `
+      <div class="analysis-title">
+        <span class="analysis-tag">AI 分析 ${index + 1}</span>
+      </div>
+      <section class="analysis-section">
+        <h3>原题展示</h3>
+        <div class="compare-grid">
+          <div class="compare-item">
+            <span>原来的范文</span>
+            <p>${escapeHtml(item.en)}</p>
+          </div>
+          <div class="compare-item">
+            <span>AI 修正版本</span>
+            <p>${escapeHtml(analysis.corrected)}</p>
+          </div>
+          <div class="compare-item">
+            <span>你的翻译</span>
+            <p>${escapeHtml(answer || "未填写")}</p>
+          </div>
+        </div>
+      </section>
+      <section class="analysis-section">
+        <h3>语法分析区</h3>
+        <p>${escapeHtml(analysis.grammar)}</p>
+      </section>
+      <section class="analysis-section">
+        <h3>表达对比区</h3>
+        <ul>
+          ${analysis.expressionComparisons
+            .map(
+              (item) => `
+                <li>
+                  ${escapeHtml(item.mine)} → ${escapeHtml(item.natural)}
+                  <br />${escapeHtml(item.reason)}
+                </li>
+              `
+            )
+            .join("")}
+        </ul>
+      </section>
+      <section class="analysis-section">
+        <h3>chunk 收集区</h3>
+        <ul>
+          ${analysis.chunks.map((chunk) => `<li>${escapeHtml(chunk)}</li>`).join("")}
+        </ul>
+      </section>
+      <section class="analysis-section">
+        <h3>句型收集区</h3>
+        <ul>
+          ${analysis.patterns.map((pattern) => `<li>${escapeHtml(pattern)}</li>`).join("")}
+        </ul>
+      </section>
+    `;
+
+    sourceText?.addEventListener("input", () => {
+      const count = splitIntoSentences(sourceText.value).length;
+      if (sourceMeta) {
+        sourceMeta.textContent = count ? `检测到约 ${count} 句` : "等待输入文章";
+      }
+    });
+
+    exampleButton?.addEventListener("click", () => {
+      if (!sourceText) return;
+      sourceText.value = exampleText;
+      sourceText.dispatchEvent(new Event("input"));
+    });
+
+    splitButton?.addEventListener("click", async () => {
+      if (!sourceText) return;
+      const text = sourceText.value.trim();
+      if (!text) {
+        setError("请先粘贴一篇英文文章。");
+        return;
+      }
+
+      setError("");
+      splitButton.disabled = true;
+      splitButton.textContent = "拆解中...";
+
+      try {
+        const data = await postJson("/api/ielts/split", { text });
+        currentSentences = data.sentences ?? [];
+        renderSentences();
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        splitButton.disabled = false;
+        splitButton.textContent = "AI 拆解为中文";
+      }
+    });
+
+    analyzeButton?.addEventListener("click", async () => {
+      const cards = lab?.querySelectorAll("[data-sentence-card]") ?? [];
+      const sentences = Array.from(cards).map((card) => {
+        const index = Number(card.getAttribute("data-index"));
+        const answer = card.querySelector("[data-user-answer]")?.value.trim() ?? "";
+        return {
+          en: currentSentences[index]?.en ?? "",
+          zh: currentSentences[index]?.zh ?? "",
+          answer
+        };
+      });
+
+      if (sentences.some((item) => !item.answer)) {
+        setError("请先完成每一句的英文回译，再进行 AI 分析。");
+        return;
+      }
+
+      setError("");
+      analyzeButton.disabled = true;
+      analyzeButton.textContent = "分析中...";
+
+      try {
+        const data = await postJson("/api/ielts/analyze", { sentences });
+        cards.forEach((card) => {
+          const index = Number(card.getAttribute("data-index"));
+          const answer = sentences[index]?.answer ?? "";
+          const analysis = data.analyses?.[index];
+          if (!analysis) return;
+
+          const box = card.querySelector("[data-analysis-box]");
+          if (!box || !currentSentences[index]) return;
+          box.innerHTML = buildAnalysis(currentSentences[index], answer, analysis, index);
+          box.hidden = false;
+        });
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        analyzeButton.disabled = false;
+        analyzeButton.textContent = "AI 分析检查";
+      }
+    });
+  </script>
+</BaseLayout>
