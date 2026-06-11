@@ -60,7 +60,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
           {
             role: "system",
             content:
-              'You are an IELTS writing training assistant. Split the user\'s English passage into individual sentences and translate each sentence into natural, accurate Simplified Chinese. Return only valid json in this exact shape: {"sentences":[{"en":"original sentence","zh":"Chinese translation"}]}.'
+              '你是一个精通中英双语的语言教学专家。你的任务是将用户输入的英文文章进行逐句拆解。要求：1. 保持句子的完整语义，不要过度切碎，确保每一句都适合用来做翻译练习。2. 将每句英文翻译成自然、符合中文习惯、但又能提示英文结构的中文。3. 提取出该句的主干结构，如：Some people believe that...。请严格返回 JSON，不要包含任何 Markdown 标记。格式为：{"sentences":[{"sequence":1,"english_text":"...","chinese_text":"...","structure":"..."}]}。'
           },
           {
             role: "user",
@@ -104,8 +104,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
   }
 
   const parsed = JSON.parse(outputText);
+  const sentences = Array.isArray(parsed) ? parsed : parsed.sentences;
 
-  return new Response(JSON.stringify(parsed), {
+  return new Response(JSON.stringify({ sentences: sentences ?? [] }), {
     headers: { "Content-Type": "application/json" }
   });
 };

@@ -448,6 +448,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       line-height: 1.55;
     }
 
+    .writing-lab .structure-line {
+      margin: 8px 0 0;
+      border-left: 3px solid var(--accent);
+      padding-left: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
     .writing-lab .answer-box {
       border: 1px solid var(--line);
       border-radius: 10px;
@@ -556,6 +565,56 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       padding: 12px;
     }
 
+    .writing-lab .markdown-body {
+      display: grid;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .writing-lab .markdown-body h2,
+    .writing-lab .markdown-body h3 {
+      margin: 4px 0 8px;
+      color: var(--text);
+      font-size: 17px;
+      line-height: 1.35;
+    }
+
+    .writing-lab .markdown-body p,
+    .writing-lab .markdown-body ul {
+      margin: 0 0 10px;
+    }
+
+    .writing-lab .markdown-body ul {
+      padding-left: 20px;
+    }
+
+    .writing-lab .markdown-body pre {
+      overflow-x: auto;
+      margin: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #171717;
+      padding: 14px 16px;
+      color: #f6f1e8;
+      white-space: pre-wrap;
+    }
+
+    .writing-lab .markdown-body code {
+      font-family:
+        "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 13px;
+      line-height: 1.75;
+    }
+
+    .writing-lab .markdown-body :not(pre) > code {
+      border-radius: 5px;
+      background: var(--surface-soft);
+      padding: 2px 5px;
+      color: var(--text);
+    }
+
     @media (max-width: 760px) {
       .writing-lab .compare-grid {
         grid-template-columns: 1fr;
@@ -564,6 +623,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   </style>
 
   <script>
+    import MarkdownIt from "markdown-it";
+
+    const markdown = new MarkdownIt({
+      html: false,
+      linkify: false,
+      typographer: false
+    });
+
     const lab = document.querySelector("[data-writing-lab]");
     const sourceText = lab?.querySelector("[data-source-text]");
     const sourceMeta = lab?.querySelector("[data-source-meta]");
@@ -627,7 +694,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             <article class="sentence-card" data-sentence-card data-index="${index}">
               <header>
                 <span class="sentence-number">${index + 1}</span>
-                <p class="chinese-line">${escapeHtml(item.zh)}</p>
+                <div>
+                  <p class="chinese-line">${escapeHtml(item.chinese_text)}</p>
+                  <p class="structure-line">主干结构：${escapeHtml(item.structure)}</p>
+                </div>
               </header>
               <div class="answer-box">
                 <div class="answer-box-head">
@@ -654,20 +724,48 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       practicePanel.hidden = false;
     };
 
+    const renderList = (items, renderItem) =>
+      Array.isArray(items) && items.length
+        ? items.map(renderItem).join("")
+        : "<li>暂无明显问题。</li>";
+
+    const buildGrammarMarkdown = (analysis) => {
+      if (analysis.grammar_markdown) return analysis.grammar_markdown;
+
+      if (!Array.isArray(analysis.grammar_errors) || !analysis.grammar_errors.length) {
+        return "## 语法分析\n\n暂无明显语法问题。";
+      }
+
+      return analysis.grammar_errors
+        .map(
+          (item, index) => `## 语法问题 ${index + 1}
+
+- **错误片段**：${item.error}
+- **原因**：${item.reason}
+
+\`\`\`text
+建议改法：${item.correction}
+\`\`\`
+`
+        )
+        .join("\n");
+    };
+
     const buildAnalysis = (item, answer, analysis, index) => `
       <div class="analysis-title">
         <span class="analysis-tag">AI 分析 ${index + 1}</span>
+        <span class="analysis-tag">Score ${escapeHtml(analysis.score ?? "-")}</span>
       </div>
       <section class="analysis-section">
         <h3>原题展示</h3>
         <div class="compare-grid">
           <div class="compare-item">
             <span>原来的范文</span>
-            <p>${escapeHtml(item.en)}</p>
+            <p>${escapeHtml(item.english_text)}</p>
           </div>
           <div class="compare-item">
-            <span>AI 修正版本</span>
-            <p>${escapeHtml(analysis.corrected)}</p>
+            <span>对应中文</span>
+            <p>${escapeHtml(item.chinese_text)}</p>
           </div>
           <div class="compare-item">
             <span>你的翻译</span>
@@ -676,34 +774,74 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </div>
       </section>
       <section class="analysis-section">
+        <h3>6.5–7.0 改写</h3>
+        <p><strong>${escapeHtml(analysis.level_rewrite?.sentence ?? "暂无改写。")}</strong></p>
+        <p>${escapeHtml(analysis.level_rewrite?.comment ?? "暂无说明。")}</p>
+      </section>
+      <section class="analysis-section">
+        <h3>整体评价</h3>
+        <p>${escapeHtml(analysis.overall_comment ?? "暂无整体评价。")}</p>
+      </section>
+      <section class="analysis-section">
         <h3>语法分析区</h3>
-        <p>${escapeHtml(analysis.grammar)}</p>
+        <div class="markdown-body">
+          ${markdown.render(buildGrammarMarkdown(analysis))}
+        </div>
       </section>
       <section class="analysis-section">
         <h3>表达对比区</h3>
         <ul>
-          ${analysis.expressionComparisons
-            .map(
-              (item) => `
-                <li>
-                  ${escapeHtml(item.mine)} → ${escapeHtml(item.natural)}
-                  <br />${escapeHtml(item.reason)}
-                </li>
-              `
-            )
-            .join("")}
+          ${renderList(analysis.expression_comparison, (item) => `
+            <li>
+              用户：${escapeHtml(item.user_exp)}<br />
+              更适合当前阶段：${escapeHtml(item.better_exp)}<br />
+              参考原文：${escapeHtml(item.original_exp)}<br />
+              ${escapeHtml(item.nuance_difference)}
+            </li>
+          `)}
         </ul>
+      </section>
+      <section class="analysis-section">
+        <h3>逻辑与句子结构</h3>
+        <p><strong>你的结构：</strong>${escapeHtml(analysis.logic_and_sentence_structure?.user_structure ?? "暂无说明。")}</p>
+        <p><strong>优化结构：</strong>${escapeHtml(analysis.logic_and_sentence_structure?.better_structure ?? "暂无说明。")}</p>
+        <p>${escapeHtml(analysis.logic_and_sentence_structure?.analysis ?? "暂无结构分析。")}</p>
       </section>
       <section class="analysis-section">
         <h3>chunk 收集区</h3>
         <ul>
-          ${analysis.chunks.map((chunk) => `<li>${escapeHtml(chunk)}</li>`).join("")}
+          ${renderList(analysis.chunks, (chunk) => `
+            <li>
+              ${escapeHtml(chunk.english)}：${escapeHtml(chunk.chinese)}
+              <br />${escapeHtml(chunk.note)}
+            </li>
+          `)}
         </ul>
       </section>
       <section class="analysis-section">
         <h3>句型收集区</h3>
         <ul>
-          ${analysis.patterns.map((pattern) => `<li>${escapeHtml(pattern)}</li>`).join("")}
+          ${renderList(analysis.sentence_patterns, (pattern) => `
+            <li>
+              <strong>${escapeHtml(pattern.structure)}</strong><br />
+              用法：${escapeHtml(pattern.usage)}<br />
+              例句：${escapeHtml(pattern.example)}
+            </li>
+          `)}
+        </ul>
+      </section>
+      <section class="analysis-section">
+        <h3>改写建议</h3>
+        <ul>
+          <li>${escapeHtml(analysis.rewrites?.basic ?? "暂无基础改法。")}</li>
+          <li>${escapeHtml(analysis.rewrites?.idiomatic ?? "暂无地道改法。")}</li>
+          <li>${escapeHtml(analysis.rewrites?.advanced ?? "暂无学术升级。")}</li>
+        </ul>
+      </section>
+      <section class="analysis-section">
+        <h3>学习重点</h3>
+        <ul>
+          ${renderList(analysis.learning_focus, (item) => `<li>${escapeHtml(item)}</li>`)}
         </ul>
       </section>
     `;
@@ -735,7 +873,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       try {
         const data = await postJson("/api/ielts/split", { text });
-        currentSentences = data.sentences ?? [];
+        currentSentences = (data.sentences ?? []).map((item, index) => ({
+          sequence: item.sequence ?? index + 1,
+          english_text: item.english_text ?? item.en ?? "",
+          chinese_text: item.chinese_text ?? item.zh ?? "",
+          structure: item.structure ?? ""
+        }));
         renderSentences();
       } catch (error) {
         setError(error.message);
@@ -751,13 +894,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         const index = Number(card.getAttribute("data-index"));
         const answer = card.querySelector("[data-user-answer]")?.value.trim() ?? "";
         return {
-          en: currentSentences[index]?.en ?? "",
-          zh: currentSentences[index]?.zh ?? "",
-          answer
+          english_text: currentSentences[index]?.english_text ?? "",
+          chinese_text: currentSentences[index]?.chinese_text ?? "",
+          structure: currentSentences[index]?.structure ?? "",
+          user_text: answer
         };
       });
 
-      if (sentences.some((item) => !item.answer)) {
+      if (sentences.some((item) => !item.user_text)) {
         setError("请先完成每一句的英文回译，再进行 AI 分析。");
         return;
       }
@@ -770,7 +914,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         const data = await postJson("/api/ielts/analyze", { sentences });
         cards.forEach((card) => {
           const index = Number(card.getAttribute("data-index"));
-          const answer = sentences[index]?.answer ?? "";
+          const answer = sentences[index]?.user_text ?? "";
           const analysis = data.analyses?.[index];
           if (!analysis) return;
 
