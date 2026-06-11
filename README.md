@@ -29,3 +29,11 @@ Your post goes here.
 
 - Build command: `npm run build`
 - Output directory: `dist`
+
+## Vibe Coding
+### 2026.6.11
+新增了SRT Console（Sentence Reverse Translation Console）
+粘贴一篇英文范文，先拆成中文句子， 再逐句翻回英文。最后用 AI 对照原文、你的表达和建议版本，沉淀语法、 表达、chunk 与句型。
+使用codex开发
+使用cloudflare.com部署
+目的是帮助想提升雅思写作基础能力进行有结构的分析，提升表达和提升地道性
