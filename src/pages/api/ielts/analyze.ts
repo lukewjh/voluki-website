@@ -1,10 +1,8 @@
 import type { APIRoute } from "astro";
+import { getEnv } from "../../../lib/env";
 import { getErrorMessage, readJsonBody } from "../../../lib/readJsonBody";
 
 export const prerender = false;
-
-const model = import.meta.env.OPENAI_MODEL ?? "gpt-5.5";
-const apiBaseUrl = import.meta.env.AI_BASE_URL ?? "https://api.deepseek.com";
 
 const extractOutputText = (data: any) => {
   if (typeof data.output_text === "string") return data.output_text;
@@ -15,8 +13,10 @@ const extractOutputText = (data: any) => {
   return "";
 };
 
-export const POST: APIRoute = async ({ request }) => {
-  const apiKey = import.meta.env.DEEPSEEK_API_KEY ?? import.meta.env.OPENAI_API_KEY;
+export const POST: APIRoute = async ({ request, locals }) => {
+  const apiKey = getEnv(locals, "DEEPSEEK_API_KEY") ?? getEnv(locals, "OPENAI_API_KEY");
+  const model = getEnv(locals, "OPENAI_MODEL") ?? "deepseek-v4-pro";
+  const apiBaseUrl = getEnv(locals, "AI_BASE_URL") ?? "https://api.deepseek.com";
 
   if (!apiKey) {
     return new Response(JSON.stringify({ error: "Missing DEEPSEEK_API_KEY" }), {
