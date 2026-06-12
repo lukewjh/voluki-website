@@ -103,7 +103,28 @@ export const POST: APIRoute = async ({ request, locals }) => {
     });
   }
 
-  const parsed = JSON.parse(outputText);
+  let parsed;
+
+  try {
+    parsed = JSON.parse(outputText);
+  } catch (error) {
+    console.error("Failed to parse IELTS analysis JSON", {
+      error: getErrorMessage(error),
+      outputPreview: outputText.slice(0, 600)
+    });
+
+    return new Response(
+      JSON.stringify({
+        error:
+          "AI 返回的分析内容不完整，暂时无法解析。请减少本次选择的句子数量，或重新分析所选句子。"
+      }),
+      {
+        status: 502,
+        headers: { "Content-Type": "application/json" }
+      }
+    );
+  }
+
   const analyses = Array.isArray(parsed)
     ? parsed
     : Array.isArray(parsed.analyses)

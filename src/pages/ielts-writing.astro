@@ -48,9 +48,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <div class="check-bar">
         <div>
           <strong>完成后进行检查</strong>
-          <p>分析结果会出现在每一句下面，方便你逐句修正。</p>
+          <p>选择要检查的句子序号，分析结果会出现在对应句子下面；不满意时可重新选择同一句再分析。</p>
         </div>
-        <button class="primary-button" type="button" data-analyze>AI 分析检查</button>
+        <div class="analysis-control">
+          <span>选择句子</span>
+          <div class="sentence-picker" data-analysis-targets></div>
+          <small>一次只能选择一句；点击序号会定位到对应句子。</small>
+          <button class="primary-button" type="button" data-analyze>AI 分析所选句子</button>
+        </div>
       </div>
     </div>
   </section>
@@ -316,6 +321,97 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       margin-bottom: 2px;
     }
 
+    .analysis-control {
+      display: grid;
+      min-width: min(100%, 310px);
+      gap: 10px;
+    }
+
+    .analysis-control span,
+    .analysis-control small {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .sentence-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-width: 360px;
+    }
+
+    .sentence-picker button {
+      display: grid;
+      position: relative;
+      min-width: 38px;
+      height: 38px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        linear-gradient(
+          180deg,
+          color-mix(in srgb, var(--surface-soft) 70%, transparent),
+          var(--surface)
+        );
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 850;
+      cursor: pointer;
+      transition:
+        transform 160ms ease,
+        border-color 160ms ease,
+        box-shadow 160ms ease,
+        background 160ms ease,
+        color 160ms ease;
+    }
+
+    .sentence-picker button:hover,
+    .sentence-picker button:focus-visible {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+
+    .sentence-picker button.is-selected {
+      border-color: var(--accent);
+      background:
+        linear-gradient(
+          180deg,
+          color-mix(in srgb, var(--accent) 24%, var(--text)),
+          var(--text)
+        );
+      color: var(--bg);
+      box-shadow:
+        0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent),
+        0 10px 22px color-mix(in srgb, var(--text) 14%, transparent);
+      transform: translateY(-1px);
+    }
+
+    .sentence-picker button.is-selected::after {
+      content: "✓";
+      position: absolute;
+      top: -7px;
+      right: -7px;
+      display: grid;
+      width: 18px;
+      height: 18px;
+      place-items: center;
+      border: 2px solid var(--surface);
+      border-radius: 999px;
+      background: var(--accent);
+      color: var(--bg);
+      font-size: 11px;
+      line-height: 1;
+    }
+
+    .sentence-picker button span {
+      position: relative;
+      z-index: 1;
+    }
+
     .analysis-box {
       display: grid;
       gap: 14px;
@@ -447,6 +543,84 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       font-size: 18px;
       font-weight: 750;
       line-height: 1.55;
+    }
+
+    .writing-lab .sentence-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-width: 360px;
+    }
+
+    .writing-lab .sentence-picker button {
+      display: grid;
+      position: relative;
+      min-width: 38px;
+      height: 38px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        linear-gradient(
+          180deg,
+          color-mix(in srgb, var(--surface-soft) 70%, transparent),
+          var(--surface)
+        );
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 850;
+      cursor: pointer;
+      transition:
+        transform 160ms ease,
+        border-color 160ms ease,
+        box-shadow 160ms ease,
+        background 160ms ease,
+        color 160ms ease;
+    }
+
+    .writing-lab .sentence-picker button:hover,
+    .writing-lab .sentence-picker button:focus-visible {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+
+    .writing-lab .sentence-picker button.is-selected {
+      border-color: var(--accent);
+      background:
+        linear-gradient(
+          180deg,
+          color-mix(in srgb, var(--accent) 24%, var(--text)),
+          var(--text)
+        );
+      color: var(--bg);
+      box-shadow:
+        0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent),
+        0 10px 22px color-mix(in srgb, var(--text) 14%, transparent);
+      transform: translateY(-1px);
+    }
+
+    .writing-lab .sentence-picker button.is-selected::after {
+      content: "✓";
+      position: absolute;
+      top: -7px;
+      right: -7px;
+      display: grid;
+      width: 18px;
+      height: 18px;
+      place-items: center;
+      border: 2px solid var(--surface);
+      border-radius: 999px;
+      background: var(--accent);
+      color: var(--bg);
+      font-size: 11px;
+      line-height: 1;
+    }
+
+    .writing-lab .sentence-picker button span {
+      position: relative;
+      z-index: 1;
     }
 
     .writing-lab .answer-box {
@@ -657,12 +831,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const practicePanel = lab?.querySelector("[data-practice-panel]");
     const sentenceList = lab?.querySelector("[data-sentence-list]");
     const sentenceCount = lab?.querySelector("[data-sentence-count]");
+    const analysisTargets = lab?.querySelector("[data-analysis-targets]");
     const analyzeButton = lab?.querySelector("[data-analyze]");
 
     const exampleText =
       "In many countries, young people are encouraged to take a gap year before starting university. This experience can help them develop independence and a clearer sense of purpose. However, without a concrete plan, a gap year may become an excuse to delay important decisions.";
 
     let currentSentences = [];
+    let selectedSentenceIndex = 0;
 
     const splitIntoSentences = (text) =>
       text
@@ -738,7 +914,38 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         .join("");
 
       sentenceCount.textContent = `${currentSentences.length} 句`;
+      renderAnalysisTargets();
       practicePanel.hidden = false;
+    };
+
+    const renderAnalysisTargets = () => {
+      if (!analysisTargets) return;
+
+      analysisTargets.innerHTML = currentSentences
+        .map(
+          (item, index) =>
+            `<button
+              class="${index === selectedSentenceIndex ? "is-selected" : ""}"
+              type="button"
+              data-analysis-target="${index}"
+              aria-pressed="${index === selectedSentenceIndex ? "true" : "false"}"
+              title="${escapeHtml(item.chinese_text)}"
+            ><span>${index + 1}</span></button>`
+        )
+        .join("");
+    };
+
+    const selectSentence = (index, shouldScroll = true) => {
+      if (!Number.isInteger(index) || !currentSentences[index]) return;
+
+      selectedSentenceIndex = index;
+      renderAnalysisTargets();
+
+      if (!shouldScroll) return;
+
+      lab
+        ?.querySelector(`[data-sentence-card][data-index="${index}"]`)
+        ?.scrollIntoView({ behavior: "smooth", block: "center" });
     };
 
     const renderList = (items, renderItem) =>
@@ -942,6 +1149,7 @@ ${analysis.learning_focus.map((item) => `- ${item}`).join("\n")}
           chinese_text: item.chinese_text ?? item.zh ?? "",
           structure: item.structure ?? ""
         }));
+        selectedSentenceIndex = 0;
         renderSentences();
       } catch (error) {
         setError(error.message);
@@ -951,46 +1159,74 @@ ${analysis.learning_focus.map((item) => `- ${item}`).join("\n")}
       }
     });
 
-    analyzeButton?.addEventListener("click", async () => {
-      const cards = lab?.querySelectorAll("[data-sentence-card]") ?? [];
-      const sentences = Array.from(cards).map((card) => {
-        const index = Number(card.getAttribute("data-index"));
-        const answer = card.querySelector("[data-user-answer]")?.value.trim() ?? "";
-        return {
-          english_text: currentSentences[index]?.english_text ?? "",
-          chinese_text: currentSentences[index]?.chinese_text ?? "",
-          structure: currentSentences[index]?.structure ?? "",
-          user_text: answer
-        };
-      });
+    analysisTargets?.addEventListener("click", (event) => {
+      const target = event.target;
+      const button =
+        target instanceof Element ? target.closest("[data-analysis-target]") : null;
+      if (!button) return;
 
-      if (sentences.some((item) => !item.user_text)) {
-        setError("请先完成每一句的英文回译，再进行 AI 分析。");
+      selectSentence(Number(button.getAttribute("data-analysis-target")));
+    });
+
+    analyzeButton?.addEventListener("click", async () => {
+      const selectedIndex = selectedSentenceIndex;
+
+      if (!Number.isInteger(selectedIndex) || !currentSentences[selectedIndex]) {
+        setError("请先选择要分析的句子序号。");
+        return;
+      }
+
+      const cards = lab?.querySelectorAll("[data-sentence-card]") ?? [];
+      const card = lab?.querySelector(`[data-sentence-card][data-index="${selectedIndex}"]`);
+      const answer = card?.querySelector("[data-user-answer]")?.value.trim() ?? "";
+      const sentence = {
+        index: selectedIndex,
+        english_text: currentSentences[selectedIndex]?.english_text ?? "",
+        chinese_text: currentSentences[selectedIndex]?.chinese_text ?? "",
+        structure: currentSentences[selectedIndex]?.structure ?? "",
+        user_text: answer
+      };
+
+      if (!sentence.user_text) {
+        setError("请先完成所选句子的英文回译，再进行 AI 分析。");
         return;
       }
 
       setError("");
       analyzeButton.disabled = true;
-      analyzeButton.textContent = "分析中...";
+      analyzeButton.textContent = "分析所选句子中...";
 
       try {
-        const data = await postJson("/api/ielts/analyze", { sentences });
-        cards.forEach((card) => {
-          const index = Number(card.getAttribute("data-index"));
-          const answer = sentences[index]?.user_text ?? "";
-          const analysis = data.analyses?.[index];
-          if (!analysis) return;
-
-          const box = card.querySelector("[data-analysis-box]");
-          if (!box || !currentSentences[index]) return;
-          box.innerHTML = buildAnalysis(currentSentences[index], answer, analysis, index);
-          box.hidden = false;
+        const data = await postJson("/api/ielts/analyze", {
+          sentences: [
+            {
+              english_text: sentence.english_text,
+              chinese_text: sentence.chinese_text,
+              structure: sentence.structure,
+              user_text: sentence.user_text
+            }
+          ]
         });
+        const analysis = data.analyses?.[0];
+        if (!analysis) return;
+
+        const resultCard = Array.from(cards).find(
+          (item) => Number(item.getAttribute("data-index")) === selectedIndex
+        );
+        const box = resultCard?.querySelector("[data-analysis-box]");
+        if (!box || !currentSentences[selectedIndex]) return;
+        box.innerHTML = buildAnalysis(
+          currentSentences[selectedIndex],
+          answer,
+          analysis,
+          selectedIndex
+        );
+        box.hidden = false;
       } catch (error) {
         setError(error.message);
       } finally {
         analyzeButton.disabled = false;
-        analyzeButton.textContent = "AI 分析检查";
+        analyzeButton.textContent = "AI 分析所选句子";
       }
     });
   </script>
