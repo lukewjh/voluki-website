@@ -50,3 +50,6 @@ Your post goes here.
 
 可以将练习的文章进行打印
 
+下一步：支持下载anki卡组模版
+
+支持文章中的chunk收集、句型收集导出为csv，方便快速导入至anki中复习
