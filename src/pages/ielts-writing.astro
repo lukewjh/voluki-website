@@ -54,10 +54,26 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           <span>选择句子</span>
           <div class="sentence-picker" data-analysis-targets></div>
           <small>一次只能选择一句；点击序号会定位到对应句子。</small>
-          <button class="primary-button" type="button" data-analyze>AI 分析所选句子</button>
+          <div class="check-actions">
+            <button class="primary-button" type="button" data-analyze>AI 分析所选句子</button>
+            <button class="ghost-button" type="button" data-export-pdf>导出为pdf</button>
+          </div>
         </div>
       </div>
     </div>
+
+    <div class="export-dialog" hidden data-export-dialog role="dialog" aria-modal="true" aria-labelledby="export-dialog-title">
+      <div class="export-dialog-card">
+        <div>
+          <span class="step">导出检查</span>
+          <h2 id="export-dialog-title">还有句子没有完成</h2>
+          <p data-export-dialog-message>请先完成所有回译，再导出为 PDF。</p>
+        </div>
+        <button class="primary-button" type="button" data-export-dialog-close>我知道了</button>
+      </div>
+    </div>
+
+    <article class="export-document" data-export-document aria-hidden="true"></article>
   </section>
 
   <style>
@@ -327,6 +343,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       gap: 10px;
     }
 
+    .check-actions {
+      display: grid;
+      gap: 10px;
+    }
+
     .analysis-control span,
     .analysis-control small {
       color: var(--muted);
@@ -482,6 +503,166 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       font-size: 14px;
     }
 
+    .export-dialog {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: grid;
+      place-items: center;
+      background: rgba(0, 0, 0, 0.28);
+      padding: 20px;
+    }
+
+    .export-dialog[hidden] {
+      display: none;
+    }
+
+    .export-dialog-card {
+      display: grid;
+      width: min(100%, 420px);
+      gap: 18px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface);
+      padding: 22px;
+      box-shadow: 0 22px 70px rgba(0, 0, 0, 0.18);
+    }
+
+    .export-dialog-card h2 {
+      margin: 12px 0 8px;
+      font-size: 24px;
+    }
+
+    .export-dialog-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .export-document {
+      display: none;
+    }
+
+    @media print {
+      @page {
+        margin: 16mm;
+      }
+
+      body.is-exporting-pdf > * {
+        display: none;
+      }
+
+      body.is-exporting-pdf {
+        display: block;
+        background: #fff;
+      }
+
+      body.is-exporting-pdf main,
+      body.is-exporting-pdf .writing-lab,
+      body.is-exporting-pdf .export-document.is-exporting {
+        display: block;
+      }
+
+      body.is-exporting-pdf .writing-lab > :not(.export-document) {
+        display: none;
+      }
+
+      .export-document.is-exporting {
+        display: block;
+        width: 100%;
+        color: #111;
+        background: #fff;
+        font-family:
+          "Inter", "Noto Sans SC", "Microsoft YaHei", Arial, sans-serif;
+        font-size: 12px;
+        line-height: 1.65;
+      }
+
+      .export-document h1,
+      .export-document h2,
+      .export-document h3,
+      .export-document p {
+        margin-top: 0;
+      }
+
+      .export-document h1 {
+        margin-bottom: 10px;
+        font-size: 24px;
+      }
+
+      .export-document h2 {
+        margin: 22px 0 10px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #ddd;
+        font-size: 18px;
+      }
+
+      .export-document h3 {
+        margin: 16px 0 8px;
+        font-size: 15px;
+      }
+
+      .export-document p,
+      .export-document li {
+        color: #222;
+      }
+
+      .export-source,
+      .export-sentence {
+        break-inside: avoid;
+        margin-bottom: 16px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 14px;
+      }
+
+      .export-label {
+        display: inline-block;
+        margin-bottom: 6px;
+        color: #666;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .export-user-answer {
+        white-space: pre-wrap;
+      }
+
+      .export-analysis {
+        margin-top: 12px;
+        border-top: 1px solid #e5e5e5;
+        padding-top: 12px;
+      }
+
+      .export-analysis .analysis-section {
+        margin-top: 10px;
+        background: #f7f7f7;
+        padding: 10px;
+      }
+
+      .export-analysis table {
+        display: table;
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .export-analysis th,
+      .export-analysis td {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+
+      .export-analysis pre {
+        white-space: pre-wrap;
+        border: 1px solid #ddd;
+        background: #f7f7f7;
+        padding: 10px;
+      }
+    }
+
     @media (max-width: 760px) {
       .writing-lab {
         padding-top: 36px;
@@ -510,6 +691,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   </style>
 
   <style is:global>
+    @media print {
+      body.is-exporting-pdf .site-header .header-actions {
+        display: none !important;
+      }
+    }
+
     .writing-lab .sentence-card {
       border: 1px solid var(--line);
       border-radius: 10px;
@@ -833,6 +1020,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const sentenceCount = lab?.querySelector("[data-sentence-count]");
     const analysisTargets = lab?.querySelector("[data-analysis-targets]");
     const analyzeButton = lab?.querySelector("[data-analyze]");
+    const exportPdfButton = lab?.querySelector("[data-export-pdf]");
+    const exportDialog = lab?.querySelector("[data-export-dialog]");
+    const exportDialogMessage = lab?.querySelector("[data-export-dialog-message]");
+    const exportDialogClose = lab?.querySelector("[data-export-dialog-close]");
+    const exportDocument = lab?.querySelector("[data-export-document]");
 
     const exampleText =
       "In many countries, young people are encouraged to take a gap year before starting university. This experience can help them develop independence and a clearer sense of purpose. However, without a concrete plan, a gap year may become an excuse to delay important decisions.";
@@ -862,6 +1054,80 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       error.dataset.error = "";
       error.textContent = message;
       sourceText?.insertAdjacentElement("afterend", error);
+    };
+
+    const hideExportDialog = () => {
+      if (!exportDialog) return;
+      exportDialog.hidden = true;
+    };
+
+    const showExportDialog = (message) => {
+      if (!exportDialog || !exportDialogMessage) return;
+
+      exportDialogMessage.textContent = message;
+      exportDialog.hidden = false;
+      exportDialogClose?.focus();
+    };
+
+    const buildExportDocument = (cards) => {
+      if (!exportDocument || !sourceText) return;
+
+      const sentenceSections = Array.from(cards)
+        .map((card, index) => {
+          const sentence = currentSentences[index] ?? {};
+          const answer = card.querySelector("[data-user-answer]")?.value.trim() ?? "";
+          const analysisBox = card.querySelector("[data-analysis-box]");
+
+          return `
+            <section class="export-sentence">
+              <h2>句子 ${index + 1}</h2>
+              <div>
+                <span class="export-label">逐句中文</span>
+                <p>${escapeHtml(sentence.chinese_text ?? "")}</p>
+              </div>
+              <div>
+                <span class="export-label">用户输入的英文</span>
+                <p class="export-user-answer">${escapeHtml(answer)}</p>
+              </div>
+              <div class="export-analysis">
+                <span class="export-label">AI 分析</span>
+                ${analysisBox?.innerHTML ?? ""}
+              </div>
+            </section>
+          `;
+        })
+        .join("");
+
+      exportDocument.innerHTML = `
+        <h1>SRT Console 练习导出</h1>
+        <section class="export-source">
+          <span class="export-label">范文</span>
+          <p>${escapeHtml(sourceText.value.trim())}</p>
+        </section>
+        ${sentenceSections}
+      `;
+    };
+
+    const exportPracticeToPdf = (cards) => {
+      if (!exportDocument) return;
+
+      buildExportDocument(cards);
+      document.body.classList.add("is-exporting-pdf");
+      exportDocument.classList.add("is-exporting");
+      exportDocument.setAttribute("aria-hidden", "false");
+
+      const originalTitle = document.title;
+      document.title = "SRT Console 练习导出";
+
+      const cleanup = () => {
+        document.body.classList.remove("is-exporting-pdf");
+        exportDocument.classList.remove("is-exporting");
+        exportDocument.setAttribute("aria-hidden", "true");
+        document.title = originalTitle;
+      };
+
+      window.addEventListener("afterprint", cleanup, { once: true });
+      window.print();
     };
 
     const postJson = async (url, body) => {
@@ -1227,6 +1493,51 @@ ${analysis.learning_focus.map((item) => `- ${item}`).join("\n")}
       } finally {
         analyzeButton.disabled = false;
         analyzeButton.textContent = "AI 分析所选句子";
+      }
+    });
+
+    exportPdfButton?.addEventListener("click", () => {
+      const cards = lab?.querySelectorAll("[data-sentence-card]") ?? [];
+      const incompleteIndexes = Array.from(cards)
+        .filter((card) => {
+          const answer = card.querySelector("[data-user-answer]")?.value.trim() ?? "";
+          return !answer;
+        })
+        .map((card) => Number(card.getAttribute("data-index")) + 1)
+        .filter(Number.isFinite);
+
+      if (incompleteIndexes.length) {
+        showExportDialog(`请先完成以下句子的英文回译：${incompleteIndexes.join("、")}`);
+        return;
+      }
+
+      const missingAnalysisIndexes = Array.from(cards)
+        .filter((card) => {
+          const analysisBox = card.querySelector("[data-analysis-box]");
+          return !analysisBox || analysisBox.hidden || !analysisBox.textContent?.trim();
+        })
+        .map((card) => Number(card.getAttribute("data-index")) + 1)
+        .filter(Number.isFinite);
+
+      if (missingAnalysisIndexes.length) {
+        showExportDialog(`以下句子还没有完成 AI 分析：${missingAnalysisIndexes.join("、")}`);
+        return;
+      }
+
+      exportPracticeToPdf(cards);
+    });
+
+    exportDialogClose?.addEventListener("click", hideExportDialog);
+
+    exportDialog?.addEventListener("click", (event) => {
+      if (event.target === exportDialog) {
+        hideExportDialog();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && exportDialog && !exportDialog.hidden) {
+        hideExportDialog();
       }
     });
   </script>
