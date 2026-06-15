@@ -21,9 +21,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <div class="panel-head">
         <div>
           <span class="step">01</span>
-          <h2>粘贴范文</h2>
+          <div class="panel-title-row">
+            <h2>粘贴范文</h2>
+            <span>或</span>
+            <button class="primary-button" type="button" data-generate-essay>
+              AI生成随机分类范文
+            </button>
+          </div>
         </div>
-        <button class="ghost-button" type="button" data-load-example>载入示例</button>
       </div>
       <textarea
         data-source-text
@@ -141,9 +146,23 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       margin-bottom: 18px;
     }
 
+    .panel-title-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
     .panel-head h2 {
-      margin: 4px 0 0;
+      margin: 0;
       font-size: 24px;
+    }
+
+    .panel-title-row span {
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 750;
     }
 
     .step,
@@ -264,12 +283,18 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       font-size: 15px;
     }
 
+    .action-row p {
+      min-width: 0;
+      white-space: pre-line;
+    }
+
     .primary-button,
     .ghost-button {
       min-height: 44px;
       border-radius: 8px;
       padding: 0 18px;
       font-weight: 800;
+      white-space: nowrap;
       cursor: pointer;
     }
 
@@ -346,7 +371,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     .check-bar-toggle {
-      display: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      order: 3;
+      align-self: flex-start;
       border: 1px solid var(--line);
       border-radius: 8px;
       background: var(--surface-soft);
@@ -355,7 +384,67 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       font: inherit;
       font-size: 13px;
       font-weight: 850;
+      min-width: 108px;
+      white-space: nowrap;
       cursor: pointer;
+    }
+
+    .check-bar.is-collapsed {
+      align-items: flex-end;
+      width: fit-content;
+      max-width: 100%;
+      margin-left: auto;
+      padding: 8px;
+    }
+
+    .check-bar.is-collapsed > :not(.check-bar-toggle) {
+      display: none;
+    }
+
+    .check-bar.is-collapsed .check-bar-toggle {
+      position: static;
+      width: auto;
+      min-width: 108px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .check-bar.is-collapsing {
+      animation: check-bar-collapse 180ms ease both;
+    }
+
+    .check-bar.is-expanding {
+      animation: check-bar-expand 220ms ease both;
+    }
+
+    @keyframes check-bar-collapse {
+      from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      to {
+        opacity: 0.88;
+        transform: translateY(8px) scale(0.97);
+      }
+    }
+
+    @keyframes check-bar-expand {
+      from {
+        opacity: 0.88;
+        transform: translateY(8px) scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .check-bar.is-collapsing,
+      .check-bar.is-expanding {
+        animation: none;
+      }
     }
 
     .analysis-control {
@@ -712,79 +801,33 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       .check-bar {
         bottom: 10px;
         gap: 12px;
-        padding-top: 44px;
+        max-height: min(68vh, 560px);
+        overflow-y: auto;
+        padding-top: 10px;
+        overscroll-behavior: contain;
         transform-origin: right bottom;
       }
 
       .check-bar-toggle {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        position: absolute;
-        top: 8px;
-        right: 8px;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        align-self: flex-end;
+        order: 0;
         width: auto;
         padding: 6px 9px;
         font-size: 12px;
+        box-shadow: 0 8px 16px color-mix(in srgb, var(--surface) 78%, transparent);
       }
 
       .check-bar.is-collapsed {
-        align-items: flex-end;
-        width: fit-content;
         max-width: calc(100vw - 36px);
-        margin-left: auto;
-        padding: 8px;
-      }
-
-      .check-bar.is-collapsed > :not(.check-bar-toggle) {
-        display: none;
       }
 
       .check-bar.is-collapsed .check-bar-toggle {
-        position: static;
-        width: auto;
-        min-width: 108px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        align-self: auto;
       }
 
-      .check-bar.is-collapsing {
-        animation: check-bar-collapse 180ms ease both;
-      }
-
-      .check-bar.is-expanding {
-        animation: check-bar-expand 220ms ease both;
-      }
-
-      @keyframes check-bar-collapse {
-        from {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-        }
-
-        to {
-          opacity: 0.88;
-          transform: translateY(8px) scale(0.97);
-        }
-      }
-
-      @keyframes check-bar-expand {
-        from {
-          opacity: 0.88;
-          transform: translateY(8px) scale(0.97);
-        }
-
-        to {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-        }
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        .check-bar.is-collapsing,
-        .check-bar.is-expanding {
-          animation: none;
-        }
-      }
     }
   </style>
 
@@ -1112,7 +1155,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const sourceText = lab?.querySelector("[data-source-text]");
     const sourceMeta = lab?.querySelector("[data-source-meta]");
     const splitButton = lab?.querySelector("[data-split-text]");
-    const exampleButton = lab?.querySelector("[data-load-example]");
+    const generateEssayButton = lab?.querySelector("[data-generate-essay]");
     const practicePanel = lab?.querySelector("[data-practice-panel]");
     const sentenceList = lab?.querySelector("[data-sentence-list]");
     const sentenceCount = lab?.querySelector("[data-sentence-count]");
@@ -1125,9 +1168,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const exportDialogMessage = lab?.querySelector("[data-export-dialog-message]");
     const exportDialogClose = lab?.querySelector("[data-export-dialog-close]");
     const exportDocument = lab?.querySelector("[data-export-document]");
-
-    const exampleText =
-      "In many countries, young people are encouraged to take a gap year before starting university. This experience can help them develop independence and a clearer sense of purpose. However, without a concrete plan, a gap year may become an excuse to delay important decisions.";
 
     let currentSentences = [];
     let selectedSentenceIndex = 0;
@@ -1527,10 +1567,35 @@ ${analysis.learning_focus.map((item) => `- ${item}`).join("\n")}
       }
     });
 
-    exampleButton?.addEventListener("click", () => {
+    generateEssayButton?.addEventListener("click", async () => {
       if (!sourceText) return;
-      sourceText.value = exampleText;
-      sourceText.dispatchEvent(new Event("input"));
+
+      setError("");
+      generateEssayButton.disabled = true;
+      generateEssayButton.textContent = "AI生成中...";
+
+      try {
+        const data = await postJson("/api/ielts/generate-essay", {});
+        const essay = data.essay ?? "";
+
+        if (!essay) {
+          throw new Error("AI 没有返回可用范文，请稍后重试。");
+        }
+
+        sourceText.value = essay;
+        sourceText.dispatchEvent(new Event("input"));
+
+        if (sourceMeta && data.category) {
+          const count = splitIntoSentences(essay).length;
+          const question = data.question ? `\n题目：\n${data.question}` : "";
+          sourceMeta.textContent = `已生成 ${data.category} 分类范文${question}\n约 ${count} 句`;
+        }
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        generateEssayButton.disabled = false;
+        generateEssayButton.textContent = "AI生成随机分类范文";
+      }
     });
 
     splitButton?.addEventListener("click", async () => {
