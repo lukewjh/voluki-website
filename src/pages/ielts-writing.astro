@@ -45,7 +45,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <span class="status-pill" data-sentence-count>0 句</span>
       </div>
       <div class="sentence-list" data-sentence-list></div>
-      <div class="check-bar">
+      <div class="check-bar" data-check-bar>
+        <button
+          class="check-bar-toggle"
+          type="button"
+          data-check-bar-toggle
+          aria-expanded="true"
+        >
+          隐藏检查栏
+        </button>
         <div>
           <strong>完成后进行检查</strong>
           <p>选择要检查的句子序号，分析结果会出现在对应句子下面；不满意时可重新选择同一句再分析。</p>
@@ -335,6 +343,19 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     .check-bar strong {
       display: block;
       margin-bottom: 2px;
+    }
+
+    .check-bar-toggle {
+      display: none;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface-soft);
+      color: var(--text);
+      padding: 10px 12px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 850;
+      cursor: pointer;
     }
 
     .analysis-control {
@@ -687,6 +708,83 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       .compare-grid {
         grid-template-columns: 1fr;
       }
+
+      .check-bar {
+        bottom: 10px;
+        gap: 12px;
+        padding-top: 44px;
+        transform-origin: right bottom;
+      }
+
+      .check-bar-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: auto;
+        padding: 6px 9px;
+        font-size: 12px;
+      }
+
+      .check-bar.is-collapsed {
+        align-items: flex-end;
+        width: fit-content;
+        max-width: calc(100vw - 36px);
+        margin-left: auto;
+        padding: 8px;
+      }
+
+      .check-bar.is-collapsed > :not(.check-bar-toggle) {
+        display: none;
+      }
+
+      .check-bar.is-collapsed .check-bar-toggle {
+        position: static;
+        width: auto;
+        min-width: 108px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .check-bar.is-collapsing {
+        animation: check-bar-collapse 180ms ease both;
+      }
+
+      .check-bar.is-expanding {
+        animation: check-bar-expand 220ms ease both;
+      }
+
+      @keyframes check-bar-collapse {
+        from {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+
+        to {
+          opacity: 0.88;
+          transform: translateY(8px) scale(0.97);
+        }
+      }
+
+      @keyframes check-bar-expand {
+        from {
+          opacity: 0.88;
+          transform: translateY(8px) scale(0.97);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .check-bar.is-collapsing,
+        .check-bar.is-expanding {
+          animation: none;
+        }
+      }
     }
   </style>
 
@@ -1018,6 +1116,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const practicePanel = lab?.querySelector("[data-practice-panel]");
     const sentenceList = lab?.querySelector("[data-sentence-list]");
     const sentenceCount = lab?.querySelector("[data-sentence-count]");
+    const checkBar = lab?.querySelector("[data-check-bar]");
+    const checkBarToggle = lab?.querySelector("[data-check-bar-toggle]");
     const analysisTargets = lab?.querySelector("[data-analysis-targets]");
     const analyzeButton = lab?.querySelector("[data-analyze]");
     const exportPdfButton = lab?.querySelector("[data-export-pdf]");
@@ -1031,6 +1131,43 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     let currentSentences = [];
     let selectedSentenceIndex = 0;
+    let checkBarAnimationTimer;
+
+    const setCheckBarCollapsed = (isCollapsed) => {
+      if (!checkBar || !checkBarToggle) return;
+
+      const isAlreadyCollapsed = checkBar.classList.contains("is-collapsed");
+      if (isAlreadyCollapsed === isCollapsed) return;
+
+      window.clearTimeout(checkBarAnimationTimer);
+      checkBar.classList.remove("is-collapsing", "is-expanding");
+
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const finish = () => {
+        checkBar.classList.toggle("is-collapsed", isCollapsed);
+        checkBar.classList.remove("is-collapsing", "is-expanding");
+        checkBarToggle.setAttribute("aria-expanded", String(!isCollapsed));
+        checkBarToggle.textContent = isCollapsed ? "打开分析" : "隐藏检查栏";
+      };
+
+      if (prefersReducedMotion) {
+        finish();
+        return;
+      }
+
+      if (isCollapsed) {
+        checkBar.classList.add("is-collapsing");
+        checkBarToggle.setAttribute("aria-expanded", "false");
+        checkBarAnimationTimer = window.setTimeout(finish, 180);
+        return;
+      }
+
+      checkBar.classList.add("is-expanding");
+      checkBar.classList.remove("is-collapsed");
+      checkBarToggle.setAttribute("aria-expanded", "true");
+      checkBarToggle.textContent = "隐藏检查栏";
+      checkBarAnimationTimer = window.setTimeout(finish, 220);
+    };
 
     const splitIntoSentences = (text) =>
       text
@@ -1181,6 +1318,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       sentenceCount.textContent = `${currentSentences.length} 句`;
       renderAnalysisTargets();
+      setCheckBarCollapsed(false);
       practicePanel.hidden = false;
     };
 
@@ -1432,6 +1570,10 @@ ${analysis.learning_focus.map((item) => `- ${item}`).join("\n")}
       if (!button) return;
 
       selectSentence(Number(button.getAttribute("data-analysis-target")));
+    });
+
+    checkBarToggle?.addEventListener("click", () => {
+      setCheckBarCollapsed(!checkBar?.classList.contains("is-collapsed"));
     });
 
     analyzeButton?.addEventListener("click", async () => {
