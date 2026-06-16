@@ -839,6 +839,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     .writing-lab .sentence-card {
+      position: relative;
       border: 1px solid var(--line);
       border-radius: 10px;
       background: var(--surface);
@@ -850,6 +851,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       align-items: flex-start;
       gap: 14px;
       margin-bottom: 14px;
+    }
+
+    .writing-lab .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
     }
 
     .writing-lab .sentence-number {
@@ -871,6 +881,140 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       font-size: 18px;
       font-weight: 750;
       line-height: 1.55;
+    }
+
+    .writing-lab .sentence-copy {
+      position: relative;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .writing-lab .chunk-trigger {
+      display: inline-block;
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      font-size: 17px;
+      line-height: 1;
+      margin-left: 4px;
+      padding: 0;
+      cursor: pointer;
+      transition:
+        transform 160ms ease,
+        filter 160ms ease;
+    }
+
+    .writing-lab .chunk-trigger:hover,
+    .writing-lab .chunk-trigger:focus-visible,
+    .writing-lab .chunk-trigger[aria-expanded="true"] {
+      filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 46%, transparent));
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    .writing-lab .chunk-trigger:focus-visible {
+      border-radius: 4px;
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+    }
+
+    .writing-lab .chunk-popover {
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 0;
+      z-index: 12;
+      width: min(420px, calc(100vw - 56px));
+      border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--line));
+      border-radius: 8px;
+      background: var(--surface);
+      padding: 12px;
+      box-shadow: 0 18px 46px rgba(0, 0, 0, 0.14);
+    }
+
+    .writing-lab .chunk-popover[hidden] {
+      display: none;
+    }
+
+    .writing-lab .chunk-popover::before {
+      content: "";
+      position: absolute;
+      top: -6px;
+      left: 18px;
+      width: 10px;
+      height: 10px;
+      border-top: 1px solid color-mix(in srgb, var(--accent) 28%, var(--line));
+      border-left: 1px solid color-mix(in srgb, var(--accent) 28%, var(--line));
+      background: var(--surface);
+      transform: rotate(45deg);
+    }
+
+    .writing-lab .chunk-popover-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .writing-lab .chunk-popover-head strong {
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .writing-lab .chunk-popover-head button {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--surface-soft);
+      color: var(--muted);
+      padding: 6px 9px;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .writing-lab .chunk-popover-head button:hover,
+    .writing-lab .chunk-popover-head button:focus-visible {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .writing-lab .chunk-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .writing-lab .chunk-list li {
+      display: grid;
+      gap: 4px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--surface-soft) 62%, transparent);
+      padding: 10px 12px;
+    }
+
+    .writing-lab .chunk-list span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .writing-lab .chunk-list strong {
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .writing-lab .chunk-empty {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
     }
 
     .writing-lab .sentence-picker {
@@ -1313,7 +1457,21 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)
       });
-      const data = await response.json();
+
+      const responseText = await response.text();
+      let data = {};
+
+      if (responseText) {
+        try {
+          data = JSON.parse(responseText);
+        } catch {
+          if (!response.ok) {
+            throw new Error("请求失败，请稍后重试。");
+          }
+
+          throw new Error("AI 返回内容解析失败，请重新尝试。");
+        }
+      }
 
       if (!response.ok) {
         throw new Error(data.error ?? "请求失败，请稍后重试。");
@@ -1331,8 +1489,46 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             <article class="sentence-card" data-sentence-card data-index="${index}">
               <header>
                 <span class="sentence-number">${index + 1}</span>
-                <div>
-                  <p class="chinese-line">${escapeHtml(item.chinese_text)}</p>
+                <div class="sentence-copy">
+                  <p class="chinese-line">
+                    <span>${escapeHtml(item.chinese_text)}</span>
+                    <button
+                      class="chunk-trigger"
+                      type="button"
+                      data-chunk-trigger
+                      aria-expanded="false"
+                      aria-controls="chunk-panel-${index}"
+                      title="查看 chunk 提示"
+                    >
+                      <span aria-hidden="true">💡</span>
+                      <span class="sr-only">查看第 ${index + 1} 句的 chunk 提示</span>
+                    </button>
+                  </p>
+                  <div
+                    class="chunk-popover"
+                    id="chunk-panel-${index}"
+                    data-chunk-panel
+                    hidden
+                  >
+                    <div class="chunk-popover-head">
+                      <strong>Chunk 提示</strong>
+                      <button type="button" data-chunk-close aria-label="关闭 chunk 提示">关闭</button>
+                    </div>
+                    ${
+                      Array.isArray(item.chunks) && item.chunks.length
+                        ? `<ul class="chunk-list">
+                            ${item.chunks
+                              .map(
+                                (chunk) => `<li>
+                                  <span>${escapeHtml(chunk.chinese ?? "")}</span>
+                                  <strong>${escapeHtml(chunk.english ?? "")}</strong>
+                                </li>`
+                              )
+                              .join("")}
+                          </ul>`
+                        : `<p class="chunk-empty">暂无可用 chunk。</p>`
+                    }
+                  </div>
                 </div>
               </header>
               <div class="answer-box">
@@ -1616,8 +1812,14 @@ ${analysis.learning_focus.map((item) => `- ${item}`).join("\n")}
           sequence: item.sequence ?? index + 1,
           english_text: item.english_text ?? item.en ?? "",
           chinese_text: item.chinese_text ?? item.zh ?? "",
-          structure: item.structure ?? ""
+          structure: item.structure ?? "",
+          chunks: Array.isArray(item.chunks) ? item.chunks : []
         }));
+
+        if (!currentSentences.length) {
+          throw new Error("AI 没有返回可用句子，请重新尝试。");
+        }
+
         selectedSentenceIndex = 0;
         renderSentences();
       } catch (error) {
@@ -1639,6 +1841,43 @@ ${analysis.learning_focus.map((item) => `- ${item}`).join("\n")}
 
     checkBarToggle?.addEventListener("click", () => {
       setCheckBarCollapsed(!checkBar?.classList.contains("is-collapsed"));
+    });
+
+    const setChunkPanelOpen = (card, isOpen) => {
+      const trigger = card?.querySelector("[data-chunk-trigger]");
+      const panel = card?.querySelector("[data-chunk-panel]");
+      if (!trigger || !panel) return;
+
+      panel.hidden = !isOpen;
+      trigger.setAttribute("aria-expanded", String(isOpen));
+    };
+
+    sentenceList?.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const trigger = target.closest("[data-chunk-trigger]");
+      if (trigger) {
+        const card = trigger.closest("[data-sentence-card]");
+        const isOpen = trigger.getAttribute("aria-expanded") === "true";
+        if (!isOpen) {
+          sentenceList
+            ?.querySelectorAll("[data-sentence-card]")
+            .forEach((item) => setChunkPanelOpen(item, false));
+        }
+        setChunkPanelOpen(card, !isOpen);
+        return;
+      }
+
+      const closeButton = target.closest("[data-chunk-close]");
+      if (closeButton) {
+        const card = closeButton.closest("[data-sentence-card]");
+        setChunkPanelOpen(card, false);
+        const cardTrigger = card?.querySelector("[data-chunk-trigger]");
+        if (cardTrigger instanceof HTMLElement) {
+          cardTrigger.focus();
+        }
+      }
     });
 
     analyzeButton?.addEventListener("click", async () => {
@@ -1745,6 +1984,12 @@ ${analysis.learning_focus.map((item) => `- ${item}`).join("\n")}
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && exportDialog && !exportDialog.hidden) {
         hideExportDialog();
+      }
+
+      if (event.key === "Escape") {
+        lab
+          ?.querySelectorAll("[data-sentence-card]")
+          .forEach((card) => setChunkPanelOpen(card, false));
       }
     });
   </script>
