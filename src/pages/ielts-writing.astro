@@ -20,7 +20,17 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <div class="writing-main">
     <div class="lab-hero">
       <p class="eyebrow">IELTS Writing Lab</p>
-      <h1>SRT Console</h1>
+      <div class="lab-title-row">
+        <h1>SRT Console</h1>
+        <button
+          class="fullscreen-toggle"
+          type="button"
+          data-fullscreen-toggle
+          aria-pressed="false"
+        >
+          专注模式
+        </button>
+      </div>
       <p>
         Sentence Reverse Translation Console. 粘贴一篇英文范文，先拆成中文句子，
         再逐句翻回英文。最后用 AI 对照原文、你的表达和建议版本，沉淀语法、
@@ -199,8 +209,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       text-transform: uppercase;
     }
 
-    .lab-hero h1 {
+    .lab-title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
       margin-bottom: 16px;
+    }
+
+    .lab-title-row h1 {
+      margin: 0;
       font-size: clamp(38px, 6vw, 64px);
     }
 
@@ -209,6 +227,27 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       margin: 0;
       color: var(--muted);
       font-size: 18px;
+    }
+
+    .fullscreen-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 0 14px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 850;
+      cursor: pointer;
+      transition:
+        border-color 160ms ease,
+        box-shadow 160ms ease,
+        background 160ms ease,
+        color 160ms ease;
     }
 
     .notes-toggle {
@@ -241,12 +280,27 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         background 160ms ease;
     }
 
+    .fullscreen-toggle:hover,
+    .fullscreen-toggle:focus-visible,
     .notes-toggle:hover,
     .notes-toggle:focus-visible {
       border-color: var(--accent);
       background: var(--surface);
       box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
       outline: none;
+    }
+
+    .fullscreen-toggle.is-active,
+    .fullscreen-toggle[aria-pressed="true"] {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: var(--background);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+    }
+
+    .fullscreen-toggle:disabled {
+      cursor: not-allowed;
+      opacity: 0.58;
     }
 
     .notes-toggle[hidden] {
@@ -1647,6 +1701,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const exportDialogMessage = lab?.querySelector("[data-export-dialog-message]");
     const exportDialogClose = lab?.querySelector("[data-export-dialog-close]");
     const exportDocument = lab?.querySelector("[data-export-document]");
+    const fullscreenToggle = lab?.querySelector("[data-fullscreen-toggle]");
     const notesToggle = lab?.querySelector("[data-notes-toggle]");
     const notesPanel = lab?.querySelector("[data-notes-panel]");
     const notesClose = lab?.querySelector("[data-notes-close]");
@@ -1666,6 +1721,47 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const notesStorageKey = "ielts-writing-notes";
     const notesOpenStorageKey = "ielts-writing-notes-open";
     const notesModeStorageKey = "ielts-writing-notes-mode";
+
+    const fullscreenTarget = document.documentElement;
+    const isFocusModeActive = () => document.fullscreenElement === fullscreenTarget;
+
+    const setFullscreenButtonState = () => {
+      if (!(fullscreenToggle instanceof HTMLButtonElement)) return;
+
+      const isFullscreen = isFocusModeActive();
+      fullscreenToggle.textContent = "专注模式";
+      fullscreenToggle.classList.toggle("is-active", isFullscreen);
+      fullscreenToggle.setAttribute("aria-pressed", String(isFullscreen));
+      fullscreenToggle.setAttribute(
+        "aria-label",
+        isFullscreen ? "退出专注模式" : "进入专注模式"
+      );
+    };
+
+    const flashFullscreenMessage = (message) => {
+      if (!(fullscreenToggle instanceof HTMLButtonElement)) return;
+
+      fullscreenToggle.textContent = message;
+      window.setTimeout(setFullscreenButtonState, 1200);
+    };
+
+    const toggleFullscreen = async () => {
+      if (!document.fullscreenEnabled) {
+        flashFullscreenMessage("不可用");
+        return;
+      }
+
+      try {
+        if (isFocusModeActive()) {
+          await document.exitFullscreen();
+          return;
+        }
+
+        await fullscreenTarget.requestFullscreen();
+      } catch {
+        flashFullscreenMessage("失败");
+      }
+    };
 
     const setCheckBarCollapsed = (isCollapsed) => {
       if (!checkBar || !checkBarToggle) return;
@@ -2237,6 +2333,19 @@ ${analysis.learning_focus.map((item) => `- ${item}`).join("\n")}
 
     setNotesMode(localStorage.getItem(notesModeStorageKey) === "preview" ? "preview" : "edit");
     setNotesOpen(localStorage.getItem(notesOpenStorageKey) === "true");
+    setFullscreenButtonState();
+
+    if (!document.fullscreenEnabled && fullscreenToggle instanceof HTMLButtonElement) {
+      fullscreenToggle.disabled = true;
+      fullscreenToggle.textContent = "专注模式";
+      fullscreenToggle.setAttribute("aria-label", "当前浏览器不支持专注模式");
+    }
+
+    fullscreenToggle?.addEventListener("click", () => {
+      toggleFullscreen();
+    });
+
+    document.addEventListener("fullscreenchange", setFullscreenButtonState);
 
     notesToggle?.addEventListener("click", () => {
       setNotesOpen(!lab?.classList.contains("is-notes-open"));
