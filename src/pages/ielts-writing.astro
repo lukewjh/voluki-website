@@ -7,6 +7,17 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   description="雅思写作底层能力练习：逐句拆解、回译训练与 AI 分析检查。"
 >
   <section class="writing-lab" data-writing-lab>
+    <button
+      class="notes-toggle"
+      type="button"
+      data-notes-toggle
+      aria-expanded="false"
+      aria-controls="writing-notes"
+    >
+      打开笔记
+    </button>
+    <div class="writing-workspace" data-writing-workspace>
+      <div class="writing-main">
     <div class="lab-hero">
       <p class="eyebrow">IELTS Writing Lab</p>
       <h1>SRT Console</h1>
@@ -89,6 +100,58 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       </div>
     </div>
 
+      </div>
+
+      <aside class="notes-panel" id="writing-notes" hidden data-notes-panel>
+        <div class="notes-card">
+          <div class="notes-head">
+            <div>
+              <h2>Markdown Notes</h2>
+            </div>
+            <button class="ghost-button notes-close" type="button" data-notes-close>
+              收起
+            </button>
+          </div>
+          <div class="notes-tabs" role="tablist" aria-label="笔记模式">
+            <button
+              class="is-active"
+              type="button"
+              role="tab"
+              aria-selected="true"
+              data-notes-mode="edit"
+            >
+              编辑
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected="false"
+              data-notes-mode="preview"
+            >
+              预览
+            </button>
+          </div>
+          <div class="notes-body">
+            <textarea
+              class="notes-editor"
+              data-notes-editor
+              rows="16"
+              placeholder="记录错因、chunk、句型和复盘结论..."
+            ></textarea>
+            <div class="notes-preview markdown-body" hidden data-notes-preview></div>
+          </div>
+          <div class="notes-foot">
+            <span data-notes-status>自动保存到本地</span>
+            <div class="notes-actions">
+              <button class="ghost-button" type="button" data-notes-copy>复制</button>
+              <button class="ghost-button" type="button" data-notes-download>下载 .md</button>
+              <button class="ghost-button" type="button" data-notes-clear>清空</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
     <div class="export-dialog" hidden data-export-dialog role="dialog" aria-modal="true" aria-labelledby="export-dialog-title">
       <div class="export-dialog-card">
         <div>
@@ -106,6 +169,20 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   <style>
     .writing-lab {
       padding: 58px 0 88px;
+    }
+
+    .writing-workspace {
+      display: grid;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .writing-lab.is-notes-open .writing-workspace {
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
+    }
+
+    .writing-main {
+      min-width: 0;
     }
 
     .lab-hero {
@@ -132,6 +209,192 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       margin: 0;
       color: var(--muted);
       font-size: 18px;
+    }
+
+    .notes-toggle {
+      display: inline-flex;
+      position: fixed;
+      top: 50%;
+      right: 0;
+      z-index: 18;
+      align-items: center;
+      justify-content: center;
+      min-width: 42px;
+      min-height: 118px;
+      border: 1px solid var(--line);
+      border-right: 0;
+      border-radius: 8px 0 0 8px;
+      background: color-mix(in srgb, var(--surface) 96%, transparent);
+      color: var(--text);
+      padding: 12px 8px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 850;
+      line-height: 1.2;
+      writing-mode: vertical-rl;
+      cursor: pointer;
+      box-shadow: 0 12px 32px color-mix(in srgb, var(--text) 12%, transparent);
+      transform: translateY(-50%);
+      transition:
+        border-color 160ms ease,
+        box-shadow 160ms ease,
+        background 160ms ease;
+    }
+
+    .notes-toggle:hover,
+    .notes-toggle:focus-visible {
+      border-color: var(--accent);
+      background: var(--surface);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+      outline: none;
+    }
+
+    .notes-toggle[hidden] {
+      display: none;
+    }
+
+    .notes-panel {
+      position: sticky;
+      top: 18px;
+      max-height: calc(100vh - 36px);
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .notes-panel[hidden] {
+      display: none;
+    }
+
+    .notes-card {
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr) auto;
+      gap: 14px;
+      height: min(720px, calc(100vh - 36px));
+      max-height: min(720px, calc(100vh - 36px));
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--surface) 94%, transparent);
+      padding: 16px;
+      box-shadow: 0 18px 48px color-mix(in srgb, var(--text) 9%, transparent);
+    }
+
+    .notes-head,
+    .notes-foot,
+    .notes-actions,
+    .notes-tabs {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .notes-head,
+    .notes-foot {
+      justify-content: space-between;
+    }
+
+    .notes-head h2 {
+      margin: 6px 0 0;
+      font-size: 20px;
+    }
+
+    .notes-close {
+      min-height: 38px;
+      padding: 0 12px;
+      font-size: 13px;
+    }
+
+    .notes-tabs {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface-soft);
+      padding: 4px;
+    }
+
+    .notes-tabs button {
+      flex: 1;
+      min-height: 34px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .notes-tabs button.is-active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 8px 18px color-mix(in srgb, var(--text) 8%, transparent);
+    }
+
+    .notes-body {
+      display: grid;
+      min-height: 0;
+      height: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .notes-body:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
+    }
+
+    .notes-editor,
+    .notes-preview {
+      grid-area: 1 / 1;
+      width: 100%;
+      min-width: 0;
+      min-height: 100%;
+      height: 100%;
+      border: 0;
+      background: transparent;
+      overflow: auto;
+    }
+
+    .notes-body > [hidden] {
+      display: none;
+    }
+
+    .notes-editor {
+      resize: none;
+      line-height: 1.65;
+      box-shadow: none;
+    }
+
+    .notes-preview {
+      padding: 14px 16px;
+    }
+
+    .notes-preview.is-empty {
+      color: var(--muted);
+    }
+
+    .notes-foot {
+      align-items: flex-start;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+
+    .notes-foot span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    .notes-actions {
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .notes-actions .ghost-button {
+      min-height: 34px;
+      padding: 0 10px;
+      font-size: 12px;
     }
 
     .lab-panel {
@@ -811,6 +1074,44 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         padding-top: 36px;
       }
 
+      .writing-lab.is-notes-open .writing-workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .notes-toggle {
+        right: 0;
+        min-width: 38px;
+        min-height: 104px;
+        padding: 10px 7px;
+        font-size: 13px;
+      }
+
+      .notes-panel {
+        position: static;
+        max-height: none;
+      }
+
+      .notes-card {
+        height: min(640px, calc(100vh - 72px));
+        max-height: min(640px, calc(100vh - 72px));
+      }
+
+      .notes-head,
+      .notes-foot {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .notes-actions,
+      .notes-actions .ghost-button,
+      .notes-close {
+        width: 100%;
+      }
+
+      .notes-actions {
+        display: grid;
+      }
+
       .lab-panel {
         padding: 18px;
       }
@@ -1346,10 +1647,25 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const exportDialogMessage = lab?.querySelector("[data-export-dialog-message]");
     const exportDialogClose = lab?.querySelector("[data-export-dialog-close]");
     const exportDocument = lab?.querySelector("[data-export-document]");
+    const notesToggle = lab?.querySelector("[data-notes-toggle]");
+    const notesPanel = lab?.querySelector("[data-notes-panel]");
+    const notesClose = lab?.querySelector("[data-notes-close]");
+    const notesEditor = lab?.querySelector("[data-notes-editor]");
+    const notesPreview = lab?.querySelector("[data-notes-preview]");
+    const notesStatus = lab?.querySelector("[data-notes-status]");
+    const notesModeButtons = lab?.querySelectorAll("[data-notes-mode]") ?? [];
+    const notesCopyButton = lab?.querySelector("[data-notes-copy]");
+    const notesDownloadButton = lab?.querySelector("[data-notes-download]");
+    const notesClearButton = lab?.querySelector("[data-notes-clear]");
 
     let currentSentences = [];
     let selectedSentenceIndex = 0;
     let checkBarAnimationTimer;
+    let notesSaveTimer;
+
+    const notesStorageKey = "ielts-writing-notes";
+    const notesOpenStorageKey = "ielts-writing-notes-open";
+    const notesModeStorageKey = "ielts-writing-notes-mode";
 
     const setCheckBarCollapsed = (isCollapsed) => {
       if (!checkBar || !checkBarToggle) return;
@@ -1385,6 +1701,117 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       checkBarToggle.setAttribute("aria-expanded", "true");
       checkBarToggle.textContent = "隐藏检查栏";
       checkBarAnimationTimer = window.setTimeout(finish, 220);
+    };
+
+    const getNoteContent = () =>
+      notesEditor instanceof HTMLTextAreaElement ? notesEditor.value : "";
+
+    const setNotesStatus = (message) => {
+      if (!notesStatus) return;
+      notesStatus.textContent = message;
+    };
+
+    const renderNotesPreview = () => {
+      if (!notesPreview) return;
+
+      const content = getNoteContent().trim();
+      notesPreview.classList.toggle("is-empty", !content);
+      notesPreview.innerHTML = content
+        ? markdown.render(content)
+        : "<p>还没有笔记。</p>";
+    };
+
+    const setNotesMode = (mode) => {
+      const isPreview = mode === "preview";
+
+      if (notesEditor instanceof HTMLTextAreaElement) {
+        notesEditor.hidden = isPreview;
+      }
+      if (notesPreview instanceof HTMLElement) {
+        notesPreview.hidden = !isPreview;
+      }
+
+      notesModeButtons.forEach((button) => {
+        const isActive = button.getAttribute("data-notes-mode") === mode;
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-selected", String(isActive));
+      });
+
+      if (isPreview) {
+        renderNotesPreview();
+      }
+
+      localStorage.setItem(notesModeStorageKey, mode);
+    };
+
+    const setNotesOpen = (isOpen) => {
+      lab?.classList.toggle("is-notes-open", isOpen);
+
+      if (notesPanel instanceof HTMLElement) {
+        notesPanel.hidden = !isOpen;
+      }
+
+      if (notesToggle instanceof HTMLElement) {
+        notesToggle.hidden = isOpen;
+        notesToggle.setAttribute("aria-expanded", String(isOpen));
+        notesToggle.textContent = isOpen ? "关闭笔记" : "打开笔记";
+      }
+
+      localStorage.setItem(notesOpenStorageKey, String(isOpen));
+
+      if (isOpen && notesEditor instanceof HTMLTextAreaElement && !notesEditor.hidden) {
+        window.setTimeout(() => notesEditor.focus(), 0);
+      }
+    };
+
+    const saveNotes = () => {
+      localStorage.setItem(notesStorageKey, getNoteContent());
+      setNotesStatus("已自动保存");
+    };
+
+    const queueSaveNotes = () => {
+      setNotesStatus("正在保存...");
+      window.clearTimeout(notesSaveTimer);
+      notesSaveTimer = window.setTimeout(saveNotes, 350);
+    };
+
+    const downloadNotes = () => {
+      const content = getNoteContent();
+      const blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "ielts-writing-notes.md";
+      link.click();
+      URL.revokeObjectURL(url);
+      setNotesStatus("已下载 Markdown");
+    };
+
+    const copyNotes = async () => {
+      const content = getNoteContent();
+
+      try {
+        await navigator.clipboard.writeText(content);
+        setNotesStatus("已复制到剪贴板");
+      } catch {
+        if (notesEditor instanceof HTMLTextAreaElement) {
+          setNotesMode("edit");
+          notesEditor.select();
+          document.execCommand("copy");
+          setNotesStatus("已复制到剪贴板");
+        }
+      }
+    };
+
+    const clearNotes = () => {
+      if (!getNoteContent().trim()) return;
+      const shouldClear = window.confirm("确定清空当前笔记吗？这个操作只会清空本地笔记。");
+      if (!shouldClear || !(notesEditor instanceof HTMLTextAreaElement)) return;
+
+      notesEditor.value = "";
+      saveNotes();
+      renderNotesPreview();
+      setNotesStatus("已清空笔记");
     };
 
     const splitIntoSentences = (text) =>
@@ -1803,6 +2230,38 @@ ${analysis.learning_focus.map((item) => `- ${item}`).join("\n")}
         ? `AI生成随机${categoryLabel}类范文`
         : "AI生成随机分类范文";
     };
+
+    if (notesEditor instanceof HTMLTextAreaElement) {
+      notesEditor.value = localStorage.getItem(notesStorageKey) ?? "";
+    }
+
+    setNotesMode(localStorage.getItem(notesModeStorageKey) === "preview" ? "preview" : "edit");
+    setNotesOpen(localStorage.getItem(notesOpenStorageKey) === "true");
+
+    notesToggle?.addEventListener("click", () => {
+      setNotesOpen(!lab?.classList.contains("is-notes-open"));
+    });
+
+    notesClose?.addEventListener("click", () => {
+      setNotesOpen(false);
+    });
+
+    notesModeButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        setNotesMode(button.getAttribute("data-notes-mode") === "preview" ? "preview" : "edit");
+      });
+    });
+
+    notesEditor?.addEventListener("input", () => {
+      queueSaveNotes();
+      if (notesPreview instanceof HTMLElement && !notesPreview.hidden) {
+        renderNotesPreview();
+      }
+    });
+
+    notesCopyButton?.addEventListener("click", copyNotes);
+    notesDownloadButton?.addEventListener("click", downloadNotes);
+    notesClearButton?.addEventListener("click", clearNotes);
 
     sourceText?.addEventListener("input", () => {
       const count = splitIntoSentences(sourceText.value).length;
