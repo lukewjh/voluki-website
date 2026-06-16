@@ -24,6 +24,20 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           <div class="panel-title-row">
             <h2>粘贴范文</h2>
             <span>或</span>
+            <select class="essay-category-select" data-essay-category aria-label="选择范文分类">
+              <option value="">随机分类</option>
+              <option value="Education" data-label="教育">教育</option>
+              <option value="Technology" data-label="科技">科技</option>
+              <option value="Work & Economy" data-label="工作与经济">工作与经济</option>
+              <option value="Environment" data-label="环境">环境</option>
+              <option value="Government & Law" data-label="政府与法律">政府与法律</option>
+              <option value="Family & Children" data-label="家庭与儿童">家庭与儿童</option>
+              <option value="Social Issues" data-label="社会问题">社会问题</option>
+              <option value="Media & Advertising" data-label="媒体与广告">媒体与广告</option>
+              <option value="Culture & Tradition" data-label="文化与传统">文化与传统</option>
+              <option value="Globalisation" data-label="国际化与全球化">国际化与全球化</option>
+              <option value="Health & Lifestyle" data-label="健康与生活方式">健康与生活方式</option>
+            </select>
             <button class="primary-button" type="button" data-generate-essay>
               AI生成随机分类范文
             </button>
@@ -163,6 +177,25 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       color: var(--muted);
       font-size: 15px;
       font-weight: 750;
+    }
+
+    .essay-category-select {
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 0 36px 0 12px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 750;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .essay-category-select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
     }
 
     .step,
@@ -1300,6 +1333,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const sourceMeta = lab?.querySelector("[data-source-meta]");
     const splitButton = lab?.querySelector("[data-split-text]");
     const generateEssayButton = lab?.querySelector("[data-generate-essay]");
+    const essayCategorySelect = lab?.querySelector("[data-essay-category]");
     const practicePanel = lab?.querySelector("[data-practice-panel]");
     const sentenceList = lab?.querySelector("[data-sentence-list]");
     const sentenceCount = lab?.querySelector("[data-sentence-count]");
@@ -1756,12 +1790,29 @@ ${analysis.learning_focus.map((item) => `- ${item}`).join("\n")}
       </section>
     `;
 
+    const getSelectedEssayCategoryLabel = () => {
+      if (!essayCategorySelect) return "";
+      const option = essayCategorySelect.selectedOptions?.[0];
+      return option?.dataset.label ?? "";
+    };
+
+    const updateGenerateEssayButtonText = () => {
+      if (!generateEssayButton) return;
+      const categoryLabel = getSelectedEssayCategoryLabel();
+      generateEssayButton.textContent = categoryLabel
+        ? `AI生成随机${categoryLabel}类范文`
+        : "AI生成随机分类范文";
+    };
+
     sourceText?.addEventListener("input", () => {
       const count = splitIntoSentences(sourceText.value).length;
       if (sourceMeta) {
         sourceMeta.textContent = count ? `检测到约 ${count} 句` : "等待输入文章";
       }
     });
+
+    essayCategorySelect?.addEventListener("change", updateGenerateEssayButtonText);
+    updateGenerateEssayButtonText();
 
     generateEssayButton?.addEventListener("click", async () => {
       if (!sourceText) return;
@@ -1771,7 +1822,9 @@ ${analysis.learning_focus.map((item) => `- ${item}`).join("\n")}
       generateEssayButton.textContent = "AI生成中...";
 
       try {
-        const data = await postJson("/api/ielts/generate-essay", {});
+        const data = await postJson("/api/ielts/generate-essay", {
+          category: essayCategorySelect?.value ?? ""
+        });
         const essay = data.essay ?? "";
 
         if (!essay) {
@@ -1790,7 +1843,7 @@ ${analysis.learning_focus.map((item) => `- ${item}`).join("\n")}
         setError(error.message);
       } finally {
         generateEssayButton.disabled = false;
-        generateEssayButton.textContent = "AI生成随机分类范文";
+        updateGenerateEssayButtonText();
       }
     });
 

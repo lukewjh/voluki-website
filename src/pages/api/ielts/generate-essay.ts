@@ -1,8 +1,27 @@
 import type { APIRoute } from "astro";
 import { getEnv } from "../../../lib/env";
-import { getErrorMessage } from "../../../lib/readJsonBody";
+import { getErrorMessage, readJsonBody } from "../../../lib/readJsonBody";
 
 export const prerender = false;
+
+const essayCategories = [
+  { value: "Education", label: "教育" },
+  { value: "Technology", label: "科技" },
+  { value: "Work & Economy", label: "工作与经济" },
+  { value: "Environment", label: "环境" },
+  { value: "Government & Law", label: "政府与法律" },
+  { value: "Family & Children", label: "家庭与儿童" },
+  { value: "Social Issues", label: "社会问题" },
+  { value: "Media & Advertising", label: "媒体与广告" },
+  { value: "Culture & Tradition", label: "文化与传统" },
+  { value: "Globalisation", label: "国际化与全球化" },
+  { value: "Health & Lifestyle", label: "健康与生活方式" }
+];
+
+const findEssayCategory = (category: unknown) => {
+  if (typeof category !== "string" || !category.trim()) return null;
+  return essayCategories.find((item) => item.value === category.trim()) ?? null;
+};
 
 const extractOutputText = (data: any) => {
   if (typeof data.output_text === "string") return data.output_text;
@@ -13,7 +32,7 @@ const extractOutputText = (data: any) => {
   return "";
 };
 
-export const POST: APIRoute = async ({ locals }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
   const apiKey = getEnv(locals, "DEEPSEEK_API_KEY") ?? getEnv(locals, "OPENAI_API_KEY");
   const model = getEnv(locals, "OPENAI_MODEL") ?? "deepseek-v4-pro";
   const apiBaseUrl = getEnv(locals, "AI_BASE_URL") ?? "https://api.deepseek.com";
@@ -24,6 +43,38 @@ export const POST: APIRoute = async ({ locals }) => {
       headers: { "Content-Type": "application/json" }
     });
   }
+
+  let body: Record<string, unknown> = {};
+
+  try {
+    body = await readJsonBody(request);
+  } catch (error) {
+    const message = getErrorMessage(error);
+
+    if (message !== "Request body is empty") {
+      return new Response(JSON.stringify({ error: message }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+  }
+
+  const selectedCategory = findEssayCategory(body.category);
+
+  if (typeof body.category === "string" && body.category.trim() && !selectedCategory) {
+    return new Response(JSON.stringify({ error: "Invalid essay category" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+
+  const categoryInstruction = selectedCategory
+    ? `请使用以下指定分类生成题目和范文：${selectedCategory.value}（${selectedCategory.label}）。不要再随机选择其他分类。`
+    : "请从以下 11 个分类中随机选择一个分类（每个分类被选中的概率完全相同）：";
+
+  const categoryRule = selectedCategory
+    ? `1. category 必须为指定分类名称：${selectedCategory.value}。`
+    : "1. category 必须为随机选中的分类名称。";
 
   let response;
 
@@ -41,7 +92,7 @@ export const POST: APIRoute = async ({ locals }) => {
             role: "system",
             content: `你是一位资深雅思写作考官（IELTS Examiner）和雅思写作教师。
 
-请从以下 11 个分类中随机选择一个分类（每个分类被选中的概率完全相同）：
+${categoryInstruction}
 
 1. Education（教育）
 2. Technology（科技）
@@ -92,7 +143,7 @@ Step 2：
 
 严格遵守以下规则：
 
-1. category 必须为随机选中的分类名称。
+${categoryRule}
 2. question 必须为完整 IELTS Academic Writing Task 2 题目。
 3. essay 必须为完整英文范文。
 4. essay 必须为单行字符串，不允许出现换行符。
