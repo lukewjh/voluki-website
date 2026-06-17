@@ -1,0 +1,78 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getNewsRadar } from "../lib/newsRadar";
+
+export const prerender = true;
+
+const radar = getNewsRadar();
+---
+
+<BaseLayout title="NewsRadar" description="A curated personal website bookmark map.">
+  <section class="page-head newsradar-head">
+    <p class="eyebrow">Curated website map</p>
+    <h1>NewsRadar</h1>
+    <p>
+      A quiet launchpad for selected websites across AI, news, code and English.
+    </p>
+    <div class="newsradar-stats" aria-label="NewsRadar summary">
+      <span>{radar.categories.length} categories</span>
+      <span>{radar.totalSources} websites</span>
+    </div>
+  </section>
+
+  <section class="newsradar-shell" data-newsradar>
+    <aside class="newsradar-sidebar" aria-label="Website categories">
+      <button class="radar-filter is-active" type="button" data-filter="all">
+        <span>All</span>
+        <strong>{radar.totalSources}</strong>
+      </button>
+      {radar.categories.map((category) => (
+        <button class="radar-filter" type="button" data-filter={category.id}>
+          <span>{category.name}</span>
+          <strong>{category.sourceCount}</strong>
+        </button>
+      ))}
+    </aside>
+
+    <div class="newsradar-main">
+      <section class="source-map" aria-label="Website bookmark map">
+        {radar.categories.map((category) => (
+          <article class="source-group" data-category-panel={category.id}>
+            <div>
+              <h2>{category.name}</h2>
+              <p>{category.description}</p>
+            </div>
+            <div class="source-chips">
+              {category.sources.map((source) => (
+                <a href={source.url} target="_blank" rel="noreferrer">
+                  {source.name}
+                </a>
+              ))}
+            </div>
+          </article>
+        ))}
+      </section>
+    </div>
+  </section>
+
+  <script>
+    const root = document.querySelector("[data-newsradar]");
+    const buttons = Array.from(document.querySelectorAll("[data-filter]"));
+    const panels = Array.from(document.querySelectorAll("[data-category-panel]"));
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const filter = button.getAttribute("data-filter");
+
+        buttons.forEach((item) => item.classList.toggle("is-active", item === button));
+        panels.forEach((panel) => {
+          panel.toggleAttribute(
+            "hidden",
+            filter !== "all" && panel.getAttribute("data-category-panel") !== filter
+          );
+        });
+        root?.setAttribute("data-active-filter", filter ?? "all");
+      });
+    });
+  </script>
+</BaseLayout>
