@@ -130,6 +130,13 @@ export const newsRadarSources: NewsRadarCategory[] = [
     enabled: true,
     sources: [
       {
+        id: "bbc",
+        name: "BBC",
+        url: "https://www.bbc.co.uk/",
+        language: "en",
+        enabled: true
+      },
+      {
         id: "bbc-learning-english",
         name: "BBC Learning English",
         url: "https://www.bbc.co.uk/learningenglish/",
