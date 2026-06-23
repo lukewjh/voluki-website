@@ -1,156 +1,43 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
-const posts = (await getCollection("blog"))
-  .filter((post) => !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
-
-const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit"
-});
+const modules = [
+  {
+    title: "文章",
+    description: "阅读关于英语学习、技术、产品与日常思考的记录。",
+    href: "/blog",
+    label: "进入文章"
+  },
+  {
+    title: "NewsRadar",
+    description: "从关注的信息源中，快速查看值得留意的最新动态。",
+    href: "/newsradar/",
+    label: "打开 NewsRadar"
+  },
+  {
+    title: "IELTS 写作练习",
+    description: "通过句子逆向翻译练习，把输入、反馈与复盘放在同一个工作台。",
+    href: "/ielts-writing/",
+    label: "开始练习"
+  }
+];
 ---
 
-<BaseLayout title="Voluki" description="Voluki 的个人博客，记录想法、项目和生活片段。">
-  <section class="home-hero">
-    <div class="hero-copy">
-      <p class="hello">Hi, I'm Luke. <span aria-hidden="true">👋</span></p>
-      <h1>Welcome to Voluki</h1>
-      <span class="title-rule" aria-hidden="true"></span>
-      <p class="intro">
-        一个安静、清楚、轻盈的个人空间。<br />
-        写想法，记项目，也收纳一些正在长出来的东西。
-      </p>
-      <div class="hero-actions">
-        <a class="button primary" href="/blog">
-          <svg aria-hidden="true" viewBox="0 0 24 24">
-            <path d="M6 4.8A2.8 2.8 0 0 1 8.8 2H19v16.5h-9.8A3.2 3.2 0 0 0 6 21.7Z" />
-            <path d="M6 4.8A2.8 2.8 0 0 0 3.2 2H2v16.5h1.2A3.2 3.2 0 0 1 6 21.7Z" />
-          </svg>
-          阅读文章
+<BaseLayout title="Voluki" description="Voluki 的内容与工具入口。">
+  <section class="home-directory" aria-label="内容与工具">
+    <div class="module-grid">
+      {modules.map((module) => (
+        <a class="module-card" href={module.href}>
+          <div>
+            <h2>{module.title}</h2>
+            <p>{module.description}</p>
+          </div>
+          <span class="module-link">
+            {module.label}
+            <span aria-hidden="true">→</span>
+          </span>
         </a>
-        <a class="button secondary" href="/about">关于我</a>
-      </div>
-      <div class="social-links" aria-label="社交链接">
-        <a href="https://github.com/lukewjh" aria-label="GitHub">
-          <svg aria-hidden="true" viewBox="0 0 24 24">
-            <path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.8c-2.9.6-3.5-1.2-3.5-1.2-.5-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 0 1.6 1 1.6 1 .9 1.5 2.3 1.1 2.9.8.1-.6.3-1.1.6-1.3-2.3-.3-4.7-1.1-4.7-5A3.9 3.9 0 0 1 6.4 8.8c-.1-.3-.5-1.3.1-2.7 0 0 .9-.3 2.8 1a9.7 9.7 0 0 1 5.2 0c2-1.3 2.8-1 2.8-1 .6 1.4.2 2.4.1 2.7a3.9 3.9 0 0 1 1.1 2.7c0 3.9-2.4 4.8-4.7 5 .4.3.7 1 .7 2V21c0 .3.2.6.7.5A10 10 0 0 0 12 2Z" />
-          </svg>
-        </a>
-        <a href="https://twitter.com" aria-label="Twitter">
-          <svg aria-hidden="true" viewBox="0 0 24 24">
-            <path d="M21.5 6.2c-.7.3-1.4.5-2.2.6.8-.5 1.3-1.2 1.6-2.1-.7.4-1.5.8-2.4.9a3.7 3.7 0 0 0-6.4 3.4A10.6 10.6 0 0 1 4.4 5.1a3.7 3.7 0 0 0 1.1 5 3.6 3.6 0 0 1-1.7-.5v.1a3.7 3.7 0 0 0 3 3.6 3.9 3.9 0 0 1-1.7.1 3.7 3.7 0 0 0 3.5 2.6A7.5 7.5 0 0 1 3 17.5 10.5 10.5 0 0 0 8.7 19c6.8 0 10.6-5.7 10.6-10.6v-.5c.8-.5 1.5-1.1 2.2-1.7Z" />
-          </svg>
-        </a>
-        <a href="https://linkedin.com" aria-label="LinkedIn">
-          <svg aria-hidden="true" viewBox="0 0 24 24">
-            <path d="M6.7 8.8H3.4V20h3.3ZM5.1 7.3a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8ZM20.6 20v-6.1c0-3-1.6-4.4-3.7-4.4a3.2 3.2 0 0 0-2.9 1.6h-.1V9.8h-3.2V20h3.3v-5.5c0-1.5.3-2.9 2.1-2.9s1.8 1.7 1.8 3V20Z" />
-          </svg>
-        </a>
-        <a href="mailto:hello@example.com" aria-label="Email">
-          <svg aria-hidden="true" viewBox="0 0 24 24">
-            <path d="M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm8 7.3L4.8 7.5 4 8.7l8 5.3 8-5.3-.8-1.2Z" />
-          </svg>
-        </a>
-      </div>
-    </div>
-    <div class="hero-image-wrap">
-      <img
-  	src="/index-img.png"
-  	alt="首页图片描述"
-	/>
-    </div>
-  </section>
-
-  <section class="interest-grid" aria-label="关注方向">
-    <article class="interest-card">
-      <div class="interest-icon">
-        <svg aria-hidden="true" viewBox="0 0 24 24">
-          <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21.5Z" />
-          <path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v16h4.5A2.5 2.5 0 0 1 20 21.5Z" />
-        </svg>
-      </div>
-      <div>
-        <h2>English Learning</h2>
-        <p>记录我的英语学习历程、方法和思考。</p>
-      </div>
-    </article>
-    <article class="interest-card">
-      <div class="interest-icon">
-        <svg aria-hidden="true" viewBox="0 0 24 24">
-          <path d="m8 8-4 4 4 4" />
-          <path d="m16 8 4 4-4 4" />
-          <path d="m14 4-4 16" />
-        </svg>
-      </div>
-      <div>
-        <h2>Tech / Programming</h2>
-        <p>编程学习、项目实践与技术笔记。</p>
-      </div>
-    </article>
-    <article class="interest-card">
-      <div class="interest-icon">
-        <svg aria-hidden="true" viewBox="0 0 24 24">
-          <path d="M9 18h6" />
-          <path d="M10 22h4" />
-          <path d="M8.5 14.5A6.3 6.3 0 1 1 15.5 14c-.9.6-1.5 1.6-1.5 2.7h-4c0-1-.6-1.8-1.5-2.2Z" />
-        </svg>
-      </div>
-      <div>
-        <h2>AI & Product Thinking</h2>
-        <p>AI 工具、产品思考与对未来的探索。</p>
-      </div>
-    </article>
-  </section>
-
-  <section class="section latest-section">
-    <div class="section-heading">
-      <div>
-        <h2>最新文章</h2>
-        <span class="title-rule small" aria-hidden="true"></span>
-      </div>
-      <a href="/blog">查看全部文章 →</a>
-    </div>
-    <div class="featured-post-list">
-      {posts.map((post) => (
-        <article class="featured-post">
-          <a href={`/blog/${post.slug}/`}>
-            <img src={post.data.image} alt={post.data.imageAlt ?? post.data.title} loading="lazy" />
-            <div class="featured-post-body">
-              <time datetime={post.data.date.toISOString()}>
-                {dateFormatter.format(post.data.date)}
-              </time>
-              <h3>{post.data.title}</h3>
-              <p>{post.data.description}</p>
-              <div class="featured-post-meta">
-                <span>{post.data.category ?? post.data.tags[0] ?? "Notes"}</span>
-                <strong>阅读文章 →</strong>
-              </div>
-            </div>
-          </a>
-        </article>
       ))}
     </div>
-  </section>
-
-  <section class="subscribe-box">
-    <div class="subscribe-copy">
-      <div class="subscribe-icon">
-        <svg aria-hidden="true" viewBox="0 0 24 24">
-          <path d="M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm8 7.3L4.8 7.5 4 8.7l8 5.3 8-5.3-.8-1.2Z" />
-        </svg>
-      </div>
-      <div>
-        <h2>订阅我的更新</h2>
-        <p>输入邮箱，获取最新文章更新通知。</p>
-      </div>
-    </div>
-    <form class="subscribe-form">
-      <input type="email" placeholder="输入你的邮箱" aria-label="邮箱" />
-      <button type="submit">订阅</button>
-    </form>
   </section>
 </BaseLayout>
