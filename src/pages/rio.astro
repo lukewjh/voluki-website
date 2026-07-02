@@ -1,0 +1,1071 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+export const prerender = false;
+
+type EnglishItem = {
+  id: number;
+  type: string;
+  text: string;
+};
+
+type D1PreparedStatement = {
+  bind: (...values: unknown[]) => D1PreparedStatement;
+  all: <T>() => Promise<{ results?: T[]; meta?: Record<string, unknown> }>;
+  first: <T>() => Promise<T | null>;
+};
+
+type D1Database = {
+  prepare: (query: string) => D1PreparedStatement;
+};
+
+const sections = [
+  { title: "Chunks", type: "chunk" },
+  { title: "Sentence Patterns", type: "sentence_pattern" },
+  { title: "Vocabulary", type: "vocabulary" },
+  { title: "Adverbs", type: "adverb" }
+] as const;
+
+const db = (Astro.locals as any).runtime?.env?.DB as D1Database | undefined;
+
+let dbStatus: "success" | "missing" | "error" = "missing";
+let dbError = "";
+let totalCount = 0;
+let items: EnglishItem[] = [];
+
+if (db) {
+  try {
+    const itemsResult = await db
+      .prepare(
+        `SELECT id, type, text
+         FROM english_items
+         WHERE type IN (?, ?, ?, ?)
+         ORDER BY
+           CASE type
+             WHEN 'chunk' THEN 1
+             WHEN 'sentence_pattern' THEN 2
+             WHEN 'vocabulary' THEN 3
+             WHEN 'adverb' THEN 4
+             ELSE 5
+           END,
+           id ASC`
+      )
+      .bind(...sections.map((section) => section.type))
+      .all<EnglishItem>();
+
+    dbStatus = "success";
+    items = itemsResult.results ?? [];
+    totalCount = items.length;
+  } catch (error) {
+    dbStatus = "error";
+    dbError = error instanceof Error ? error.message : "Unknown D1 query error";
+  }
+}
+
+const itemsByType = sections.map((section) => ({
+  ...section,
+  items: items.filter((item) => item.type === section.type)
+}));
+---
+
+<BaseLayout
+  title="RIO"
+  description="随机 chunk 输入输出一体化，用于练习与数据库能力测试。"
+>
+  <section class="rio-page">
+    <div class="rio-head">
+      <div class="rio-title-row">
+        <h1>RIO</h1>
+        <button class="rio-modal-trigger" type="button" data-rio-modal-open>
+          随机生成
+        </button>
+      </div>
+      <p>
+        Random Input Output. 当前页面从 D1 一次性读取英语素材，并按类型分表展示。
+      </p>
+    </div>
+
+    {
+      dbStatus === "success" ? (
+        <div class="rio-table-grid" aria-label="RIO 数据表">
+          {itemsByType.map((section) => (
+            <section class="rio-table-card">
+              <div class="rio-table-head">
+                <h2>{section.title}</h2>
+                <span>{section.items.length}</span>
+              </div>
+              {section.items.length ? (
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">ID</th>
+                      <th scope="col">Text</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {section.items.map((item) => (
+                      <tr>
+                        <td>{item.id}</td>
+                        <td>{item.text}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p class="rio-empty">暂无数据。</p>
+              )}
+            </section>
+          ))}
+          <p class="rio-summary">共读取 {totalCount} 条记录。</p>
+        </div>
+      ) : (
+        <div class="rio-panel">
+          {dbStatus === "missing" ? (
+            <p>
+              当前运行环境没有拿到 <code>DB</code> 绑定。请用 Cloudflare 运行时预览或部署后访问本页测试。
+            </p>
+          ) : (
+            <p>
+              D1 查询失败：<code>{dbError}</code>
+            </p>
+          )}
+        </div>
+      )
+    }
+
+    <div class="rio-modal" hidden data-rio-modal>
+      <div class="rio-modal-backdrop" data-rio-modal-close></div>
+      <section
+        class="rio-modal-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="rio-modal-title"
+      >
+        <div class="rio-modal-head">
+          <div>
+            <span>RIO</span>
+            <div class="rio-modal-title-row">
+              <h2 id="rio-modal-title">随机生成短文</h2>
+              <div class="rio-material-badges" data-rio-material-badges></div>
+            </div>
+          </div>
+          <button
+            class="rio-modal-close"
+            type="button"
+            aria-label="关闭随机生成弹窗"
+            data-rio-modal-close
+          >
+            ×
+          </button>
+        </div>
+        <div class="rio-modal-body">
+          <div class="rio-modal-page" data-rio-page="1">
+            <article class="rio-generated-passage" data-rio-generated-passage>
+              <p>AI 短文会在这里流式出现。</p>
+            </article>
+            <div class="rio-modal-actions">
+              <button class="rio-next-button" type="button" data-rio-next>
+                下一页
+              </button>
+            </div>
+          </div>
+
+          <div class="rio-modal-page" hidden data-rio-page="2">
+            <article class="rio-generated-passage" data-rio-chinese-passage>
+              <p>中文短文会在这里生成。</p>
+            </article>
+            <div class="rio-answer-panel">
+              <textarea
+                data-rio-user-answer
+                rows="7"
+                placeholder="请根据上方中文短文，输入你的英文表达..."
+              ></textarea>
+              <p class="rio-input-error" hidden data-rio-input-error>
+                请先填写你的英文表达，再进行语法检查。
+              </p>
+            </div>
+            <div class="rio-modal-actions">
+              <button class="rio-ghost-button" type="button" data-rio-prev>
+                上一页
+              </button>
+              <button class="rio-next-button" type="button" data-rio-grammar-check>
+                语法检查
+              </button>
+            </div>
+          </div>
+
+          <div class="rio-modal-page" hidden data-rio-page="3">
+            <div class="rio-analysis-list" data-rio-analysis-list>
+              <p class="rio-analysis-placeholder">语法检查结果会在这里显示。</p>
+            </div>
+            <div class="rio-modal-actions">
+              <button class="rio-ghost-button" type="button" data-rio-back-to-answer>
+                上一页
+              </button>
+              <button class="rio-next-button" type="button" data-rio-complete>
+                完成
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <style>
+    .rio-page {
+      padding: 58px 0 88px;
+    }
+
+    .rio-head {
+      max-width: 760px;
+      padding-bottom: 34px;
+    }
+
+    .rio-title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .rio-head h1 {
+      margin: 0;
+      font-size: clamp(38px, 6vw, 64px);
+    }
+
+    .rio-head p {
+      max-width: 680px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .rio-modal-trigger,
+    .rio-modal-close {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      font-weight: 850;
+      cursor: pointer;
+      transition:
+        border-color 160ms ease,
+        background 160ms ease,
+        color 160ms ease,
+        box-shadow 160ms ease;
+    }
+
+    .rio-modal-trigger {
+      min-height: 42px;
+      border-radius: 8px;
+      padding: 0 16px;
+      font-size: 14px;
+    }
+
+    .rio-modal-trigger:hover,
+    .rio-modal-trigger:focus-visible,
+    .rio-modal-close:hover,
+    .rio-modal-close:focus-visible {
+      border-color: var(--text);
+      background: var(--text);
+      color: var(--bg);
+      outline: none;
+    }
+
+    .rio-panel,
+    .rio-table-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--surface) 90%, transparent);
+      padding: 24px;
+    }
+
+    .rio-panel h2 {
+      margin: 8px 0 8px;
+      font-size: 24px;
+    }
+
+    .rio-panel p {
+      max-width: 620px;
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .rio-panel code {
+      border-radius: 5px;
+      background: var(--surface-soft);
+      padding: 2px 5px;
+      color: var(--text);
+      font-size: 0.9em;
+    }
+
+    .rio-table-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .rio-table-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .rio-table-head h2 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .rio-table-head span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border-radius: 8px;
+      background: var(--surface-soft);
+      padding: 0 10px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    th,
+    td {
+      border-top: 1px solid var(--line);
+      padding: 10px 0;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    th:first-child,
+    td:first-child {
+      width: 54px;
+      color: var(--muted);
+    }
+
+    td {
+      color: var(--text);
+      overflow-wrap: anywhere;
+    }
+
+    .rio-empty {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .rio-summary {
+      grid-column: 1 / -1;
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .rio-modal[hidden] {
+      display: none;
+    }
+
+    .rio-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .rio-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: color-mix(in srgb, var(--bg) 72%, transparent);
+      backdrop-filter: blur(8px);
+    }
+
+    .rio-modal-card {
+      position: relative;
+      z-index: 1;
+      width: min(780px, 100%);
+      max-height: min(760px, calc(100vh - 48px));
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface);
+      padding: 22px;
+      box-shadow: 0 24px 80px color-mix(in srgb, var(--text) 18%, transparent);
+    }
+
+    .rio-modal-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+    }
+
+    .rio-modal-head span {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 850;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .rio-modal-head h2 {
+      margin: 0;
+      font-size: 26px;
+    }
+
+    .rio-modal-close {
+      flex: 0 0 auto;
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .rio-modal-body {
+      padding-top: 18px;
+    }
+
+    .rio-modal-body p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .rio-modal-page {
+      display: grid;
+      gap: 16px;
+    }
+
+    .rio-modal-page[hidden] {
+      display: none;
+    }
+
+    .rio-modal-title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 12px;
+    }
+
+    .rio-material-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      max-width: min(100%, 520px);
+    }
+
+    :global(.rio-material-badge) {
+      display: inline-flex;
+      align-items: center;
+      max-width: 180px;
+      min-height: 24px;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.3;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    :global(.rio-material-badge.chunk) {
+      background: color-mix(in srgb, #e5484d 12%, transparent);
+      color: #c92a2a;
+    }
+
+    :global(.rio-material-badge.sentence_pattern) {
+      background: color-mix(in srgb, #3b82f6 12%, transparent);
+      color: #2563eb;
+    }
+
+    :global(.rio-material-badge.vocabulary) {
+      background: color-mix(in srgb, #22c55e 12%, transparent);
+      color: #15803d;
+    }
+
+    :global(.rio-material-badge.adverb) {
+      background: color-mix(in srgb, #a855f7 12%, transparent);
+      color: #7e22ce;
+    }
+
+    .rio-generated-passage {
+      min-height: 260px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      padding: 18px;
+      color: var(--text);
+      font-size: 17px;
+      line-height: 1.8;
+      white-space: pre-wrap;
+    }
+
+    .rio-generated-passage.is-loading::after {
+      display: inline-block;
+      width: 8px;
+      height: 1.2em;
+      margin-left: 2px;
+      background: var(--text);
+      content: "";
+      vertical-align: -0.2em;
+      animation: rio-caret 900ms steps(1) infinite;
+    }
+
+    @keyframes rio-caret {
+      50% {
+        opacity: 0;
+      }
+    }
+
+    .rio-modal-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .rio-answer-panel textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 14px 16px;
+      font: inherit;
+      line-height: 1.65;
+      outline: none;
+      resize: vertical;
+    }
+
+    .rio-answer-panel textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+
+    .rio-input-error {
+      margin: 8px 0 0;
+      color: #c92a2a;
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    .rio-input-error[hidden] {
+      display: none;
+    }
+
+    .rio-analysis-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .rio-analysis-placeholder {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface-soft);
+      padding: 14px;
+    }
+
+    :global(.rio-analysis-card) {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      padding: 16px;
+    }
+
+    :global(.rio-analysis-card h3) {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    :global(.rio-analysis-card section + section) {
+      margin-top: 12px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+
+    :global(.rio-analysis-card h4) {
+      margin: 0 0 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    :global(.rio-analysis-card p),
+    :global(.rio-analysis-card li) {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    :global(.rio-analysis-card ul) {
+      display: grid;
+      gap: 4px;
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .rio-next-button,
+    .rio-ghost-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      border-radius: 8px;
+      padding: 0 18px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 850;
+      cursor: pointer;
+      transition:
+        opacity 160ms ease,
+        transform 160ms ease;
+    }
+
+    .rio-next-button {
+      border: 0;
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    .rio-ghost-button {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .rio-next-button:hover,
+    .rio-next-button:focus-visible,
+    .rio-ghost-button:hover,
+    .rio-ghost-button:focus-visible {
+      opacity: 0.86;
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 900px) {
+      .rio-table-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <script>
+    const modal = document.querySelector("[data-rio-modal]");
+    const openButton = document.querySelector("[data-rio-modal-open]");
+    const closeButtons = document.querySelectorAll("[data-rio-modal-close]");
+    const badgesBox = document.querySelector("[data-rio-material-badges]");
+    const passageBox = document.querySelector("[data-rio-generated-passage]");
+    const chinesePassageBox = document.querySelector("[data-rio-chinese-passage]");
+    const userAnswer = document.querySelector("[data-rio-user-answer]");
+    const inputError = document.querySelector("[data-rio-input-error]");
+    const pageButtons = {
+      next: document.querySelector("[data-rio-next]"),
+      prev: document.querySelector("[data-rio-prev]"),
+      grammarCheck: document.querySelector("[data-rio-grammar-check]"),
+      backToAnswer: document.querySelector("[data-rio-back-to-answer]"),
+      complete: document.querySelector("[data-rio-complete]")
+    };
+    const pages = document.querySelectorAll("[data-rio-page]");
+    const modalTitle = document.querySelector("#rio-modal-title");
+    const analysisList = document.querySelector("[data-rio-analysis-list]");
+    let lastFocusedElement;
+    let activeReader;
+    const modalState = {
+      page: 1,
+      materials: null,
+      englishPassage: "",
+      chinesePassage: "",
+      userAnswer: "",
+      analysis: null,
+      isGeneratingChinese: false,
+      isCheckingGrammar: false
+    };
+
+    const updateGrammarButtonLabel = () => {
+      if (pageButtons.grammarCheck instanceof HTMLElement) {
+        pageButtons.grammarCheck.textContent = modalState.analysis ? "再次语法检查" : "语法检查";
+      }
+    };
+
+    const closeModal = () => {
+      if (!(modal instanceof HTMLElement)) return;
+
+      activeReader?.cancel?.();
+      activeReader = undefined;
+      modalState.page = 1;
+      modalState.materials = null;
+      modalState.englishPassage = "";
+      modalState.chinesePassage = "";
+      modalState.userAnswer = "";
+      modalState.analysis = null;
+      modalState.isGeneratingChinese = false;
+      modalState.isCheckingGrammar = false;
+      updateGrammarButtonLabel();
+      modal.hidden = true;
+      document.body.style.overflow = "";
+
+      if (lastFocusedElement instanceof HTMLElement) {
+        lastFocusedElement.focus();
+      }
+    };
+
+    const openModal = () => {
+      if (!(modal instanceof HTMLElement)) return;
+
+      lastFocusedElement = document.activeElement;
+      modal.hidden = false;
+      document.body.style.overflow = "hidden";
+      modal.querySelector("button")?.focus();
+      if (chinesePassageBox instanceof HTMLElement) {
+        chinesePassageBox.textContent = "中文短文会在这里生成。";
+      }
+      if (userAnswer instanceof HTMLTextAreaElement) {
+        userAnswer.value = "";
+      }
+      if (inputError instanceof HTMLElement) {
+        inputError.hidden = true;
+      }
+      if (analysisList instanceof HTMLElement) {
+        analysisList.innerHTML = '<p class="rio-analysis-placeholder">语法检查结果会在这里显示。</p>';
+      }
+      updateGrammarButtonLabel();
+      showPage(1);
+      generatePassage();
+    };
+
+    const escapeHtml = (value) =>
+      String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+
+    const renderBadges = (groups) => {
+      if (!(badgesBox instanceof HTMLElement)) return;
+
+      badgesBox.innerHTML = groups
+        .flatMap((group) =>
+          group.items.map(
+            (item) =>
+              `<span class="rio-material-badge ${group.type}" title="${escapeHtml(
+                group.type
+              )}: ${escapeHtml(item.text)}">${escapeHtml(item.text)}</span>`
+          )
+        )
+        .join("");
+    };
+
+    const showPage = (page) => {
+      modalState.page = page;
+      pages.forEach((item) => {
+        item.hidden = item.getAttribute("data-rio-page") !== String(page);
+      });
+
+      if (modalTitle instanceof HTMLElement) {
+        modalTitle.textContent =
+          page === 1 ? "随机生成短文" : page === 2 ? "按照给定中文短文" : "语法检查";
+      }
+    };
+
+    const parseStreamEvent = (chunk, handlers) => {
+      const blocks = chunk.split("\n\n");
+      const rest = blocks.pop() ?? "";
+
+      blocks.forEach((block) => {
+        const eventLine = block.split("\n").find((line) => line.startsWith("event:"));
+        const dataLine = block.split("\n").find((line) => line.startsWith("data:"));
+        if (!eventLine || !dataLine) return;
+
+        const event = eventLine.slice(6).trim();
+        const rawData = dataLine.slice(5).trim();
+
+        try {
+          handlers[event]?.(JSON.parse(rawData));
+        } catch {
+          handlers.error?.("AI 返回内容解析失败。");
+        }
+      });
+
+      return rest;
+    };
+
+    const generatePassage = async () => {
+      if (!(passageBox instanceof HTMLElement)) return;
+
+      if (badgesBox instanceof HTMLElement) {
+        badgesBox.innerHTML = "";
+      }
+      passageBox.textContent = "";
+      passageBox.classList.add("is-loading");
+      openButton?.setAttribute("disabled", "");
+
+      try {
+        const response = await fetch("/api/rio/generate", {
+          method: "POST"
+        });
+
+        if (!response.ok || !response.body) {
+          const data = await response.json().catch(() => ({}));
+          throw new Error(data.error ?? "生成失败，请稍后重试。");
+        }
+
+        activeReader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+
+        while (true) {
+          const { done, value } = await activeReader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          buffer = parseStreamEvent(buffer, {
+            materials: (groups) => {
+              modalState.materials = groups;
+              renderBadges(groups);
+            },
+            delta: (text) => {
+              modalState.englishPassage += text;
+              passageBox.textContent += text;
+              passageBox.scrollIntoView({ block: "nearest" });
+            },
+            done: () => {},
+            error: (message) => {
+              throw new Error(message);
+            }
+          });
+        }
+      } catch (error) {
+        if (badgesBox instanceof HTMLElement) {
+          badgesBox.innerHTML = `<span class="rio-material-badge adverb">${escapeHtml(
+            error instanceof Error ? error.message : "生成失败，请稍后重试。"
+          )}</span>`;
+        }
+      } finally {
+        passageBox.classList.remove("is-loading");
+        openButton?.removeAttribute("disabled");
+        activeReader = undefined;
+      }
+    };
+
+    const generateChinesePassage = async () => {
+      if (
+        !(chinesePassageBox instanceof HTMLElement) ||
+        !modalState.materials ||
+        modalState.chinesePassage ||
+        modalState.isGeneratingChinese
+      ) {
+        return;
+      }
+
+      modalState.isGeneratingChinese = true;
+      chinesePassageBox.textContent = "";
+      chinesePassageBox.classList.add("is-loading");
+
+      try {
+        const response = await fetch("/api/rio/generate-chinese", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            materials: modalState.materials
+          })
+        });
+
+        if (!response.ok || !response.body) {
+          const data = await response.json().catch(() => ({}));
+          throw new Error(data.error ?? "中文短文生成失败，请稍后重试。");
+        }
+
+        activeReader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+
+        while (true) {
+          const { done, value } = await activeReader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          buffer = parseStreamEvent(buffer, {
+            delta: (text) => {
+              modalState.chinesePassage += text;
+              chinesePassageBox.textContent += text;
+            },
+            done: () => {},
+            error: (message) => {
+              throw new Error(message);
+            }
+          });
+        }
+      } catch (error) {
+        chinesePassageBox.textContent =
+          error instanceof Error ? error.message : "中文短文生成失败，请稍后重试。";
+      } finally {
+        chinesePassageBox.classList.remove("is-loading");
+        modalState.isGeneratingChinese = false;
+        activeReader = undefined;
+      }
+    };
+
+    const renderAnalysis = (analyses) => {
+      if (!(analysisList instanceof HTMLElement)) return;
+
+      if (!Array.isArray(analyses) || !analyses.length) {
+        analysisList.innerHTML =
+          '<p class="rio-analysis-placeholder">AI 没有返回可用的语法检查结果。</p>';
+        return;
+      }
+
+      analysisList.innerHTML = analyses
+        .map(
+          (analysis) => `<article class="rio-analysis-card">
+            <h3>Sentence ${escapeHtml(analysis.sentence_index ?? "-")}</h3>
+            <section>
+              <h4>用户原句</h4>
+              <p>${escapeHtml(analysis.user_sentence ?? "")}</p>
+            </section>
+            <section>
+              <h4>语法问题</h4>
+              <ul>
+                ${(Array.isArray(analysis.grammar_issues) ? analysis.grammar_issues : [])
+                  .map((issue) => `<li>${escapeHtml(issue)}</li>`)
+                  .join("")}
+              </ul>
+            </section>
+            <section>
+              <h4>地道表达建议</h4>
+              <p>${escapeHtml(analysis.idiomatic_suggestion ?? "")}</p>
+            </section>
+            <section>
+              <h4>示例句</h4>
+              <p>${escapeHtml(analysis.example_sentence ?? "")}</p>
+            </section>
+          </article>`
+        )
+        .join("");
+    };
+
+    const checkGrammar = async () => {
+      if (
+        !(analysisList instanceof HTMLElement) ||
+        !modalState.materials ||
+        !modalState.chinesePassage ||
+        modalState.isCheckingGrammar
+      ) {
+        return;
+      }
+
+      modalState.isCheckingGrammar = true;
+      analysisList.innerHTML = '<p class="rio-analysis-placeholder">正在检查语法...</p>';
+
+      try {
+        const response = await fetch("/api/rio/check-grammar", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            chinese_text: modalState.chinesePassage,
+            user_text: modalState.userAnswer,
+            materials: modalState.materials
+          })
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(data.error ?? "语法检查失败，请稍后重试。");
+        }
+
+        modalState.analysis = data.analyses ?? [];
+        renderAnalysis(modalState.analysis);
+        updateGrammarButtonLabel();
+      } catch (error) {
+        analysisList.innerHTML = `<p class="rio-analysis-placeholder">${escapeHtml(
+          error instanceof Error ? error.message : "语法检查失败，请稍后重试。"
+        )}</p>`;
+      } finally {
+        modalState.isCheckingGrammar = false;
+      }
+    };
+
+    openButton?.addEventListener("click", openModal);
+    closeButtons.forEach((button) => button.addEventListener("click", closeModal));
+    pageButtons.next?.addEventListener("click", () => {
+      showPage(2);
+      generateChinesePassage();
+    });
+    pageButtons.prev?.addEventListener("click", () => {
+      showPage(1);
+    });
+    pageButtons.grammarCheck?.addEventListener("click", () => {
+      const value = userAnswer instanceof HTMLTextAreaElement ? userAnswer.value.trim() : "";
+
+      if (inputError instanceof HTMLElement) {
+        inputError.hidden = Boolean(value);
+      }
+
+      if (!value) return;
+
+      modalState.userAnswer = value;
+      showPage(3);
+
+      if (modalState.analysis) {
+        renderAnalysis(modalState.analysis);
+        return;
+      }
+
+      checkGrammar();
+    });
+    pageButtons.backToAnswer?.addEventListener("click", () => {
+      showPage(2);
+    });
+    pageButtons.complete?.addEventListener("click", closeModal);
+
+    userAnswer?.addEventListener("input", () => {
+      if (inputError instanceof HTMLElement && userAnswer instanceof HTMLTextAreaElement) {
+        inputError.hidden = Boolean(userAnswer.value.trim());
+      }
+
+      if (modalState.analysis) {
+        modalState.analysis = null;
+        updateGrammarButtonLabel();
+        if (analysisList instanceof HTMLElement) {
+          analysisList.innerHTML =
+            '<p class="rio-analysis-placeholder">回答已修改，请再次进行语法检查。</p>';
+        }
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && modal instanceof HTMLElement && !modal.hidden) {
+        closeModal();
+      }
+    });
+  </script>
+</BaseLayout>

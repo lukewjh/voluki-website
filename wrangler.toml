@@ -1,0 +1,7 @@
+name = "voluki"
+compatibility_date = "2026-07-02"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "voluki-db"
+database_id = "428ff665-ec8f-47ca-b129-90bc0578fccd"

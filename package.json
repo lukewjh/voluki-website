@@ -15,6 +15,7 @@
     "markdown-it": "^14.1.0"
   },
   "devDependencies": {
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "wrangler": "^4.106.0"
   }
 }
