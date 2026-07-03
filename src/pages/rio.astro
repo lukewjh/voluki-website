@@ -188,19 +188,12 @@ const itemsByType = sections.map((section) => ({
           </div>
 
           <div class="rio-modal-page" hidden data-rio-page="2">
-            <article class="rio-generated-passage" data-rio-chinese-passage>
-              <p>中文短文会在这里生成。</p>
-            </article>
-            <div class="rio-answer-panel">
-              <textarea
-                data-rio-user-answer
-                rows="7"
-                placeholder="请根据上方中文短文，输入你的英文表达..."
-              ></textarea>
-              <p class="rio-input-error" hidden data-rio-input-error>
-                请先填写你的英文表达，再进行语法检查。
-              </p>
+            <div class="rio-challenge-list" data-rio-challenge-list>
+              <p class="rio-analysis-placeholder">中文翻译小题会在这里显示。</p>
             </div>
+            <p class="rio-input-error" hidden data-rio-input-error>
+              请先完成全部 3 句翻译，再进行语法检查。
+            </p>
             <div class="rio-modal-actions">
               <button class="rio-ghost-button" type="button" data-rio-prev>
                 上一页
@@ -610,6 +603,73 @@ const itemsByType = sections.map((section) => ({
       justify-content: flex-end;
     }
 
+    .rio-challenge-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    :global(.rio-challenge-card) {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      padding: 16px;
+    }
+
+    :global(.rio-challenge-card h3) {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    :global(.rio-challenge-card p) {
+      margin: 0 0 12px;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    :global(.rio-challenge-scene) {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border-radius: 8px;
+      background: var(--surface-soft);
+      padding: 0 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    :global(.rio-challenge-hint) {
+      margin: 8px 0 12px;
+    }
+
+    :global(.rio-challenge-hint summary) {
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    :global(.rio-challenge-hint-list) {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    :global(.rio-challenge-answer) {
+      width: 100%;
+      min-height: 86px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 12px 14px;
+      font: inherit;
+      line-height: 1.6;
+      outline: none;
+      resize: vertical;
+    }
+
     .rio-answer-panel textarea {
       width: 100%;
       border: 1px solid var(--line);
@@ -623,6 +683,7 @@ const itemsByType = sections.map((section) => ({
       resize: vertical;
     }
 
+    :global(.rio-challenge-answer:focus),
     .rio-answer-panel textarea:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
@@ -743,8 +804,7 @@ const itemsByType = sections.map((section) => ({
     const progressLabels = document.querySelectorAll("[data-rio-selection-progress]");
     const badgesBox = document.querySelector("[data-rio-material-badges]");
     const passageBox = document.querySelector("[data-rio-generated-passage]");
-    const chinesePassageBox = document.querySelector("[data-rio-chinese-passage]");
-    const userAnswer = document.querySelector("[data-rio-user-answer]");
+    const challengeList = document.querySelector("[data-rio-challenge-list]");
     const inputError = document.querySelector("[data-rio-input-error]");
     const pageButtons = {
       next: document.querySelector("[data-rio-next]"),
@@ -758,6 +818,8 @@ const itemsByType = sections.map((section) => ({
     const analysisList = document.querySelector("[data-rio-analysis-list]");
     let lastFocusedElement;
     let activeReader;
+    let activeController;
+    let generationId = 0;
     const selectionRequirements = {
       chunk: 3,
       sentence_pattern: 1,
@@ -773,11 +835,11 @@ const itemsByType = sections.map((section) => ({
     const modalState = {
       page: 1,
       materials: null,
+      trainingPackage: null,
       englishPassage: "",
-      chinesePassage: "",
-      userAnswer: "",
+      challenges: [],
+      userAnswers: [],
       analysis: null,
-      isGeneratingChinese: false,
       isCheckingGrammar: false
     };
 
@@ -831,16 +893,21 @@ const itemsByType = sections.map((section) => ({
     const closeModal = () => {
       if (!(modal instanceof HTMLElement)) return;
 
+      generationId += 1;
+      activeController?.abort?.();
       activeReader?.cancel?.();
       activeReader = undefined;
+      activeController = undefined;
       modalState.page = 1;
       modalState.materials = null;
+      modalState.trainingPackage = null;
       modalState.englishPassage = "";
-      modalState.chinesePassage = "";
-      modalState.userAnswer = "";
+      modalState.challenges = [];
+      modalState.userAnswers = [];
       modalState.analysis = null;
-      modalState.isGeneratingChinese = false;
       modalState.isCheckingGrammar = false;
+      passageBox?.classList.remove("is-loading");
+      openButton?.removeAttribute("disabled");
       updateGrammarButtonLabel();
       modal.hidden = true;
       document.body.style.overflow = "";
@@ -857,11 +924,9 @@ const itemsByType = sections.map((section) => ({
       modal.hidden = false;
       document.body.style.overflow = "hidden";
       modal.querySelector("button")?.focus();
-      if (chinesePassageBox instanceof HTMLElement) {
-        chinesePassageBox.textContent = "中文短文会在这里生成。";
-      }
-      if (userAnswer instanceof HTMLTextAreaElement) {
-        userAnswer.value = "";
+      if (challengeList instanceof HTMLElement) {
+        challengeList.innerHTML =
+          '<p class="rio-analysis-placeholder">中文翻译小题会在这里显示。</p>';
       }
       if (inputError instanceof HTMLElement) {
         inputError.hidden = true;
@@ -933,6 +998,11 @@ const itemsByType = sections.map((section) => ({
     const generatePassage = async () => {
       if (!(passageBox instanceof HTMLElement)) return;
 
+      const currentGeneration = generationId + 1;
+      generationId = currentGeneration;
+      activeController?.abort?.();
+      activeController = new AbortController();
+
       if (badgesBox instanceof HTMLElement) {
         badgesBox.innerHTML = "";
       }
@@ -948,8 +1018,11 @@ const itemsByType = sections.map((section) => ({
           },
           body: JSON.stringify({
             selected: getSelectedPayload()
-          })
+          }),
+          signal: activeController.signal
         });
+
+        if (currentGeneration !== generationId) return;
 
         if (!response.ok || !response.body) {
           const data = await response.json().catch(() => ({}));
@@ -959,21 +1032,39 @@ const itemsByType = sections.map((section) => ({
         activeReader = response.body.getReader();
         const decoder = new TextDecoder();
         let buffer = "";
+        let hasPackage = false;
 
         while (true) {
           const { done, value } = await activeReader.read();
+          if (currentGeneration !== generationId) return;
           if (done) break;
 
           buffer += decoder.decode(value, { stream: true });
           buffer = parseStreamEvent(buffer, {
-            materials: (groups) => {
-              modalState.materials = groups;
-              renderBadges(groups);
+            package: (data) => {
+              if (currentGeneration !== generationId) return;
+
+              if (!Array.isArray(data.challenges)) {
+                throw new Error("AI 返回的训练包不完整，请重新生成。");
+              }
+
+              hasPackage = true;
+              modalState.materials = data.materials ?? null;
+              modalState.trainingPackage = data;
+              modalState.englishPassage = "";
+              modalState.challenges = data.challenges;
+              modalState.userAnswers = data.challenges.map(() => "");
+              passageBox.textContent = data.input_scene ? `场景：${data.input_scene}\n\n` : "";
+
+              if (modalState.materials) {
+                renderBadges(modalState.materials);
+              }
             },
             delta: (text) => {
+              if (currentGeneration !== generationId) return;
+
               modalState.englishPassage += text;
               passageBox.textContent += text;
-              passageBox.scrollIntoView({ block: "nearest" });
             },
             done: () => {},
             error: (message) => {
@@ -981,17 +1072,92 @@ const itemsByType = sections.map((section) => ({
             }
           });
         }
+
+        if (!hasPackage || !modalState.englishPassage.trim()) {
+          throw new Error("AI 返回的训练包不完整，请重新生成。");
+        }
       } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        if (currentGeneration !== generationId) return;
+
         if (badgesBox instanceof HTMLElement) {
           badgesBox.innerHTML = `<span class="rio-material-badge adverb">${escapeHtml(
             error instanceof Error ? error.message : "生成失败，请稍后重试。"
           )}</span>`;
         }
       } finally {
-        passageBox.classList.remove("is-loading");
-        openButton?.removeAttribute("disabled");
-        activeReader = undefined;
+        if (currentGeneration === generationId) {
+          passageBox.classList.remove("is-loading");
+          openButton?.removeAttribute("disabled");
+          activeReader = undefined;
+          activeController = undefined;
+        }
       }
+    };
+
+    const renderChallenges = () => {
+      if (!(challengeList instanceof HTMLElement)) return;
+
+      if (!Array.isArray(modalState.challenges) || !modalState.challenges.length) {
+        challengeList.innerHTML =
+          '<p class="rio-analysis-placeholder">中文翻译小题还没有生成，请回到上一页重新生成。</p>';
+        return;
+      }
+
+      challengeList.innerHTML = modalState.challenges
+        .map((challenge, index) => {
+          const hints = Array.isArray(challenge.required_items)
+            ? challenge.required_items
+                .map(
+                  (item) =>
+                    `<span class="rio-material-badge ${escapeHtml(item.type)}">${escapeHtml(
+                      item.text
+                    )}</span>`
+                )
+                .join("")
+            : "";
+
+          return `<article class="rio-challenge-card">
+            <h3>Sentence ${escapeHtml(challenge.index ?? index + 1)} <span class="rio-challenge-scene">${escapeHtml(
+              challenge.scene ?? ""
+            )}</span></h3>
+            <p>${escapeHtml(challenge.chinese_prompt ?? "")}</p>
+            <details class="rio-challenge-hint">
+              <summary>查看目标元素</summary>
+              <div class="rio-challenge-hint-list">${hints}</div>
+            </details>
+            <textarea
+              class="rio-challenge-answer"
+              data-rio-challenge-answer
+              data-rio-challenge-index="${index}"
+              rows="3"
+              placeholder="输入你的英文翻译..."
+            >${escapeHtml(modalState.userAnswers[index] ?? "")}</textarea>
+          </article>`;
+        })
+        .join("");
+
+      challengeList.querySelectorAll("[data-rio-challenge-answer]").forEach((textarea) => {
+        textarea.addEventListener("input", () => {
+          if (!(textarea instanceof HTMLTextAreaElement)) return;
+
+          const index = Number(textarea.getAttribute("data-rio-challenge-index"));
+          modalState.userAnswers[index] = textarea.value;
+
+          if (inputError instanceof HTMLElement) {
+            inputError.hidden = modalState.userAnswers.every((answer) => answer.trim());
+          }
+
+          if (modalState.analysis) {
+            modalState.analysis = null;
+            updateGrammarButtonLabel();
+            if (analysisList instanceof HTMLElement) {
+              analysisList.innerHTML =
+                '<p class="rio-analysis-placeholder">回答已修改，请再次进行语法检查。</p>';
+            }
+          }
+        });
+      });
     };
 
     addButtons.forEach((button) => {
@@ -1020,66 +1186,6 @@ const itemsByType = sections.map((section) => ({
       });
     });
 
-    const generateChinesePassage = async () => {
-      if (
-        !(chinesePassageBox instanceof HTMLElement) ||
-        !modalState.materials ||
-        modalState.chinesePassage ||
-        modalState.isGeneratingChinese
-      ) {
-        return;
-      }
-
-      modalState.isGeneratingChinese = true;
-      chinesePassageBox.textContent = "";
-      chinesePassageBox.classList.add("is-loading");
-
-      try {
-        const response = await fetch("/api/rio/generate-chinese", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            materials: modalState.materials
-          })
-        });
-
-        if (!response.ok || !response.body) {
-          const data = await response.json().catch(() => ({}));
-          throw new Error(data.error ?? "中文短文生成失败，请稍后重试。");
-        }
-
-        activeReader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = "";
-
-        while (true) {
-          const { done, value } = await activeReader.read();
-          if (done) break;
-
-          buffer += decoder.decode(value, { stream: true });
-          buffer = parseStreamEvent(buffer, {
-            delta: (text) => {
-              modalState.chinesePassage += text;
-              chinesePassageBox.textContent += text;
-            },
-            done: () => {},
-            error: (message) => {
-              throw new Error(message);
-            }
-          });
-        }
-      } catch (error) {
-        chinesePassageBox.textContent =
-          error instanceof Error ? error.message : "中文短文生成失败，请稍后重试。";
-      } finally {
-        chinesePassageBox.classList.remove("is-loading");
-        modalState.isGeneratingChinese = false;
-        activeReader = undefined;
-      }
-    };
-
     const renderAnalysis = (analyses) => {
       if (!(analysisList instanceof HTMLElement)) return;
 
@@ -1092,10 +1198,20 @@ const itemsByType = sections.map((section) => ({
       analysisList.innerHTML = analyses
         .map(
           (analysis) => `<article class="rio-analysis-card">
-            <h3>Sentence ${escapeHtml(analysis.sentence_index ?? "-")}</h3>
+            <h3>Sentence ${escapeHtml(analysis.sentence_index ?? "-")} ${
+              analysis.scene ? `<span class="rio-challenge-scene">${escapeHtml(analysis.scene)}</span>` : ""
+            }</h3>
+            <section>
+              <h4>中文题目</h4>
+              <p>${escapeHtml(analysis.chinese_prompt ?? "")}</p>
+            </section>
             <section>
               <h4>用户原句</h4>
               <p>${escapeHtml(analysis.user_sentence ?? "")}</p>
+            </section>
+            <section>
+              <h4>目标元素使用</h4>
+              <p>${escapeHtml(analysis.target_usage ?? "")}</p>
             </section>
             <section>
               <h4>语法问题</h4>
@@ -1122,7 +1238,7 @@ const itemsByType = sections.map((section) => ({
       if (
         !(analysisList instanceof HTMLElement) ||
         !modalState.materials ||
-        !modalState.chinesePassage ||
+        !modalState.challenges.length ||
         modalState.isCheckingGrammar
       ) {
         return;
@@ -1138,8 +1254,8 @@ const itemsByType = sections.map((section) => ({
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            chinese_text: modalState.chinesePassage,
-            user_text: modalState.userAnswer,
+            challenges: modalState.challenges,
+            user_answers: modalState.userAnswers.map((answer) => answer.trim()),
             materials: modalState.materials
           })
         });
@@ -1166,21 +1282,22 @@ const itemsByType = sections.map((section) => ({
     closeButtons.forEach((button) => button.addEventListener("click", closeModal));
     pageButtons.next?.addEventListener("click", () => {
       showPage(2);
-      generateChinesePassage();
+      renderChallenges();
     });
     pageButtons.prev?.addEventListener("click", () => {
       showPage(1);
     });
     pageButtons.grammarCheck?.addEventListener("click", () => {
-      const value = userAnswer instanceof HTMLTextAreaElement ? userAnswer.value.trim() : "";
+      const isComplete =
+        modalState.userAnswers.length === modalState.challenges.length &&
+        modalState.userAnswers.every((answer) => answer.trim());
 
       if (inputError instanceof HTMLElement) {
-        inputError.hidden = Boolean(value);
+        inputError.hidden = Boolean(isComplete);
       }
 
-      if (!value) return;
+      if (!isComplete) return;
 
-      modalState.userAnswer = value;
       showPage(3);
 
       if (modalState.analysis) {
@@ -1195,21 +1312,6 @@ const itemsByType = sections.map((section) => ({
     });
     pageButtons.complete?.addEventListener("click", closeModal);
     updateSelectionUi();
-
-    userAnswer?.addEventListener("input", () => {
-      if (inputError instanceof HTMLElement && userAnswer instanceof HTMLTextAreaElement) {
-        inputError.hidden = Boolean(userAnswer.value.trim());
-      }
-
-      if (modalState.analysis) {
-        modalState.analysis = null;
-        updateGrammarButtonLabel();
-        if (analysisList instanceof HTMLElement) {
-          analysisList.innerHTML =
-            '<p class="rio-analysis-placeholder">回答已修改，请再次进行语法检查。</p>';
-        }
-      }
-    });
 
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && modal instanceof HTMLElement && !modal.hidden) {

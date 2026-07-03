@@ -26,28 +26,35 @@ const requirements = [
   { label: "Adverb", type: "adverb", count: 1 }
 ] as const;
 
+const scenes = [
+  "教育",
+  "科技",
+  "工作与经济",
+  "环境",
+  "政府与法律",
+  "家庭与儿童",
+  "社会问题",
+  "媒体与广告",
+  "文化与传统",
+  "国际化与全球化",
+  "健康与生活方式"
+] as const;
+
 const jsonResponse = (body: Record<string, unknown>, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json" }
   });
 
-const extractDelta = (line: string) => {
-  if (!line.startsWith("data:")) return "";
-
-  const payload = line.slice(5).trim();
-  if (!payload || payload === "[DONE]") return "";
-
-  try {
-    const data = JSON.parse(payload);
-    return data.choices?.[0]?.delta?.content ?? "";
-  } catch {
-    return "";
-  }
-};
-
 const streamEvent = (event: string, data: unknown) =>
   `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const chunkText = (text: string) => {
+  const chunks = text.match(/.{1,14}(?:\s+|$)/gs);
+  return chunks?.filter(Boolean) ?? [text];
+};
 
 const normalizeSelectedIds = (value: unknown) => {
   if (!Array.isArray(value)) return [];
@@ -94,6 +101,72 @@ const getAiErrorMessage = async (response: Response) => {
   } catch {
     return text || "AI request failed";
   }
+};
+
+const sample = <T>(items: readonly T[], count: number) => {
+  const pool = [...items];
+
+  for (let index = pool.length - 1; index > 0; index -= 1) {
+    const target = Math.floor(Math.random() * (index + 1));
+    [pool[index], pool[target]] = [pool[target], pool[index]];
+  }
+
+  return pool.slice(0, count);
+};
+
+const itemsForType = (
+  groups: Array<{ label: string; type: string; items: EnglishItem[] }>,
+  type: string
+) => groups.find((group) => group.type === type)?.items ?? [];
+
+const buildChallengePlan = (
+  groups: Array<{ label: string; type: string; items: EnglishItem[] }>
+) => {
+  const chunks = itemsForType(groups, "chunk");
+  const sentencePatterns = itemsForType(groups, "sentence_pattern");
+  const vocabulary = itemsForType(groups, "vocabulary");
+  const adverbs = itemsForType(groups, "adverb");
+  const outputScenes = sample(scenes, Math.random() < 0.5 ? 2 : 3);
+
+  return [
+    {
+      index: 1,
+      scene: outputScenes[0],
+      required_items: [sentencePatterns[0], chunks[0]].filter(Boolean)
+    },
+    {
+      index: 2,
+      scene: outputScenes[1],
+      required_items: [vocabulary[0], vocabulary[1], adverbs[0]].filter(Boolean)
+    },
+    {
+      index: 3,
+      scene: outputScenes[2] ?? outputScenes[0],
+      required_items: [chunks[1], chunks[2]].filter(Boolean)
+    }
+  ];
+};
+
+const extractOutputText = (data: any) => {
+  if (typeof data.output_text === "string") return data.output_text;
+  if (typeof data.choices?.[0]?.message?.content === "string") {
+    return data.choices[0].message.content;
+  }
+
+  return "";
+};
+
+const normalizeChallenge = (value: unknown, fallback: { index: number; scene: string }) => {
+  const candidate = value && typeof value === "object" ? (value as Record<string, unknown>) : {};
+
+  return {
+    index: typeof candidate.index === "number" ? candidate.index : fallback.index,
+    scene: typeof candidate.scene === "string" ? candidate.scene : fallback.scene,
+    chinese_prompt:
+      typeof candidate.chinese_prompt === "string" ? candidate.chinese_prompt.trim() : "",
+    reference_answer:
+      typeof candidate.reference_answer === "string" ? candidate.reference_answer.trim() : ""
+  };
 };
 
 export const POST: APIRoute = async ({ request, locals }) => {
@@ -192,10 +265,22 @@ export const POST: APIRoute = async ({ request, locals }) => {
     .map((group) => `${group.label}: ${group.items.map((item) => item.text).join(", ")}`)
     .join("\n");
 
-  let aiResponse: Response;
+  const inputScene = sample(scenes, 1)[0];
+  const challengePlan = buildChallengePlan(selectedGroups);
+  const challengePlanText = challengePlan
+    .map((challenge) => {
+      const items = challenge.required_items
+        .map((item) => `${item.type}: ${item.text}`)
+        .join("; ");
+
+      return `Challenge ${challenge.index} | Scene: ${challenge.scene} | Required items: ${items}`;
+    })
+    .join("\n");
+
+  let response: Response;
 
   try {
-    aiResponse = await fetch(`${apiBaseUrl}/chat/completions`, {
+    response = await fetch(`${apiBaseUrl}/chat/completions`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -206,27 +291,50 @@ export const POST: APIRoute = async ({ request, locals }) => {
         messages: [
           {
             role: "system",
-            content: `You are an expert IELTS reading passage writer.
+            content: `You are an expert IELTS bilingual training designer.
 
-Write one realistic short IELTS-style reading passage for English learners.
+Create one RIO training package for English learners.
 
-Requirements:
-- Length: about 180-220 English words.
-- Use a natural, credible context rather than a list-like exercise.
-- The passage should feel like a compact magazine or IELTS reading text.
-- Include every provided chunk, sentence pattern, vocabulary item, and adverb exactly as usable language in the passage.
-- Keep the language close to IELTS Academic Reading difficulty.
-- Do not explain the task.
-- Do not add headings, bullet points, Markdown, Chinese translation, or vocabulary notes.
-- Return only the passage text.`
+Return only valid JSON. Do not return Markdown, code fences, headings, or extra explanation.
+
+JSON shape:
+{
+  "input_passage": "100-150 English words, 3-4 sentences",
+  "challenges": [
+    {
+      "index": 1,
+      "scene": "教育",
+      "chinese_prompt": "A natural Chinese sentence for the learner to translate",
+      "reference_answer": "A natural English answer using the required items"
+    }
+  ]
+}
+
+Rules:
+- Input passage scene: use only the provided input scene.
+- The input passage must include every provided chunk, sentence pattern, vocabulary item, and adverb exactly as usable language.
+- Distribute the provided items naturally across the 3-4 input passage sentences.
+- Output challenges: create exactly 3 Chinese translation prompts.
+- Each challenge must use its assigned scene and assigned required items only.
+- Each Chinese prompt must be natural Chinese, not translationese.
+- Each reference answer must be natural English and must include all assigned required items.
+- Keep every challenge short enough for one sentence translation practice.
+- Do not reveal the required items inside the Chinese prompt.`
           },
           {
             role: "user",
-            content: `Please write the passage using all of these items:\n\n${selectedText}`
+            content: `Input scene: ${inputScene}
+
+All training items:
+${selectedText}
+
+Output challenge plan:
+${challengePlanText}`
           }
         ],
-        max_tokens: 520,
-        stream: true
+        response_format: { type: "json_object" },
+        max_tokens: 1800,
+        stream: false
       })
     });
   } catch (error) {
@@ -238,56 +346,88 @@ Requirements:
     );
   }
 
-  if (!aiResponse.ok || !aiResponse.body) {
-    const message = await getAiErrorMessage(aiResponse);
-    return jsonResponse({ error: message || "AI request failed" }, aiResponse.status || 502);
+  if (!response.ok) {
+    const message = await getAiErrorMessage(response);
+    return jsonResponse({ error: message || "AI request failed" }, response.status || 502);
   }
 
-  const encoder = new TextEncoder();
-  const decoder = new TextDecoder();
+  let data;
 
-  return new Response(
-    new ReadableStream({
-      async start(controller) {
-        controller.enqueue(encoder.encode(streamEvent("materials", selectedGroups)));
+  try {
+    data = await response.json();
+  } catch {
+    return jsonResponse({ error: "AI returned an unreadable response" }, 502);
+  }
 
-        const reader = aiResponse.body!.getReader();
-        let buffer = "";
+  const outputText = extractOutputText(data);
 
-        try {
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
+  if (!outputText) {
+    return jsonResponse({ error: "AI returned empty output" }, 502);
+  }
 
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split(/\r?\n/);
-            buffer = lines.pop() ?? "";
+  try {
+    const parsed = JSON.parse(outputText);
+    const challenges = challengePlan.map((planned, index) => {
+      const generated = normalizeChallenge(parsed.challenges?.[index], planned);
 
-            for (const line of lines) {
-              const delta = extractDelta(line);
-              if (delta) {
-                controller.enqueue(encoder.encode(streamEvent("delta", delta)));
-              }
+      return {
+        ...generated,
+        index: planned.index,
+        scene: planned.scene,
+        required_items: planned.required_items
+      };
+    });
+
+    const trainingPackage = {
+      materials: selectedGroups,
+      input_scene: inputScene,
+      input_passage:
+        typeof parsed.input_passage === "string" ? parsed.input_passage.trim() : "",
+      output_scenes: [...new Set(challengePlan.map((challenge) => challenge.scene))],
+      challenges
+    };
+    const encoder = new TextEncoder();
+
+    return new Response(
+      new ReadableStream({
+        async start(controller) {
+          try {
+            controller.enqueue(
+              encoder.encode(
+                streamEvent("package", {
+                  materials: trainingPackage.materials,
+                  input_scene: trainingPackage.input_scene,
+                  output_scenes: trainingPackage.output_scenes,
+                  challenges: trainingPackage.challenges
+                })
+              )
+            );
+
+            for (const chunk of chunkText(trainingPackage.input_passage)) {
+              controller.enqueue(encoder.encode(streamEvent("delta", chunk)));
+              await sleep(18);
             }
-          }
 
-          controller.enqueue(encoder.encode(streamEvent("done", true)));
-        } catch (error) {
-          controller.enqueue(
-            encoder.encode(
-              streamEvent("error", error instanceof Error ? error.message : "AI stream failed")
-            )
-          );
-        } finally {
-          controller.close();
+            controller.enqueue(encoder.encode(streamEvent("done", true)));
+          } catch (error) {
+            controller.enqueue(
+              encoder.encode(
+                streamEvent("error", error instanceof Error ? error.message : "RIO stream failed")
+              )
+            );
+          } finally {
+            controller.close();
+          }
+        }
+      }),
+      {
+        headers: {
+          "Cache-Control": "no-store",
+          "Content-Type": "text/event-stream; charset=utf-8"
         }
       }
-    }),
-    {
-      headers: {
-        "Cache-Control": "no-store",
-        "Content-Type": "text/event-stream; charset=utf-8"
-      }
-    }
-  );
+    );
+  } catch {
+    return jsonResponse({ error: "AI returned invalid RIO package JSON" }, 502);
+  }
 };

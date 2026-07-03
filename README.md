@@ -65,3 +65,10 @@ Your post goes here.
 2.主要功能是对随机抽卡的chunks、pattern、adv、vocabs提供既有输入又有输出的环境，针对性练习
 
 备注：还应该新增一个（自选模式），这样可以让用户可以更加针对性的练习those chunks, pattern, vocabs, adv they really want to practice.
+
+### 2026.07.03
+1.新增自选模式
+
+2.将训练更原子化，更加贴合训练流程（输入理解 to 输出应用）
+
+备注：下一步适当增加一些训练时的音效（for example 用户输入时的键盘敲击音），让训练更上瘾
