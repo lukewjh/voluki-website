@@ -20,10 +20,10 @@ type D1Database = {
 };
 
 const sections = [
-  { title: "Chunks", type: "chunk" },
-  { title: "Sentence Patterns", type: "sentence_pattern" },
-  { title: "Vocabulary", type: "vocabulary" },
-  { title: "Adverbs", type: "adverb" }
+  { title: "Chunks", type: "chunk", required: 3 },
+  { title: "Sentence Patterns", type: "sentence_pattern", required: 1 },
+  { title: "Vocabulary", type: "vocabulary", required: 2 },
+  { title: "Adverbs", type: "adverb", required: 1 }
 ] as const;
 
 const db = (Astro.locals as any).runtime?.env?.DB as D1Database | undefined;
@@ -92,7 +92,10 @@ const itemsByType = sections.map((section) => ({
             <section class="rio-table-card">
               <div class="rio-table-head">
                 <h2>{section.title}</h2>
-                <span>{section.items.length}</span>
+                <div class="rio-table-meta">
+                  <span>{section.items.length}</span>
+                  <span data-rio-selection-progress={section.type}>0/{section.required}</span>
+                </div>
               </div>
               {section.items.length ? (
                 <table>
@@ -100,13 +103,27 @@ const itemsByType = sections.map((section) => ({
                     <tr>
                       <th scope="col">ID</th>
                       <th scope="col">Text</th>
+                      <th scope="col">Pick</th>
                     </tr>
                   </thead>
                   <tbody>
                     {section.items.map((item) => (
-                      <tr>
+                      <tr data-rio-item-row={item.id}>
                         <td>{item.id}</td>
                         <td>{item.text}</td>
+                        <td>
+                          <button
+                            class="rio-add-button"
+                            type="button"
+                            aria-label={`Add ${item.text}`}
+                            data-rio-add-item
+                            data-rio-item-id={item.id}
+                            data-rio-item-type={item.type}
+                            data-rio-item-text={item.text}
+                          >
+                            +
+                          </button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -323,6 +340,13 @@ const itemsByType = sections.map((section) => ({
       font-size: 24px;
     }
 
+    .rio-table-meta {
+      display: inline-flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
     .rio-table-head span {
       display: inline-flex;
       align-items: center;
@@ -362,9 +386,46 @@ const itemsByType = sections.map((section) => ({
       color: var(--muted);
     }
 
+    th:last-child,
+    td:last-child {
+      width: 58px;
+      text-align: right;
+    }
+
     td {
       color: var(--text);
       overflow-wrap: anywhere;
+    }
+
+    .rio-add-button {
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .rio-add-button:hover,
+    .rio-add-button:focus-visible {
+      border-color: color-mix(in srgb, var(--accent) 70%, var(--line));
+      color: var(--accent);
+      outline: none;
+    }
+
+    .rio-add-button.is-selected {
+      border-color: color-mix(in srgb, var(--accent) 70%, var(--line));
+      background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+      color: var(--accent);
+    }
+
+    .rio-add-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.38;
     }
 
     .rio-empty {
@@ -678,6 +739,8 @@ const itemsByType = sections.map((section) => ({
     const modal = document.querySelector("[data-rio-modal]");
     const openButton = document.querySelector("[data-rio-modal-open]");
     const closeButtons = document.querySelectorAll("[data-rio-modal-close]");
+    const addButtons = document.querySelectorAll("[data-rio-add-item]");
+    const progressLabels = document.querySelectorAll("[data-rio-selection-progress]");
     const badgesBox = document.querySelector("[data-rio-material-badges]");
     const passageBox = document.querySelector("[data-rio-generated-passage]");
     const chinesePassageBox = document.querySelector("[data-rio-chinese-passage]");
@@ -695,6 +758,18 @@ const itemsByType = sections.map((section) => ({
     const analysisList = document.querySelector("[data-rio-analysis-list]");
     let lastFocusedElement;
     let activeReader;
+    const selectionRequirements = {
+      chunk: 3,
+      sentence_pattern: 1,
+      vocabulary: 2,
+      adverb: 1
+    };
+    const selectedTargets = {
+      chunk: [],
+      sentence_pattern: [],
+      vocabulary: [],
+      adverb: []
+    };
     const modalState = {
       page: 1,
       materials: null,
@@ -704,6 +779,47 @@ const itemsByType = sections.map((section) => ({
       analysis: null,
       isGeneratingChinese: false,
       isCheckingGrammar: false
+    };
+
+    const getSelectedCount = () =>
+      Object.values(selectedTargets).reduce((total, items) => total + items.length, 0);
+
+    const getSelectedPayload = () =>
+      Object.fromEntries(
+        Object.entries(selectedTargets).map(([type, items]) => [
+          type,
+          items.map((item) => item.id)
+        ])
+      );
+
+    const updateSelectionUi = () => {
+      progressLabels.forEach((label) => {
+        if (!(label instanceof HTMLElement)) return;
+
+        const type = label.getAttribute("data-rio-selection-progress");
+        const selected = selectedTargets[type]?.length ?? 0;
+        const required = selectionRequirements[type] ?? 0;
+        label.textContent = `${selected}/${required}`;
+      });
+
+      addButtons.forEach((button) => {
+        if (!(button instanceof HTMLButtonElement)) return;
+
+        const type = button.getAttribute("data-rio-item-type");
+        const id = Number(button.getAttribute("data-rio-item-id"));
+        const selectedItems = selectedTargets[type] ?? [];
+        const isSelected = selectedItems.some((item) => item.id === id);
+        const isFull = selectedItems.length >= (selectionRequirements[type] ?? 0);
+
+        button.classList.toggle("is-selected", isSelected);
+        button.textContent = isSelected ? "✓" : "+";
+        button.disabled = !isSelected && isFull;
+        button.setAttribute("aria-pressed", String(isSelected));
+      });
+
+      if (openButton instanceof HTMLButtonElement) {
+        openButton.textContent = getSelectedCount() ? "开始练习" : "随机生成";
+      }
     };
 
     const updateGrammarButtonLabel = () => {
@@ -826,7 +942,13 @@ const itemsByType = sections.map((section) => ({
 
       try {
         const response = await fetch("/api/rio/generate", {
-          method: "POST"
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            selected: getSelectedPayload()
+          })
         });
 
         if (!response.ok || !response.body) {
@@ -871,6 +993,32 @@ const itemsByType = sections.map((section) => ({
         activeReader = undefined;
       }
     };
+
+    addButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        if (!(button instanceof HTMLButtonElement)) return;
+
+        const type = button.getAttribute("data-rio-item-type");
+        const id = Number(button.getAttribute("data-rio-item-id"));
+        const text = button.getAttribute("data-rio-item-text") ?? "";
+
+        if (!type || !Number.isFinite(id) || !(type in selectedTargets)) return;
+
+        const selectedItems = selectedTargets[type];
+        const existingIndex = selectedItems.findIndex((item) => item.id === id);
+
+        if (existingIndex >= 0) {
+          selectedItems.splice(existingIndex, 1);
+          updateSelectionUi();
+          return;
+        }
+
+        if (selectedItems.length >= (selectionRequirements[type] ?? 0)) return;
+
+        selectedItems.push({ id, text });
+        updateSelectionUi();
+      });
+    });
 
     const generateChinesePassage = async () => {
       if (
@@ -1046,6 +1194,7 @@ const itemsByType = sections.map((section) => ({
       showPage(2);
     });
     pageButtons.complete?.addEventListener("click", closeModal);
+    updateSelectionUi();
 
     userAnswer?.addEventListener("input", () => {
       if (inputError instanceof HTMLElement && userAnswer instanceof HTMLTextAreaElement) {

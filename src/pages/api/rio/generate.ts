@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 import { getEnv } from "../../../lib/env";
+import { readJsonBody } from "../../../lib/readJsonBody";
 
 export const prerender = false;
 
@@ -48,6 +49,36 @@ const extractDelta = (line: string) => {
 const streamEvent = (event: string, data: unknown) =>
   `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
 
+const normalizeSelectedIds = (value: unknown) => {
+  if (!Array.isArray(value)) return [];
+
+  return [
+    ...new Set(
+      value
+        .map((id) => (typeof id === "number" ? id : Number(id)))
+        .filter((id) => Number.isInteger(id) && id > 0)
+    )
+  ];
+};
+
+const readSelectedPayload = async (request: Request) => {
+  try {
+    const body = await readJsonBody(request);
+    const selected = (body as { selected?: Record<string, unknown> }).selected;
+
+    if (!selected || typeof selected !== "object") return {};
+
+    return Object.fromEntries(
+      requirements.map((requirement) => [
+        requirement.type,
+        normalizeSelectedIds(selected[requirement.type])
+      ])
+    );
+  } catch {
+    return {};
+  }
+};
+
 const getAiErrorMessage = async (response: Response) => {
   const text = await response.text();
 
@@ -65,7 +96,7 @@ const getAiErrorMessage = async (response: Response) => {
   }
 };
 
-export const POST: APIRoute = async ({ locals }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
   const db = (locals as any).runtime?.env?.DB as D1Database | undefined;
   const apiKey = getEnv(locals, "DEEPSEEK_API_KEY") ?? getEnv(locals, "OPENAI_API_KEY");
   const model = getEnv(locals, "OPENAI_MODEL") ?? "deepseek-v4-pro";
@@ -79,20 +110,59 @@ export const POST: APIRoute = async ({ locals }) => {
     return jsonResponse({ error: "Missing DEEPSEEK_API_KEY" }, 500);
   }
 
+  const selectedByType = await readSelectedPayload(request);
   let selectedGroups: Array<{ label: string; type: string; items: EnglishItem[] }>;
 
   try {
     selectedGroups = await Promise.all(
       requirements.map(async (requirement) => {
-        const result = await db
-          .prepare("SELECT id, type, text FROM english_items WHERE type = ? ORDER BY RANDOM() LIMIT ?")
-          .bind(requirement.type, requirement.count)
-          .all<EnglishItem>();
+        const requestedIds = selectedByType[requirement.type] ?? [];
+        let selectedItems: EnglishItem[] = [];
+
+        if (requestedIds.length) {
+          const placeholders = requestedIds.map(() => "?").join(", ");
+          const result = await db
+            .prepare(
+              `SELECT id, type, text
+               FROM english_items
+               WHERE type = ? AND id IN (${placeholders})`
+            )
+            .bind(requirement.type, ...requestedIds)
+            .all<EnglishItem>();
+
+          const selectedById = new Map((result.results ?? []).map((item) => [item.id, item]));
+          selectedItems = requestedIds
+            .map((id) => selectedById.get(id))
+            .filter((item): item is EnglishItem => Boolean(item))
+            .slice(0, requirement.count);
+        }
+
+        const remainingCount = requirement.count - selectedItems.length;
+        let randomItems: EnglishItem[] = [];
+
+        if (remainingCount > 0) {
+          const excludedIds = selectedItems.map((item) => item.id);
+          const excludedClause = excludedIds.length
+            ? ` AND id NOT IN (${excludedIds.map(() => "?").join(", ")})`
+            : "";
+          const result = await db
+            .prepare(
+              `SELECT id, type, text
+               FROM english_items
+               WHERE type = ?${excludedClause}
+               ORDER BY RANDOM()
+               LIMIT ?`
+            )
+            .bind(requirement.type, ...excludedIds, remainingCount)
+            .all<EnglishItem>();
+
+          randomItems = result.results ?? [];
+        }
 
         return {
           label: requirement.label,
           type: requirement.type,
-          items: result.results ?? []
+          items: [...selectedItems, ...randomItems]
         };
       })
     );
