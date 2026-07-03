@@ -58,3 +58,10 @@ Your post goes here.
 1.新增了灯泡功能：帮助获得chunk提示
 
 2.新增了markdown笔记功能支持本地浏览器缓存笔记内容、支持下载
+
+### 2026.07.02
+1.新增了RIO页面（beta）
+
+2.主要功能是对随机抽卡的chunks、pattern、adv、vocabs提供既有输入又有输出的环境，针对性练习
+
+备注：还应该新增一个（自选模式），这样可以让用户可以更加针对性的练习those chunks, pattern, vocabs, adv they really want to practice.
