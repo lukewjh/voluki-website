@@ -219,6 +219,7 @@ const itemsByType = sections.map((section) => ({
           </div>
         </div>
       </section>
+      <div class="rio-celebration" hidden aria-hidden="true" data-rio-celebration></div>
     </div>
   </section>
 
@@ -446,6 +447,14 @@ const itemsByType = sections.map((section) => ({
       padding: 24px;
     }
 
+    .rio-modal.is-opening .rio-modal-backdrop {
+      animation: rio-modal-backdrop-in 180ms ease both;
+    }
+
+    .rio-modal.is-closing .rio-modal-backdrop {
+      animation: rio-modal-backdrop-out 180ms ease both;
+    }
+
     .rio-modal-backdrop {
       position: absolute;
       inset: 0;
@@ -464,6 +473,142 @@ const itemsByType = sections.map((section) => ({
       background: var(--surface);
       padding: 22px;
       box-shadow: 0 24px 80px color-mix(in srgb, var(--text) 18%, transparent);
+    }
+
+    .rio-modal.is-opening .rio-modal-card {
+      animation: rio-modal-pop-in 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .rio-modal.is-closing .rio-modal-card {
+      animation: rio-modal-pop-out 180ms ease-in both;
+    }
+
+    .rio-modal-card.is-celebrating {
+      overflow: hidden;
+    }
+
+    .rio-modal-card.is-celebrating::after {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background:
+        radial-gradient(circle at 50% 24%, color-mix(in srgb, #fbbf24 18%, transparent), transparent 30%),
+        color-mix(in srgb, var(--surface) 10%, transparent);
+      content: "";
+      pointer-events: none;
+      animation: rio-celebration-glow 980ms ease forwards;
+    }
+
+    .rio-celebration {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .rio-celebration[hidden] {
+      display: none;
+    }
+
+    :global(.rio-confetti-piece) {
+      position: absolute;
+      top: var(--confetti-origin-y);
+      left: var(--confetti-origin-x);
+      width: var(--confetti-width);
+      height: var(--confetti-height);
+      z-index: 3;
+      border-radius: 2px;
+      background: var(--confetti-color);
+      opacity: 0;
+      transform: translate(-50%, -50%) rotate(var(--confetti-spin));
+      animation: rio-confetti-burst var(--confetti-duration) cubic-bezier(0.15, 0.8, 0.35, 1) forwards;
+      animation-delay: var(--confetti-delay);
+    }
+
+    @keyframes rio-celebration-glow {
+      0% {
+        opacity: 0;
+      }
+
+      22% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes rio-modal-backdrop-in {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes rio-modal-backdrop-out {
+      0% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes rio-modal-pop-in {
+      0% {
+        opacity: 0;
+        transform: scale(0.94);
+      }
+
+      70% {
+        opacity: 1;
+        transform: scale(1.012);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes rio-modal-pop-out {
+      0% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: scale(0.96);
+      }
+    }
+
+    @keyframes rio-confetti-burst {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8) rotate(var(--confetti-spin));
+      }
+
+      12% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+        transform:
+          translate(
+            calc(-50% + var(--confetti-x)),
+            calc(-50% + var(--confetti-y))
+          )
+          scale(var(--confetti-scale))
+          rotate(calc(var(--confetti-spin) + var(--confetti-rotation)));
+      }
     }
 
     .rio-modal-head {
@@ -794,10 +939,22 @@ const itemsByType = sections.map((section) => ({
         grid-template-columns: 1fr;
       }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .rio-modal.is-opening .rio-modal-backdrop,
+      .rio-modal.is-closing .rio-modal-backdrop,
+      .rio-modal.is-opening .rio-modal-card,
+      .rio-modal.is-closing .rio-modal-card,
+      .rio-modal-card.is-celebrating::after,
+      :global(.rio-confetti-piece) {
+        animation: none;
+      }
+    }
   </style>
 
   <script>
     const modal = document.querySelector("[data-rio-modal]");
+    const modalCard = document.querySelector(".rio-modal-card");
     const openButton = document.querySelector("[data-rio-modal-open]");
     const closeButtons = document.querySelectorAll("[data-rio-modal-close]");
     const addButtons = document.querySelectorAll("[data-rio-add-item]");
@@ -806,6 +963,7 @@ const itemsByType = sections.map((section) => ({
     const passageBox = document.querySelector("[data-rio-generated-passage]");
     const challengeList = document.querySelector("[data-rio-challenge-list]");
     const inputError = document.querySelector("[data-rio-input-error]");
+    const celebrationLayer = document.querySelector("[data-rio-celebration]");
     const pageButtons = {
       next: document.querySelector("[data-rio-next]"),
       prev: document.querySelector("[data-rio-prev]"),
@@ -820,6 +978,10 @@ const itemsByType = sections.map((section) => ({
     let activeReader;
     let activeController;
     let generationId = 0;
+    let celebrationTimer;
+    let modalAnimationTimer;
+    let isClosingModal = false;
+    const completeButtonLabel = pageButtons.complete?.textContent ?? "";
     const selectionRequirements = {
       chunk: 3,
       sentence_pattern: 1,
@@ -890,14 +1052,7 @@ const itemsByType = sections.map((section) => ({
       }
     };
 
-    const closeModal = () => {
-      if (!(modal instanceof HTMLElement)) return;
-
-      generationId += 1;
-      activeController?.abort?.();
-      activeReader?.cancel?.();
-      activeReader = undefined;
-      activeController = undefined;
+    const resetModalSession = () => {
       modalState.page = 1;
       modalState.materials = null;
       modalState.trainingPackage = null;
@@ -906,10 +1061,25 @@ const itemsByType = sections.map((section) => ({
       modalState.userAnswers = [];
       modalState.analysis = null;
       modalState.isCheckingGrammar = false;
-      passageBox?.classList.remove("is-loading");
-      openButton?.removeAttribute("disabled");
       updateGrammarButtonLabel();
+    };
+
+    const finishCloseModal = () => {
+      if (!(modal instanceof HTMLElement)) return;
+
+      resetModalSession();
+      if (pageButtons.complete instanceof HTMLButtonElement) {
+        pageButtons.complete.disabled = false;
+        pageButtons.complete.textContent = completeButtonLabel;
+      }
+      modalCard?.classList.remove("is-celebrating");
+      if (celebrationLayer instanceof HTMLElement) {
+        celebrationLayer.hidden = true;
+        celebrationLayer.replaceChildren();
+      }
+      modal.classList.remove("is-opening", "is-closing");
       modal.hidden = true;
+      isClosingModal = false;
       document.body.style.overflow = "";
 
       if (lastFocusedElement instanceof HTMLElement) {
@@ -917,12 +1087,106 @@ const itemsByType = sections.map((section) => ({
       }
     };
 
+    const closeModal = () => {
+      if (!(modal instanceof HTMLElement) || modal.hidden || isClosingModal) return;
+
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      isClosingModal = true;
+      window.clearTimeout(celebrationTimer);
+      window.clearTimeout(modalAnimationTimer);
+      generationId += 1;
+      activeController?.abort?.();
+      activeReader?.cancel?.();
+      activeReader = undefined;
+      activeController = undefined;
+      passageBox?.classList.remove("is-loading");
+      openButton?.removeAttribute("disabled");
+      modalCard?.classList.remove("is-celebrating");
+
+      if (celebrationLayer instanceof HTMLElement) {
+        celebrationLayer.hidden = true;
+        celebrationLayer.replaceChildren();
+      }
+
+      if (reduceMotion) {
+        finishCloseModal();
+        return;
+      }
+
+      modal.classList.remove("is-opening");
+      modal.classList.add("is-closing");
+      modalAnimationTimer = window.setTimeout(finishCloseModal, 190);
+    };
+
+    const launchCompletionCelebration = () => {
+      if (!(modal instanceof HTMLElement) || modal.hidden) return;
+
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (reduceMotion) {
+        closeModal();
+        return;
+      }
+
+      if (pageButtons.complete instanceof HTMLButtonElement) {
+        pageButtons.complete.disabled = true;
+        pageButtons.complete.textContent = "\u5b8c\u6210\u5566";
+      }
+
+      modalCard?.classList.add("is-celebrating");
+
+      if (celebrationLayer instanceof HTMLElement) {
+        const colors = ["#e5484d", "#f59e0b", "#22c55e", "#3b82f6", "#a855f7", "#14b8a6"];
+        const pieceCount = window.innerWidth < 680 ? 42 : 72;
+        const cardRect = modalCard instanceof HTMLElement ? modalCard.getBoundingClientRect() : null;
+        const originX = cardRect ? cardRect.left + cardRect.width / 2 : window.innerWidth / 2;
+        const originY = cardRect ? cardRect.top + 24 : Math.max(86, window.innerHeight * 0.24);
+
+        celebrationLayer.replaceChildren();
+        celebrationLayer.hidden = false;
+
+        for (let index = 0; index < pieceCount; index += 1) {
+          const piece = document.createElement("span");
+          const spread = index / pieceCount;
+          const direction = spread * Math.PI * 2;
+          const distance = 110 + Math.random() * (window.innerWidth < 680 ? 170 : 260);
+          const drift = (Math.random() - 0.5) * 160;
+
+          piece.className = "rio-confetti-piece";
+          piece.style.setProperty("--confetti-color", colors[index % colors.length]);
+          piece.style.setProperty("--confetti-width", `${6 + Math.random() * 6}px`);
+          piece.style.setProperty("--confetti-height", `${9 + Math.random() * 10}px`);
+          piece.style.setProperty("--confetti-origin-x", `${originX}px`);
+          piece.style.setProperty("--confetti-origin-y", `${originY}px`);
+          piece.style.setProperty("--confetti-x", `${Math.cos(direction) * distance + drift}px`);
+          piece.style.setProperty("--confetti-y", `${Math.sin(direction) * 95 + 180 + Math.random() * 130}px`);
+          piece.style.setProperty("--confetti-spin", `${Math.random() * 180}deg`);
+          piece.style.setProperty("--confetti-rotation", `${360 + Math.random() * 720}deg`);
+          piece.style.setProperty("--confetti-scale", String(0.72 + Math.random() * 0.58));
+          piece.style.setProperty("--confetti-delay", `${Math.random() * 110}ms`);
+          piece.style.setProperty("--confetti-duration", `${850 + Math.random() * 420}ms`);
+          celebrationLayer.append(piece);
+        }
+      }
+
+      window.clearTimeout(celebrationTimer);
+      celebrationTimer = window.setTimeout(closeModal, 1250);
+    };
+
     const openModal = () => {
       if (!(modal instanceof HTMLElement)) return;
 
+      window.clearTimeout(modalAnimationTimer);
+      isClosingModal = false;
       lastFocusedElement = document.activeElement;
+      modal.classList.remove("is-closing");
       modal.hidden = false;
+      modal.classList.add("is-opening");
       document.body.style.overflow = "hidden";
+      modalAnimationTimer = window.setTimeout(() => {
+        modal.classList.remove("is-opening");
+      }, 230);
       modal.querySelector("button")?.focus();
       if (challengeList instanceof HTMLElement) {
         challengeList.innerHTML =
@@ -1310,7 +1574,7 @@ const itemsByType = sections.map((section) => ({
     pageButtons.backToAnswer?.addEventListener("click", () => {
       showPage(2);
     });
-    pageButtons.complete?.addEventListener("click", closeModal);
+    pageButtons.complete?.addEventListener("click", launchCompletionCelebration);
     updateSelectionUi();
 
     document.addEventListener("keydown", (event) => {
