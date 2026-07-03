@@ -110,7 +110,21 @@ const itemsByType = sections.map((section) => ({
                     {section.items.map((item) => (
                       <tr data-rio-item-row={item.id}>
                         <td>{item.id}</td>
-                        <td>{item.text}</td>
+                        <td>
+                          {item.type === "sentence_pattern" ? (
+                            <button
+                              class="rio-pattern-quiz-button"
+                              type="button"
+                              data-rio-quiz-pattern
+                              data-rio-pattern-id={item.id}
+                              data-rio-pattern-text={item.text}
+                            >
+                              {item.text}
+                            </button>
+                          ) : (
+                            item.text
+                          )}
+                        </td>
                         <td>
                           <button
                             class="rio-add-button"
@@ -220,6 +234,39 @@ const itemsByType = sections.map((section) => ({
         </div>
       </section>
       <div class="rio-celebration" hidden aria-hidden="true" data-rio-celebration></div>
+    </div>
+
+    <div class="rio-quiz-modal" hidden data-rio-quiz-modal>
+      <div class="rio-modal-backdrop" data-rio-quiz-close></div>
+      <section
+        class="rio-modal-card rio-quiz-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="rio-quiz-title"
+      >
+        <div class="rio-modal-head">
+          <div>
+            <span>RIO</span>
+            <div class="rio-modal-title-row">
+              <h2 id="rio-quiz-title">Quiz</h2>
+              <div class="rio-material-badges" data-rio-quiz-pattern-badge></div>
+            </div>
+          </div>
+          <button
+            class="rio-modal-close"
+            type="button"
+            aria-label="Close quiz"
+            data-rio-quiz-close
+          >
+            ×
+          </button>
+        </div>
+        <div class="rio-modal-body">
+          <div class="rio-quiz-stage" data-rio-quiz-stage>
+            <p class="rio-analysis-placeholder">Quiz will appear here.</p>
+          </div>
+        </div>
+      </section>
     </div>
   </section>
 
@@ -391,6 +438,27 @@ const itemsByType = sections.map((section) => ({
       overflow-wrap: anywhere;
     }
 
+    .rio-pattern-quiz-button {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      padding: 0;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      text-decoration: underline;
+      text-decoration-color: color-mix(in srgb, var(--accent) 36%, transparent);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 4px;
+    }
+
+    .rio-pattern-quiz-button:hover,
+    .rio-pattern-quiz-button:focus-visible {
+      color: var(--accent);
+      outline: none;
+    }
+
     .rio-add-button {
       width: 30px;
       height: 30px;
@@ -438,7 +506,12 @@ const itemsByType = sections.map((section) => ({
       display: none;
     }
 
-    .rio-modal {
+    .rio-quiz-modal[hidden] {
+      display: none;
+    }
+
+    .rio-modal,
+    .rio-quiz-modal {
       position: fixed;
       inset: 0;
       z-index: 50;
@@ -481,6 +554,18 @@ const itemsByType = sections.map((section) => ({
 
     .rio-modal.is-closing .rio-modal-card {
       animation: rio-modal-pop-out 180ms ease-in both;
+    }
+
+    .rio-quiz-modal.is-opening .rio-modal-backdrop {
+      animation: rio-modal-backdrop-in 180ms ease both;
+    }
+
+    .rio-quiz-modal.is-opening .rio-modal-card {
+      animation: rio-modal-pop-in 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .rio-quiz-card {
+      width: min(720px, 100%);
     }
 
     .rio-modal-card.is-celebrating {
@@ -857,6 +942,253 @@ const itemsByType = sections.map((section) => ({
       padding: 14px;
     }
 
+    .rio-quiz-stage {
+      display: grid;
+      gap: 18px;
+    }
+
+    :global(.rio-quiz-question) {
+      display: grid;
+      gap: 18px;
+    }
+
+    :global(.rio-quiz-loading-text) {
+      display: inline-flex;
+      min-height: 24px;
+      align-items: center;
+      color: var(--muted);
+      font-weight: 750;
+    }
+
+    :global(.rio-quiz-loading-panel) {
+      display: flex;
+      min-height: 74px;
+      align-items: center;
+    }
+
+    :global(.rio-quiz-loading-text::after) {
+      display: inline-block;
+      width: 1px;
+      height: 1.1em;
+      margin-left: 3px;
+      background: currentColor;
+      content: "";
+      animation: rio-caret 900ms steps(1) infinite;
+    }
+
+    :global(.rio-quiz-progress) {
+      display: inline-flex;
+      width: fit-content;
+      min-height: 28px;
+      align-items: center;
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+      padding: 0 10px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    :global(.rio-quiz-sentence) {
+      margin: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--surface-soft) 72%, var(--surface));
+      padding: 18px 20px;
+      color: var(--text);
+      font-size: 19px;
+      font-weight: 750;
+      line-height: 1.68;
+    }
+
+    :global(.rio-quiz-scene) {
+      margin: -6px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    :global(.rio-quiz-options) {
+      display: grid;
+      gap: 12px;
+      padding-top: 2px;
+    }
+
+    :global(.rio-quiz-option) {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 14px;
+      width: 100%;
+      min-height: 66px;
+      align-items: flex-start;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 14px 16px;
+      font: inherit;
+      line-height: 1.55;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    :global(.rio-quiz-option:hover),
+    :global(.rio-quiz-option:focus-visible) {
+      border-color: color-mix(in srgb, var(--accent) 70%, var(--line));
+      outline: none;
+    }
+
+    :global(.rio-quiz-option.is-correct) {
+      border-color: color-mix(in srgb, #22c55e 72%, var(--line));
+      background: color-mix(in srgb, #22c55e 10%, var(--surface));
+    }
+
+    :global(.rio-quiz-option.is-wrong) {
+      border-color: color-mix(in srgb, #e5484d 72%, var(--line));
+      background: color-mix(in srgb, #e5484d 10%, var(--surface));
+    }
+
+    :global(.rio-quiz-option-letter) {
+      display: inline-grid;
+      width: 32px;
+      height: 32px;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--surface-soft);
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    :global(.rio-quiz-feedback) {
+      min-height: 24px;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 750;
+      line-height: 1.55;
+    }
+
+    :global(.rio-quiz-complete) {
+      position: relative;
+      display: grid;
+      justify-items: center;
+      gap: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--surface-soft) 70%, var(--surface));
+      padding: 28px 22px;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    :global(.rio-quiz-complete-mark) {
+      display: inline-grid;
+      width: 48px;
+      height: 48px;
+      place-items: center;
+      border-radius: 50%;
+      background: color-mix(in srgb, #22c55e 14%, var(--surface));
+      color: #16a34a;
+      font-size: 24px;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    :global(.rio-quiz-complete-title) {
+      margin: 0;
+      color: var(--text);
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    :global(.rio-quiz-complete-copy) {
+      max-width: 420px;
+      margin: -6px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.65;
+    }
+
+    :global(.rio-quiz-complete-actions) {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      padding-top: 4px;
+    }
+
+    :global(.rio-quiz-complete-button) {
+      display: inline-flex;
+      min-height: 44px;
+      min-width: 132px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      padding: 0 18px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 850;
+      cursor: pointer;
+      transition:
+        opacity 160ms ease,
+        transform 160ms ease;
+    }
+
+    :global(.rio-quiz-complete-button.primary) {
+      border: 0;
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    :global(.rio-quiz-complete-button.secondary) {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    :global(.rio-quiz-complete-button:hover),
+    :global(.rio-quiz-complete-button:focus-visible) {
+      opacity: 0.86;
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    :global(.rio-quiz-retry-actions) {
+      display: flex;
+      justify-content: center;
+      padding-top: 2px;
+    }
+
+    :global(.rio-quiz-retry-button) {
+      display: inline-flex;
+      min-height: 42px;
+      min-width: 128px;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid color-mix(in srgb, var(--accent) 58%, var(--line));
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+      color: var(--accent);
+      padding: 0 18px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 850;
+      cursor: pointer;
+      transition:
+        background 160ms ease,
+        border-color 160ms ease,
+        transform 160ms ease;
+    }
+
+    :global(.rio-quiz-retry-button:hover),
+    :global(.rio-quiz-retry-button:focus-visible) {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+      outline: none;
+      transform: translateY(-1px);
+    }
+
     :global(.rio-analysis-card) {
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -958,6 +1290,11 @@ const itemsByType = sections.map((section) => ({
     const openButton = document.querySelector("[data-rio-modal-open]");
     const closeButtons = document.querySelectorAll("[data-rio-modal-close]");
     const addButtons = document.querySelectorAll("[data-rio-add-item]");
+    const quizPatternButtons = document.querySelectorAll("[data-rio-quiz-pattern]");
+    const quizModal = document.querySelector("[data-rio-quiz-modal]");
+    const quizCloseButtons = document.querySelectorAll("[data-rio-quiz-close]");
+    const quizStage = document.querySelector("[data-rio-quiz-stage]");
+    const quizPatternBadge = document.querySelector("[data-rio-quiz-pattern-badge]");
     const progressLabels = document.querySelectorAll("[data-rio-selection-progress]");
     const badgesBox = document.querySelector("[data-rio-material-badges]");
     const passageBox = document.querySelector("[data-rio-generated-passage]");
@@ -1004,6 +1341,22 @@ const itemsByType = sections.map((section) => ({
       analysis: null,
       isCheckingGrammar: false
     };
+    const quizState = {
+      pattern: null,
+      cards: [],
+      currentIndex: 0,
+      isLoading: false,
+      generationId: 0,
+      loadingMessageIndex: 0,
+      loadingCycleTimer: undefined,
+      loadingTypeTimer: undefined,
+      lastFocusedElement: null
+    };
+    const quizLoadingMessages = [
+      "正在生成 3 张 Quiz 卡片...",
+      "题目正在路上...",
+      "AI正在快速生成，请稍后..."
+    ];
 
     const getSelectedCount = () =>
       Object.values(selectedTargets).reduce((total, items) => total + items.length, 0);
@@ -1209,6 +1562,338 @@ const itemsByType = sections.map((section) => ({
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;");
+
+    const getQuizPatterns = () =>
+      Array.from(quizPatternButtons)
+        .filter((button) => button instanceof HTMLElement)
+        .map((button) => ({
+          id: Number(button.getAttribute("data-rio-pattern-id")),
+          text: button.getAttribute("data-rio-pattern-text") ?? "",
+          button
+        }))
+        .filter((item) => Number.isFinite(item.id) && item.text);
+
+    const shuffleQuizOptions = (options, correctLabel) => {
+      const labels = ["A", "B", "C", "D"];
+      const shuffled = [...options];
+
+      for (let index = shuffled.length - 1; index > 0; index -= 1) {
+        const target = Math.floor(Math.random() * (index + 1));
+        [shuffled[index], shuffled[target]] = [shuffled[target], shuffled[index]];
+      }
+
+      return shuffled.map((option, index) => ({
+        ...option,
+        displayLabel: labels[index] ?? option.label,
+        isCorrect: option.label === correctLabel
+      }));
+    };
+
+    const stopQuizLoadingMessages = () => {
+      window.clearTimeout(quizState.loadingCycleTimer);
+      window.clearTimeout(quizState.loadingTypeTimer);
+      quizState.loadingCycleTimer = undefined;
+      quizState.loadingTypeTimer = undefined;
+    };
+
+    const typeQuizLoadingMessage = (element, message, charIndex = 0) => {
+      if (!(element instanceof HTMLElement) || !quizState.isLoading) return;
+
+      element.textContent = message.slice(0, charIndex);
+
+      if (charIndex < message.length) {
+        quizState.loadingTypeTimer = window.setTimeout(() => {
+          typeQuizLoadingMessage(element, message, charIndex + 1);
+        }, 42);
+      }
+    };
+
+    const scheduleQuizLoadingMessage = () => {
+      if (!quizState.isLoading) return;
+
+      const element = quizStage?.querySelector("[data-rio-quiz-loading-text]");
+      if (!(element instanceof HTMLElement)) return;
+
+      window.clearTimeout(quizState.loadingTypeTimer);
+      const message =
+        quizLoadingMessages[quizState.loadingMessageIndex % quizLoadingMessages.length];
+      typeQuizLoadingMessage(element, message);
+      quizState.loadingMessageIndex += 1;
+      quizState.loadingCycleTimer = window.setTimeout(scheduleQuizLoadingMessage, 1600);
+    };
+
+    const renderQuizLoading = () => {
+      if (!(quizStage instanceof HTMLElement)) return;
+
+      stopQuizLoadingMessages();
+      quizState.loadingMessageIndex = 0;
+      quizStage.innerHTML =
+        '<p class="rio-analysis-placeholder rio-quiz-loading-panel"><span class="rio-quiz-loading-text" data-rio-quiz-loading-text></span></p>';
+      scheduleQuizLoadingMessage();
+    };
+
+    const renderQuizError = (message) => {
+      if (!(quizStage instanceof HTMLElement)) return;
+
+      stopQuizLoadingMessages();
+      quizStage.innerHTML = `<div class="rio-quiz-complete">
+        <p class="rio-analysis-placeholder">${escapeHtml(message)}</p>
+        <div class="rio-quiz-retry-actions">
+          <button class="rio-quiz-retry-button" type="button" data-rio-quiz-retry>重新生成</button>
+        </div>
+      </div>`;
+      quizStage.querySelector("[data-rio-quiz-retry]")?.addEventListener("click", () => {
+        if (quizState.pattern) {
+          generateQuiz(quizState.pattern);
+        }
+      });
+    };
+
+    const closeQuizModal = () => {
+      if (!(quizModal instanceof HTMLElement)) return;
+
+      stopQuizLoadingMessages();
+      quizModal.classList.remove("is-opening");
+      quizModal.hidden = true;
+      quizState.cards = [];
+      quizState.currentIndex = 0;
+      quizState.isLoading = false;
+      quizState.generationId += 1;
+      document.body.style.overflow = "";
+
+      if (quizState.lastFocusedElement instanceof HTMLElement) {
+        quizState.lastFocusedElement.focus();
+      }
+    };
+
+    const openQuizModal = (pattern) => {
+      if (!(quizModal instanceof HTMLElement)) return;
+
+      closeModal();
+      quizState.pattern = pattern;
+      quizState.lastFocusedElement = document.activeElement;
+      quizModal.hidden = false;
+      quizModal.classList.add("is-opening");
+      document.body.style.overflow = "hidden";
+      window.setTimeout(() => {
+        quizModal.classList.remove("is-opening");
+      }, 230);
+
+      if (quizPatternBadge instanceof HTMLElement) {
+        quizPatternBadge.innerHTML = `<span class="rio-material-badge sentence_pattern">${escapeHtml(
+          pattern.text
+        )}</span>`;
+      }
+
+      renderQuizLoading();
+      quizModal.querySelector("button")?.focus();
+      generateQuiz(pattern);
+    };
+
+    const getNextQuizPattern = () => {
+      if (!quizState.pattern) return null;
+
+      const patterns = getQuizPatterns();
+      const currentIndex = patterns.findIndex((item) => item.id === quizState.pattern.id);
+      if (!patterns.length || currentIndex < 0) return null;
+
+      return patterns[(currentIndex + 1) % patterns.length];
+    };
+
+    const startNextQuizPattern = () => {
+      const nextPattern = getNextQuizPattern();
+      if (!nextPattern) return;
+
+      quizState.pattern = nextPattern;
+      if (quizPatternBadge instanceof HTMLElement) {
+        quizPatternBadge.innerHTML = `<span class="rio-material-badge sentence_pattern">${escapeHtml(
+          nextPattern.text
+        )}</span>`;
+      }
+      renderQuizLoading();
+      generateQuiz(nextPattern);
+    };
+
+    const launchQuizCompleteConfetti = () => {
+      const completeBox = quizStage?.querySelector(".rio-quiz-complete");
+      if (!(completeBox instanceof HTMLElement)) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      const colors = ["#e5484d", "#f59e0b", "#22c55e", "#3b82f6", "#a855f7", "#14b8a6"];
+      const pieceCount = window.innerWidth < 680 ? 26 : 38;
+
+      for (let index = 0; index < pieceCount; index += 1) {
+        const piece = document.createElement("span");
+        const direction = (index / pieceCount) * Math.PI * 2;
+        const distance = 70 + Math.random() * 120;
+        const drift = (Math.random() - 0.5) * 70;
+
+        piece.className = "rio-confetti-piece";
+        piece.style.setProperty("--confetti-color", colors[index % colors.length]);
+        piece.style.setProperty("--confetti-width", `${5 + Math.random() * 5}px`);
+        piece.style.setProperty("--confetti-height", `${8 + Math.random() * 8}px`);
+        piece.style.setProperty("--confetti-origin-x", "50%");
+        piece.style.setProperty("--confetti-origin-y", "74px");
+        piece.style.setProperty("--confetti-x", `${Math.cos(direction) * distance + drift}px`);
+        piece.style.setProperty("--confetti-y", `${Math.sin(direction) * 58 + 96 + Math.random() * 64}px`);
+        piece.style.setProperty("--confetti-spin", `${Math.random() * 180}deg`);
+        piece.style.setProperty("--confetti-rotation", `${300 + Math.random() * 620}deg`);
+        piece.style.setProperty("--confetti-scale", String(0.66 + Math.random() * 0.48));
+        piece.style.setProperty("--confetti-delay", `${Math.random() * 80}ms`);
+        piece.style.setProperty("--confetti-duration", `${780 + Math.random() * 360}ms`);
+        completeBox.append(piece);
+      }
+
+      window.setTimeout(() => {
+        completeBox.querySelectorAll(".rio-confetti-piece").forEach((piece) => piece.remove());
+      }, 1400);
+    };
+
+    const renderQuizComplete = () => {
+      if (!(quizStage instanceof HTMLElement)) return;
+
+      stopQuizLoadingMessages();
+      const nextPattern = getNextQuizPattern();
+      quizStage.innerHTML = `<div class="rio-quiz-complete">
+        <span class="rio-quiz-progress">3/3</span>
+        <span class="rio-quiz-complete-mark">✓</span>
+        <h3 class="rio-quiz-complete-title">这一轮完成了</h3>
+        <p class="rio-quiz-complete-copy">换一个句型继续刷题，把结构识别变成更快的阅读反应。</p>
+        <div class="rio-quiz-complete-actions">
+          <button class="rio-quiz-complete-button secondary" type="button" data-rio-quiz-close-action>关闭</button>
+          ${
+            nextPattern
+              ? '<button class="rio-quiz-complete-button primary" type="button" data-rio-quiz-next-pattern>下一个句型</button>'
+              : ""
+          }
+        </div>
+      </div>`;
+
+      quizStage
+        .querySelector("[data-rio-quiz-close-action]")
+        ?.addEventListener("click", closeQuizModal);
+      quizStage
+        .querySelector("[data-rio-quiz-next-pattern]")
+        ?.addEventListener("click", startNextQuizPattern);
+      launchQuizCompleteConfetti();
+    };
+
+    const renderQuizCard = () => {
+      if (!(quizStage instanceof HTMLElement)) return;
+
+      stopQuizLoadingMessages();
+      const card = quizState.cards[quizState.currentIndex];
+      if (!card) {
+        renderQuizComplete();
+        return;
+      }
+
+      const options = shuffleQuizOptions(
+        Array.isArray(card.options) ? card.options : [],
+        card.correct_label
+      );
+      quizStage.innerHTML = `<article class="rio-quiz-question">
+        <span class="rio-quiz-progress">${quizState.currentIndex + 1}/3</span>
+        <p class="rio-quiz-scene">${escapeHtml(card.scene ?? "")}</p>
+        <p class="rio-quiz-sentence">${escapeHtml(card.english_sentence ?? "")}</p>
+        <div class="rio-quiz-options">
+          ${options
+            .map(
+              (option) => `<button
+                class="rio-quiz-option"
+                type="button"
+                data-rio-quiz-correct="${option.isCorrect ? "true" : "false"}"
+              >
+                <span class="rio-quiz-option-letter">${escapeHtml(option.displayLabel ?? "")}</span>
+                <span>${escapeHtml(option.text ?? "")}</span>
+              </button>`
+            )
+            .join("")}
+        </div>
+        <p class="rio-quiz-feedback" data-rio-quiz-feedback>选出最准确的中文翻译。</p>
+      </article>`;
+
+      quizStage.querySelectorAll("[data-rio-quiz-correct]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (!(button instanceof HTMLButtonElement)) return;
+
+          const feedback = quizStage.querySelector("[data-rio-quiz-feedback]");
+          const isCorrect = button.getAttribute("data-rio-quiz-correct") === "true";
+
+          if (isCorrect) {
+            button.classList.add("is-correct");
+            if (feedback instanceof HTMLElement) {
+              feedback.textContent = "对，结构和意思匹配。";
+            }
+            quizStage.querySelectorAll("[data-rio-quiz-correct]").forEach((optionButton) => {
+              if (optionButton instanceof HTMLButtonElement) {
+                optionButton.disabled = true;
+              }
+            });
+            window.setTimeout(() => {
+              quizState.currentIndex += 1;
+              renderQuizCard();
+            }, 560);
+            return;
+          }
+
+          button.classList.add("is-wrong");
+          if (feedback instanceof HTMLElement) {
+            feedback.textContent = "再看一眼句型的逻辑关系。";
+          }
+          window.setTimeout(() => {
+            button.classList.remove("is-wrong");
+          }, 520);
+        });
+      });
+    };
+
+    const generateQuiz = async (pattern) => {
+      const currentGeneration = quizState.generationId + 1;
+
+      quizState.generationId = currentGeneration;
+      quizState.isLoading = true;
+      quizState.cards = [];
+      quizState.currentIndex = 0;
+      renderQuizLoading();
+
+      try {
+        const response = await fetch("/api/rio/generate-quiz", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            pattern: {
+              id: pattern.id,
+              text: pattern.text
+            }
+          })
+        });
+        const data = await response.json().catch(() => ({}));
+
+        if (currentGeneration !== quizState.generationId) return;
+
+        if (!response.ok) {
+          throw new Error(data.error ?? "Quiz 生成失败，请稍后重试。");
+        }
+
+        quizState.cards = Array.isArray(data.cards) ? data.cards : [];
+        if (quizState.cards.length !== 3) {
+          throw new Error("AI 没有返回完整的 3 张 Quiz 卡片。");
+        }
+
+        renderQuizCard();
+      } catch (error) {
+        if (currentGeneration !== quizState.generationId) return;
+
+        renderQuizError(error instanceof Error ? error.message : "Quiz 生成失败，请稍后重试。");
+      } finally {
+        if (currentGeneration === quizState.generationId) {
+          quizState.isLoading = false;
+        }
+      }
+    };
 
     const renderBadges = (groups) => {
       if (!(badgesBox instanceof HTMLElement)) return;
@@ -1544,6 +2229,20 @@ const itemsByType = sections.map((section) => ({
 
     openButton?.addEventListener("click", openModal);
     closeButtons.forEach((button) => button.addEventListener("click", closeModal));
+    quizPatternButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        if (!(button instanceof HTMLElement)) return;
+
+        const pattern = {
+          id: Number(button.getAttribute("data-rio-pattern-id")),
+          text: button.getAttribute("data-rio-pattern-text") ?? ""
+        };
+
+        if (!Number.isFinite(pattern.id) || !pattern.text) return;
+        openQuizModal(pattern);
+      });
+    });
+    quizCloseButtons.forEach((button) => button.addEventListener("click", closeQuizModal));
     pageButtons.next?.addEventListener("click", () => {
       showPage(2);
       renderChallenges();
@@ -1578,7 +2277,14 @@ const itemsByType = sections.map((section) => ({
     updateSelectionUi();
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && modal instanceof HTMLElement && !modal.hidden) {
+      if (event.key !== "Escape") return;
+
+      if (quizModal instanceof HTMLElement && !quizModal.hidden) {
+        closeQuizModal();
+        return;
+      }
+
+      if (modal instanceof HTMLElement && !modal.hidden) {
         closeModal();
       }
     });
