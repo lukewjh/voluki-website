@@ -13,8 +13,10 @@ type QuizCard = {
   index: number;
   scene: string;
   english_sentence: string;
+  target_text?: string;
   options: QuizOption[];
   correct_label: string;
+  feedback?: string;
 };
 
 const scenes = [
@@ -98,8 +100,42 @@ const normalizeCard = (value: unknown, index: number, scene: string): QuizCard =
     scene: typeof candidate.scene === "string" ? candidate.scene.trim() || scene : scene,
     english_sentence:
       typeof candidate.english_sentence === "string" ? candidate.english_sentence.trim() : "",
+    target_text: typeof candidate.target_text === "string" ? candidate.target_text.trim() : undefined,
     options,
-    correct_label: correctLabel
+    correct_label: correctLabel,
+    feedback: typeof candidate.feedback === "string" ? candidate.feedback.trim() : undefined
+  };
+};
+
+const getMaterial = (body: Record<string, unknown>) => {
+  const materialCandidate =
+    body.material && typeof body.material === "object"
+      ? (body.material as Record<string, unknown>)
+      : null;
+
+  if (materialCandidate) {
+    const type = typeof materialCandidate.type === "string" ? materialCandidate.type.trim() : "";
+    const text = typeof materialCandidate.text === "string" ? materialCandidate.text.trim() : "";
+    const id = Number(materialCandidate.id);
+
+    return {
+      id: Number.isFinite(id) ? id : undefined,
+      type,
+      text
+    };
+  }
+
+  const patternCandidate =
+    body.pattern && typeof body.pattern === "object"
+      ? (body.pattern as Record<string, unknown>)
+      : {};
+  const text = typeof patternCandidate.text === "string" ? patternCandidate.text.trim() : "";
+  const id = Number(patternCandidate.id);
+
+  return {
+    id: Number.isFinite(id) ? id : undefined,
+    type: text ? "sentence_pattern" : "",
+    text
   };
 };
 
@@ -120,33 +156,146 @@ export const POST: APIRoute = async ({ request, locals }) => {
     return jsonResponse({ error: getErrorMessage(error) }, 400);
   }
 
-  const patternCandidate =
-    body.pattern && typeof body.pattern === "object"
-      ? (body.pattern as Record<string, unknown>)
-      : {};
-  const patternText =
-    typeof patternCandidate.text === "string" ? patternCandidate.text.trim() : "";
+  const material = getMaterial(body);
 
-  if (!patternText) {
-    return jsonResponse({ error: "Sentence pattern is required" }, 400);
+  if (!material.text) {
+    return jsonResponse({ error: "Quiz material is required" }, 400);
+  }
+
+  if (!["chunk", "sentence_pattern", "vocabulary", "adverb"].includes(material.type)) {
+    return jsonResponse({ error: "Unsupported Quiz material type" }, 400);
   }
 
   const selectedScenes = sample(scenes, 3);
-  let response: Response;
+  const isChunkQuiz = material.type === "chunk";
+  const isVocabularyQuiz = material.type === "vocabulary";
+  const isAdverbQuiz = material.type === "adverb";
+  let systemPrompt: string;
 
-  try {
-    response = await fetch(`${apiBaseUrl}/chat/completions`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model,
-        messages: [
-          {
-            role: "system",
-            content: `You are an expert IELTS reading trainer for Chinese learners.
+  if (isChunkQuiz) {
+    systemPrompt = `You are an expert IELTS collocation trainer for Chinese learners.
+
+Create chunk cloze quiz cards.
+
+Return only valid JSON. Do not return Markdown, code fences, headings, or extra explanation.
+
+JSON shape:
+{
+  "cards": [
+    {
+      "index": 1,
+      "scene": "Education",
+      "english_sentence": "A short English sentence with exactly one _____ blank.",
+      "options": [
+        { "label": "A", "text": "correct word or phrase" },
+        { "label": "B", "text": "wrong distractor" },
+        { "label": "C", "text": "wrong distractor" },
+        { "label": "D", "text": "wrong distractor" }
+      ],
+      "correct_label": "A",
+      "feedback": "A brief Chinese explanation of why the correct collocation is natural."
+    }
+  ]
+}
+
+Rules:
+- Create exactly 3 cards.
+- Use the provided scenes in order, one scene per card.
+- Each question must be one natural English sentence containing exactly one blank written as _____.
+- Each sentence must be 10-18 words.
+- The blank should remove the core word or phrase of the target chunk, especially a preposition, core verb, noun, or collocation component.
+- The correct option must be the removed word or phrase.
+- Each card must have exactly 4 English options: A, B, C, D.
+- Exactly one option must be correct.
+- The other three options must be plausible but wrong, especially common Chinese-English errors, wrong prepositions, unnatural verbs, wrong fixed collocations, or grammar mistakes.
+- Keep each sentence suitable for IELTS writing or academic discussion.
+- Keep feedback in Chinese and under 28 Chinese characters.
+- Keep all explanations out of the JSON except the feedback field.`;
+  } else if (isVocabularyQuiz) {
+    systemPrompt = `You are an expert IELTS vocabulary and reading trainer for Chinese learners.
+
+Create vocabulary contextual-paraphrase quiz cards.
+
+Return only valid JSON. Do not return Markdown, code fences, headings, or extra explanation.
+
+JSON shape:
+{
+  "cards": [
+    {
+      "index": 1,
+      "scene": "Education",
+      "english_sentence": "One natural English sentence that includes the target vocabulary exactly once.",
+      "target_text": "exact target vocabulary from the sentence",
+      "options": [
+        { "label": "A", "text": "precise synonym" },
+        { "label": "B", "text": "look-alike trap" },
+        { "label": "C", "text": "wrong-sense trap" },
+        { "label": "D", "text": "unrelated trap" }
+      ],
+      "correct_label": "A",
+      "feedback": "A brief Chinese explanation of the contextual meaning."
+    }
+  ]
+}
+
+Rules:
+- Create exactly 3 cards.
+- Use the provided scenes in order, one scene per card.
+- Each card must contain one natural English sentence.
+- The sentence must include the target vocabulary exactly once.
+- The target vocabulary must be used in a meaningful IELTS-style context.
+- The question is: which option can best replace the target vocabulary in this context?
+- The correct option must be the most precise synonym or paraphrase in the current context.
+- Each option must be a very short English word or phrase, usually one word.
+- Distractor A should be a spelling/look-alike confusion when possible, such as complement vs compliment.
+- Distractor B should reflect a different common meaning, wrong part of speech, or familiar-word trap.
+- Distractor C should be an antonym, unrelated advanced word, or context-related but semantically wrong word.
+- Avoid options that are obviously silly.
+- Return target_text as the exact word or phrase in the sentence that should be highlighted.
+- Keep feedback in Chinese and explain the contextual meaning in under 28 Chinese characters.
+- Keep all explanations out of the JSON except the feedback field.`;
+  } else if (isAdverbQuiz) {
+    systemPrompt = `You are an expert IELTS discourse and tone trainer for Chinese learners.
+
+Create adverb contextual-fit quiz cards.
+
+Return only valid JSON. Do not return Markdown, code fences, headings, or extra explanation.
+
+JSON shape:
+{
+  "cards": [
+    {
+      "index": 1,
+      "scene": "Education",
+      "english_sentence": "The first short sentence gives context. _____, the second short sentence completes the logic.",
+      "options": [
+        { "label": "A", "text": "TargetAdverb 中文意思" },
+        { "label": "B", "text": "AdvancedDistractor 中文意思" },
+        { "label": "C", "text": "AdvancedDistractor 中文意思" },
+        { "label": "D", "text": "AdvancedDistractor 中文意思" }
+      ],
+      "correct_label": "A",
+      "feedback": "A brief Chinese explanation of the context relationship."
+    }
+  ]
+}
+
+Rules:
+- Create exactly 3 cards.
+- Use the provided scenes in order, one scene per card.
+- Each card must contain exactly two short English sentences.
+- The two sentences must have a clear causal, contrastive, concessive, evaluative, emotional, or attitude-based relationship.
+- The blank must appear in the second sentence at the adverb position and be written exactly as _____.
+- The correct option must be the target adverb itself with Chinese meaning, for example "However 然而".
+- Each card must have exactly 4 options: A, B, C, D.
+- Exactly one option must be correct.
+- The other three options must be advanced adverbs of similar difficulty, but logically unsuitable in the current context.
+- Avoid distractors that are obviously lower-level, grammatically impossible, or too easy to eliminate.
+- Keep each context suitable for IELTS writing or academic discussion.
+- Keep feedback in Chinese and under 28 Chinese characters.
+- Keep all explanations out of the JSON except the feedback field.`;
+  } else {
+    systemPrompt = `You are an expert IELTS reading trainer for Chinese learners.
 
 Create sentence-pattern recognition quiz cards.
 
@@ -157,13 +306,13 @@ JSON shape:
   "cards": [
     {
       "index": 1,
-      "scene": "教育",
+      "scene": "Education",
       "english_sentence": "One long and complex English sentence that clearly uses the target sentence pattern.",
       "options": [
-        { "label": "A", "text": "中文翻译选项" },
-        { "label": "B", "text": "中文翻译选项" },
-        { "label": "C", "text": "中文翻译选项" },
-        { "label": "D", "text": "中文翻译选项" }
+        { "label": "A", "text": "Chinese translation option" },
+        { "label": "B", "text": "Chinese translation option" },
+        { "label": "C", "text": "Chinese translation option" },
+        { "label": "D", "text": "Chinese translation option" }
       ],
       "correct_label": "A"
     }
@@ -178,17 +327,42 @@ Rules:
 - Each card must have exactly 4 Chinese translation options: A, B, C, D.
 - Exactly one option must be the accurate translation.
 - The other three options must be plausible but wrong. Make them wrong through common reading mistakes: reversed subject/object, wrong logical relation, wrong scope of modifier, missed negation, missed emphasis, or confused concession/cause/contrast.
-- Keep all explanations out of the JSON.`
-          },
-          {
-            role: "user",
-            content: `Target sentence pattern:
-${patternText}
+- Keep all explanations out of the JSON.`;
+  }
+
+  const materialLabel = isChunkQuiz
+    ? "Target chunk"
+    : isVocabularyQuiz
+      ? "Target vocabulary"
+    : isAdverbQuiz
+      ? "Target adverb"
+      : "Target sentence pattern";
+  const userPrompt = `${materialLabel}:
+${material.text}
 
 Scenes:
 1. ${selectedScenes[0]}
 2. ${selectedScenes[1]}
-3. ${selectedScenes[2]}`
+3. ${selectedScenes[2]}`;
+  let response: Response;
+
+  try {
+    response = await fetch(`${apiBaseUrl}/chat/completions`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model,
+        messages: [
+          {
+            role: "system",
+            content: systemPrompt
+          },
+          {
+            role: "user",
+            content: userPrompt
           }
         ],
         response_format: { type: "json_object" },
@@ -231,6 +405,10 @@ Scenes:
     const isValid = cards.every(
       (card) =>
         card.english_sentence &&
+        (!(isChunkQuiz || isAdverbQuiz) || card.english_sentence.includes("_____")) &&
+        (!isVocabularyQuiz ||
+          (card.target_text &&
+            card.english_sentence.toLocaleLowerCase().includes(card.target_text.toLocaleLowerCase()))) &&
         card.options.length === 4 &&
         card.options.every((option) => option.label && option.text) &&
         ["A", "B", "C", "D"].includes(card.correct_label)
@@ -241,7 +419,8 @@ Scenes:
     }
 
     return jsonResponse({
-      pattern: patternText,
+      material,
+      pattern: material.type === "sentence_pattern" ? material.text : undefined,
       cards
     });
   } catch {
