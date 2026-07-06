@@ -15,6 +15,8 @@ type QuizCard = {
   question_type?: string;
   english_sentence: string;
   target_text?: string;
+  chunks?: string[];
+  answer_chunks?: string[];
   options: QuizOption[];
   correct_label: string;
   hint?: string;
@@ -105,6 +107,12 @@ const normalizeCard = (value: unknown, index: number, scene: string): QuizCard =
     english_sentence:
       typeof candidate.english_sentence === "string" ? candidate.english_sentence.trim() : "",
     target_text: typeof candidate.target_text === "string" ? candidate.target_text.trim() : undefined,
+    chunks: Array.isArray(candidate.chunks)
+      ? candidate.chunks.filter((item): item is string => typeof item === "string" && item.trim())
+      : undefined,
+    answer_chunks: Array.isArray(candidate.answer_chunks)
+      ? candidate.answer_chunks.filter((item): item is string => typeof item === "string" && item.trim())
+      : undefined,
     options,
     correct_label: correctLabel,
     hint: typeof candidate.hint === "string" ? candidate.hint.trim() : undefined,
@@ -171,7 +179,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
     return jsonResponse({ error: "Unsupported Quiz material type" }, 400);
   }
 
-  const selectedScenes = sample(scenes, 3);
+  const expectedCardCount = material.type === "chunk" ? 5 : 3;
+  const selectedScenes = sample(scenes, expectedCardCount);
   const isChunkQuiz = material.type === "chunk";
   const isVocabularyQuiz = material.type === "vocabulary";
   const isAdverbQuiz = material.type === "adverb";
@@ -180,7 +189,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   if (isChunkQuiz) {
     systemPrompt = `You are an expert IELTS collocation trainer for Chinese learners.
 
-Create chunk cloze quiz cards.
+Create Chunk Mastery Quiz cards.
 
 Return only valid JSON. Do not return Markdown, code fences, headings, or extra explanation.
 
@@ -190,31 +199,65 @@ JSON shape:
     {
       "index": 1,
       "scene": "Education",
-      "english_sentence": "A short English sentence with exactly one _____ blank.",
+      "question_type": "Chinese Intent Match",
+      "english_sentence": "下面哪个中文表达最适合用 TARGET_CHUNK？",
       "options": [
-        { "label": "A", "text": "correct word or phrase" },
-        { "label": "B", "text": "wrong distractor" },
-        { "label": "C", "text": "wrong distractor" },
-        { "label": "D", "text": "wrong distractor" }
+        { "label": "A", "text": "中文表达" },
+        { "label": "B", "text": "中文表达" },
+        { "label": "C", "text": "中文表达" },
+        { "label": "D", "text": "中文表达" }
       ],
       "correct_label": "A",
-      "feedback": "A brief Chinese explanation of why the correct collocation is natural."
+      "feedback": "A brief Chinese explanation."
+    },
+    {
+      "index": 2,
+      "scene": "Education",
+      "question_type": "Sentence Builder",
+      "english_sentence": "请把下面的词块拼成一个自然句子。",
+      "chunks": ["students", "should", "TARGET_CHUNK", "online resources"],
+      "answer_chunks": ["students", "should", "TARGET_CHUNK", "online resources"],
+      "options": [],
+      "correct_label": "A",
+      "feedback": "A brief Chinese explanation."
     }
   ]
 }
 
 Rules:
-- Create exactly 3 cards.
-- Use the provided scenes in order, one scene per card.
-- Each question must be one natural English sentence containing exactly one blank written as _____.
-- Each sentence must be 10-18 words.
-- The blank should remove the core word or phrase of the target chunk, especially a preposition, core verb, noun, or collocation component.
-- The correct option must be the removed word or phrase.
-- Each card must have exactly 4 English options: A, B, C, D.
-- Exactly one option must be correct.
-- The other three options must be plausible but wrong, especially common Chinese-English errors, wrong prepositions, unnatural verbs, wrong fixed collocations, or grammar mistakes.
-- Keep each sentence suitable for IELTS writing or academic discussion.
-- Keep feedback in Chinese and under 28 Chinese characters.
+- Create exactly 5 cards, in this exact order.
+- Use the same target chunk in every card.
+- Use the provided scenes where useful, but prioritize natural IELTS-style examples.
+- Card 1 must be question_type "Chinese Intent Match".
+  - It asks: "下面哪个中文表达最适合用 TARGET_CHUNK？" replacing TARGET_CHUNK with the actual chunk.
+  - Options must be 4 short Chinese meanings or communicative intents.
+  - The correct option should express the chunk's most useful Chinese intent.
+- Card 2 must be question_type "Sentence Builder".
+  - It asks: "请把下面的词块拼成一个自然句子。"
+  - Return chunks as a shuffled array of 6-9 word groups.
+  - Return answer_chunks as the correct ordered array.
+  - The answer must form one natural IELTS-style sentence using the target chunk.
+  - options can be an empty array for this card.
+  - correct_label can be "A" for this card.
+- Card 3 must be question_type "Expression Upgrade".
+  - It asks: "哪个改写更适合雅思写作？"
+  - Include a simple original sentence in english_sentence, prefixed with "原句：".
+  - Options must be 4 full English rewrites.
+  - The correct option upgrades a plain expression by using the target chunk naturally.
+  - Wrong options should misuse other chunks or create unnatural collocations.
+- Card 4 must be question_type "Error Detection".
+  - It asks which sentence uses the target chunk unnaturally.
+  - Options must be 4 full English sentences using the target chunk.
+  - Exactly one option must be unnatural because the object is not a resource, opportunity, cause, responsibility, access target, or semantic fit for the chunk.
+  - feedback must briefly explain why the wrong usage is unnatural and suggest a more natural alternative.
+- Card 5 must be question_type "Quick Reaction".
+  - It asks for the most natural English expression for one short Chinese phrase.
+  - Options must be 4 short English phrases.
+  - The correct option must use the target chunk.
+  - Wrong options should be quick-to-scan but clearly wrong collocations.
+- Cards 1, 3, 4, and 5 must have exactly 4 options: A, B, C, D.
+- Exactly one option must be correct on every multiple-choice card.
+- Keep feedback in Chinese and under 45 Chinese characters.
 - Keep all explanations out of the JSON except the feedback field.`;
   } else if (isVocabularyQuiz) {
     systemPrompt = `You are an expert IELTS vocabulary and reading trainer for Chinese learners.
@@ -363,9 +406,7 @@ Rules:
 ${material.text}
 
 Scenes:
-1. ${selectedScenes[0]}
-2. ${selectedScenes[1]}
-3. ${selectedScenes[2]}`;
+${selectedScenes.map((scene, index) => `${index + 1}. ${scene}`).join("\n")}`;
   let response: Response;
 
   try {
@@ -427,13 +468,22 @@ Scenes:
     const isValid = cards.every(
       (card) =>
         card.english_sentence &&
-        (!isChunkQuiz || card.english_sentence.includes("_____")) &&
+        (!isChunkQuiz ||
+          card.question_type === "Sentence Builder" ||
+          (card.options.length === 4 && ["A", "B", "C", "D"].includes(card.correct_label))) &&
+        (!isChunkQuiz ||
+          card.question_type !== "Sentence Builder" ||
+          (Array.isArray(card.chunks) &&
+            Array.isArray(card.answer_chunks) &&
+            card.chunks.length >= 4 &&
+            card.chunks.length === card.answer_chunks.length)) &&
         (!isVocabularyQuiz ||
           (card.target_text &&
             card.english_sentence.toLocaleLowerCase().includes(card.target_text.toLocaleLowerCase()))) &&
-        card.options.length === 4 &&
-        card.options.every((option) => option.label && option.text) &&
-        ["A", "B", "C", "D"].includes(card.correct_label)
+        (card.question_type === "Sentence Builder" ||
+          (card.options.length === 4 &&
+            card.options.every((option) => option.label && option.text) &&
+            ["A", "B", "C", "D"].includes(card.correct_label)))
     );
 
     if (!isValid) {

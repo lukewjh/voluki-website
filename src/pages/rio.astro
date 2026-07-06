@@ -1023,6 +1023,76 @@ const itemsByType = sections.map((section) => ({
       padding-top: 2px;
     }
 
+    :global(.rio-quiz-builder) {
+      display: grid;
+      gap: 14px;
+    }
+
+    :global(.rio-quiz-builder-pool),
+    :global(.rio-quiz-builder-answer) {
+      display: flex;
+      min-height: 58px;
+      flex-wrap: wrap;
+      gap: 10px;
+      border: 1px dashed color-mix(in srgb, var(--line) 78%, transparent);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--surface-soft) 58%, var(--surface));
+      padding: 12px;
+    }
+
+    :global(.rio-quiz-builder-answer) {
+      border-style: solid;
+      background: var(--surface);
+    }
+
+    :global(.rio-quiz-builder-chip) {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 9px 12px;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 750;
+      line-height: 1.2;
+      cursor: pointer;
+    }
+
+    :global(.rio-quiz-builder-chip:hover),
+    :global(.rio-quiz-builder-chip:focus-visible) {
+      border-color: color-mix(in srgb, var(--accent) 70%, var(--line));
+      outline: none;
+    }
+
+    :global(.rio-quiz-builder-chip:disabled) {
+      opacity: 0.42;
+      cursor: default;
+    }
+
+    :global(.rio-quiz-builder-actions) {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    :global(.rio-quiz-builder-action) {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 10px 14px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    :global(.rio-quiz-builder-action.primary) {
+      border-color: var(--text);
+      background: var(--text);
+      color: var(--surface);
+    }
+
     :global(.rio-quiz-option) {
       display: grid;
       grid-template-columns: 34px 1fr;
@@ -1074,6 +1144,38 @@ const itemsByType = sections.map((section) => ({
       font-size: 15px;
       font-weight: 750;
       line-height: 1.55;
+    }
+
+    :global(.rio-quiz-nav) {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+    }
+
+    :global(.rio-quiz-nav-button) {
+      min-width: 96px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 10px 14px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    :global(.rio-quiz-nav-button.primary) {
+      border-color: var(--text);
+      background: var(--text);
+      color: var(--surface);
+    }
+
+    :global(.rio-quiz-nav-button:disabled) {
+      opacity: 0.42;
+      cursor: default;
     }
 
     :global(.rio-quiz-complete) {
@@ -1353,6 +1455,7 @@ const itemsByType = sections.map((section) => ({
     const quizState = {
       material: null,
       cards: [],
+      answers: [],
       currentIndex: 0,
       isLoading: false,
       generationId: 0,
@@ -1362,7 +1465,7 @@ const itemsByType = sections.map((section) => ({
       lastFocusedElement: null
     };
     const quizLoadingMessages = [
-      "正在生成 3 张 Quiz 卡片...",
+      "正在生成 Quiz 卡片...",
       "题目正在路上...",
       "AI正在快速生成，请稍后..."
     ];
@@ -1611,6 +1714,14 @@ const itemsByType = sections.map((section) => ({
           ? "下一个副词"
           : "下一个句型";
 
+    const getQuizExpectedCount = (material) => (material?.type === "chunk" ? 5 : 3);
+
+    const normalizeBuilderChunk = (value) =>
+      String(value ?? "")
+        .trim()
+        .toLocaleLowerCase()
+        .replace(/\s+/g, " ");
+
     const renderQuizSentence = (card) => {
       const sentence = String(card?.english_sentence ?? "");
       const targetText = String(card?.target_text ?? "").trim();
@@ -1626,6 +1737,62 @@ const itemsByType = sections.map((section) => ({
       return `${escapeHtml(before)}<mark class="rio-quiz-target-word">${escapeHtml(
         matched
       )}</mark>${escapeHtml(after)}`;
+    };
+
+    const renderBuilderAnswer = (answerBox, selectedChunks) => {
+      if (!(answerBox instanceof HTMLElement)) return;
+      answerBox.innerHTML = selectedChunks.length
+        ? selectedChunks
+            .map(
+              (item, index) =>
+                `<button class="rio-quiz-builder-chip" type="button" data-rio-builder-remove="${index}">${escapeHtml(
+                  item.text
+                )}</button>`
+            )
+            .join("")
+        : '<span class="rio-analysis-placeholder">点击上方词块排序</span>';
+    };
+
+    const isQuizCardAnswered = (index) => typeof quizState.answers[index]?.isCorrect === "boolean";
+
+    const areAllQuizCardsAnswered = () =>
+      quizState.cards.length > 0 &&
+      quizState.cards.every((_, index) => isQuizCardAnswered(index));
+
+    const renderQuizNav = () => {
+      const expectedCount = getQuizExpectedCount(quizState.material);
+      const isLast = quizState.currentIndex >= expectedCount - 1;
+      const canFinish = areAllQuizCardsAnswered();
+
+      return `<div class="rio-quiz-nav">
+        <button class="rio-quiz-nav-button" type="button" data-rio-quiz-prev-card ${
+          quizState.currentIndex <= 0 ? "disabled" : ""
+        }>上一题</button>
+        <button class="rio-quiz-nav-button primary" type="button" data-rio-quiz-next-card ${
+          isLast && !canFinish ? "disabled" : ""
+        }>${isLast ? "完成" : "下一题"}</button>
+      </div>`;
+    };
+
+    const bindQuizNav = () => {
+      quizStage?.querySelector("[data-rio-quiz-prev-card]")?.addEventListener("click", () => {
+        if (quizState.currentIndex <= 0) return;
+        quizState.currentIndex -= 1;
+        renderQuizCard();
+      });
+
+      quizStage?.querySelector("[data-rio-quiz-next-card]")?.addEventListener("click", () => {
+        const expectedCount = getQuizExpectedCount(quizState.material);
+        const isLast = quizState.currentIndex >= expectedCount - 1;
+
+        if (isLast) {
+          if (areAllQuizCardsAnswered()) renderQuizComplete();
+          return;
+        }
+
+        quizState.currentIndex += 1;
+        renderQuizCard();
+      });
     };
 
     const shuffleQuizOptions = (options, correctLabel) => {
@@ -1712,6 +1879,7 @@ const itemsByType = sections.map((section) => ({
       quizModal.hidden = true;
       quizState.material = null;
       quizState.cards = [];
+      quizState.answers = [];
       quizState.currentIndex = 0;
       quizState.isLoading = false;
       quizState.generationId += 1;
@@ -1818,8 +1986,9 @@ const itemsByType = sections.map((section) => ({
 
       stopQuizLoadingMessages();
       const nextMaterial = getNextQuizMaterial();
+      const expectedCount = getQuizExpectedCount(quizState.material);
       quizStage.innerHTML = `<div class="rio-quiz-complete">
-        <span class="rio-quiz-progress">3/3</span>
+        <span class="rio-quiz-progress">${expectedCount}/${expectedCount}</span>
         <span class="rio-quiz-complete-mark">✓</span>
         <h3 class="rio-quiz-complete-title">这一轮完成了</h3>
         <p class="rio-quiz-complete-copy">${escapeHtml(getQuizCompleteCopy(quizState.material))}</p>
@@ -1854,32 +2023,182 @@ const itemsByType = sections.map((section) => ({
         return;
       }
 
-      const options = shuffleQuizOptions(
-        Array.isArray(card.options) ? card.options : [],
-        card.correct_label
-      );
+      const expectedCount = getQuizExpectedCount(quizState.material);
       const sceneLabel = [card.question_type, card.scene].filter(Boolean).join(" · ");
+
+      if (card.question_type === "Sentence Builder") {
+        const chunks = Array.isArray(card.chunks) ? card.chunks : [];
+        const answerChunks = Array.isArray(card.answer_chunks) ? card.answer_chunks : [];
+        const answerState = quizState.answers[quizState.currentIndex] ?? {};
+        const selectedChunks = Array.isArray(answerState.builderSelected)
+          ? answerState.builderSelected
+              .map((index) => ({ index, text: chunks[index] }))
+              .filter((item) => typeof item.text === "string")
+          : [];
+        quizStage.innerHTML = `<article class="rio-quiz-question">
+          <span class="rio-quiz-progress">${quizState.currentIndex + 1}/${expectedCount}</span>
+          <p class="rio-quiz-scene">${escapeHtml(sceneLabel)}</p>
+          <p class="rio-quiz-sentence">${escapeHtml(card.english_sentence ?? "")}</p>
+          <div class="rio-quiz-builder">
+            <div class="rio-quiz-builder-pool">
+              ${chunks
+                .map(
+                  (chunk, index) =>
+                    `<button class="rio-quiz-builder-chip" type="button" data-rio-builder-pick="${index}">${escapeHtml(
+                      chunk
+                    )}</button>`
+                )
+                .join("")}
+            </div>
+            <div class="rio-quiz-builder-answer" data-rio-builder-answer>
+              <span class="rio-analysis-placeholder">点击上方词块排序</span>
+            </div>
+            <div class="rio-quiz-builder-actions">
+              <button class="rio-quiz-builder-action" type="button" data-rio-builder-reset>重排</button>
+              <button class="rio-quiz-builder-action primary" type="button" data-rio-builder-check>检查</button>
+            </div>
+          </div>
+          <p class="rio-quiz-feedback" data-rio-quiz-feedback>${escapeHtml(
+            answerState.feedbackText ?? "按自然英文语序拼出完整句子。"
+          )}</p>
+          ${renderQuizNav()}
+        </article>`;
+
+        const answerBox = quizStage.querySelector("[data-rio-builder-answer]");
+        const feedback = quizStage.querySelector("[data-rio-quiz-feedback]");
+        const renderBuilder = () => {
+          renderBuilderAnswer(answerBox, selectedChunks);
+          quizStage.querySelectorAll("[data-rio-builder-pick]").forEach((button) => {
+            if (button instanceof HTMLButtonElement) {
+              const index = Number(button.getAttribute("data-rio-builder-pick"));
+              button.disabled = selectedChunks.some((item) => item.index === index);
+              if (answerState.isCorrect) button.disabled = true;
+            }
+          });
+          answerBox?.querySelectorAll("[data-rio-builder-remove]").forEach((button) => {
+            button.addEventListener("click", () => {
+              const index = Number(button.getAttribute("data-rio-builder-remove"));
+              if (!Number.isFinite(index)) return;
+              selectedChunks.splice(index, 1);
+              renderBuilder();
+            });
+          });
+        };
+
+        quizStage.querySelectorAll("[data-rio-builder-pick]").forEach((button) => {
+          button.addEventListener("click", () => {
+            if (!(button instanceof HTMLButtonElement)) return;
+            const index = Number(button.getAttribute("data-rio-builder-pick"));
+          const text = chunks[index];
+            if (answerState.isCorrect) return;
+            if (!Number.isFinite(index) || typeof text !== "string") return;
+            selectedChunks.push({ index, text });
+            quizState.answers[quizState.currentIndex] = {
+              ...quizState.answers[quizState.currentIndex],
+              builderSelected: selectedChunks.map((item) => item.index),
+              isCorrect: false
+            };
+            renderBuilder();
+          });
+        });
+
+        quizStage.querySelector("[data-rio-builder-reset]")?.addEventListener("click", () => {
+          if (answerState.isCorrect) return;
+          selectedChunks.splice(0, selectedChunks.length);
+          quizState.answers[quizState.currentIndex] = {
+            ...quizState.answers[quizState.currentIndex],
+            builderSelected: [],
+            isCorrect: false,
+            feedbackText: "按自然英文语序拼出完整句子。"
+          };
+          if (feedback instanceof HTMLElement) {
+            feedback.textContent = "按自然英文语序拼出完整句子。";
+          }
+          renderBuilder();
+        });
+
+        quizStage.querySelector("[data-rio-builder-check]")?.addEventListener("click", () => {
+          const selected = selectedChunks.map((item) => normalizeBuilderChunk(item.text));
+          const expected = answerChunks.map(normalizeBuilderChunk);
+          const isCorrect =
+            selected.length === expected.length &&
+            selected.every((item, index) => item === expected[index]);
+
+          if (feedback instanceof HTMLElement) {
+            feedback.textContent = isCorrect
+              ? card.feedback ?? "对，句子顺序自然。"
+              : card.hint ?? "再看主语、谓语、宾语和目的状语的顺序。";
+          }
+
+          quizState.answers[quizState.currentIndex] = {
+            ...quizState.answers[quizState.currentIndex],
+            builderSelected: selectedChunks.map((item) => item.index),
+            isCorrect,
+            feedbackText: isCorrect
+              ? card.feedback ?? "对，句子顺序自然。"
+              : card.hint ?? "再看主语、谓语、宾语和目的状语的顺序。"
+          };
+
+          if (!isCorrect) return;
+
+          quizStage
+            .querySelectorAll("[data-rio-builder-pick], [data-rio-builder-remove], [data-rio-builder-check], [data-rio-builder-reset]")
+            .forEach((button) => {
+              if (button instanceof HTMLButtonElement) button.disabled = true;
+            });
+          renderQuizCard();
+        });
+
+        renderBuilder();
+        if (answerState.isCorrect) {
+          quizStage
+            .querySelectorAll("[data-rio-builder-pick], [data-rio-builder-remove], [data-rio-builder-check], [data-rio-builder-reset]")
+            .forEach((button) => {
+              if (button instanceof HTMLButtonElement) button.disabled = true;
+            });
+        }
+        bindQuizNav();
+        return;
+      }
+
+      if (!Array.isArray(card.displayOptions)) {
+        card.displayOptions = shuffleQuizOptions(
+          Array.isArray(card.options) ? card.options : [],
+          card.correct_label
+        );
+      }
+      const options = card.displayOptions;
+      const answerState = quizState.answers[quizState.currentIndex] ?? {};
       quizStage.innerHTML = `<article class="rio-quiz-question">
-        <span class="rio-quiz-progress">${quizState.currentIndex + 1}/3</span>
+        <span class="rio-quiz-progress">${quizState.currentIndex + 1}/${expectedCount}</span>
         <p class="rio-quiz-scene">${escapeHtml(sceneLabel)}</p>
         <p class="rio-quiz-sentence">${renderQuizSentence(card)}</p>
         <div class="rio-quiz-options">
           ${options
             .map(
-              (option) => `<button
-                class="rio-quiz-option"
+              (option) => {
+                const isSelected = answerState.selectedLabel === option.label;
+                const shouldShowCorrect = answerState.isCorrect && option.isCorrect;
+                const shouldShowWrong = isSelected && answerState.isCorrect === false;
+
+                return `<button
+                class="rio-quiz-option${shouldShowCorrect ? " is-correct" : ""}${shouldShowWrong ? " is-wrong" : ""}"
                 type="button"
+                data-rio-quiz-label="${escapeHtml(option.label ?? "")}"
                 data-rio-quiz-correct="${option.isCorrect ? "true" : "false"}"
+                ${answerState.isCorrect ? "disabled" : ""}
               >
                 <span class="rio-quiz-option-letter">${escapeHtml(option.displayLabel ?? "")}</span>
                 <span>${escapeHtml(option.text ?? "")}</span>
-              </button>`
+              </button>`;
+              }
             )
             .join("")}
         </div>
         <p class="rio-quiz-feedback" data-rio-quiz-feedback>${escapeHtml(
-          getQuizInstruction(quizState.material)
+          answerState.feedbackText ?? getQuizInstruction(quizState.material)
         )}</p>
+        ${renderQuizNav()}
       </article>`;
 
       quizStage.querySelectorAll("[data-rio-quiz-correct]").forEach((button) => {
@@ -1888,49 +2207,60 @@ const itemsByType = sections.map((section) => ({
 
           const feedback = quizStage.querySelector("[data-rio-quiz-feedback]");
           const isCorrect = button.getAttribute("data-rio-quiz-correct") === "true";
+          const selectedLabel = button.getAttribute("data-rio-quiz-label") ?? "";
 
           if (isCorrect) {
             button.classList.add("is-correct");
-            if (feedback instanceof HTMLElement) {
-              feedback.textContent =
-                card.feedback ??
-                (quizState.material?.type === "chunk"
-                  ? "对，这个搭配更自然。"
-                  : quizState.material?.type === "vocabulary"
-                    ? "对，这个词能无缝替换原词。"
+            const feedbackText =
+              card.feedback ??
+              (quizState.material?.type === "chunk"
+                ? "对，这个搭配更自然。"
+                : quizState.material?.type === "vocabulary"
+                  ? "对，这个词能无缝替换原词。"
                   : quizState.material?.type === "adverb"
                     ? "对，这个副词符合上下文语气。"
                     : "对，结构和意思匹配。");
+            if (feedback instanceof HTMLElement) {
+              feedback.textContent = feedbackText;
             }
+            quizState.answers[quizState.currentIndex] = {
+              selectedLabel,
+              isCorrect: true,
+              feedbackText
+            };
             quizStage.querySelectorAll("[data-rio-quiz-correct]").forEach((optionButton) => {
               if (optionButton instanceof HTMLButtonElement) {
                 optionButton.disabled = true;
               }
             });
-            window.setTimeout(() => {
-              quizState.currentIndex += 1;
-              renderQuizCard();
-            }, 560);
+            renderQuizCard();
             return;
           }
 
           button.classList.add("is-wrong");
+          const feedbackText =
+            card.hint ??
+            (quizState.material?.type === "chunk"
+              ? "再看一眼这个语块的固定搭配。"
+              : quizState.material?.type === "vocabulary"
+                ? "别只看词形，回到句子语境。"
+                : quizState.material?.type === "adverb"
+                  ? "再看副词位置、强度或适用场景。"
+                  : "再看一眼句型的逻辑关系。");
           if (feedback instanceof HTMLElement) {
-            feedback.textContent =
-              card.hint ??
-              (quizState.material?.type === "chunk"
-                ? "再看一眼这个语块的固定搭配。"
-                : quizState.material?.type === "vocabulary"
-                  ? "别只看词形，回到句子语境。"
-                  : quizState.material?.type === "adverb"
-                    ? "再看副词位置、强度或适用场景。"
-                    : "再看一眼句型的逻辑关系。");
+            feedback.textContent = feedbackText;
           }
+          quizState.answers[quizState.currentIndex] = {
+            selectedLabel,
+            isCorrect: false,
+            feedbackText
+          };
           window.setTimeout(() => {
             button.classList.remove("is-wrong");
           }, 520);
         });
       });
+      bindQuizNav();
     };
 
     const generateQuiz = async (material) => {
@@ -1939,6 +2269,7 @@ const itemsByType = sections.map((section) => ({
       quizState.generationId = currentGeneration;
       quizState.isLoading = true;
       quizState.cards = [];
+      quizState.answers = [];
       quizState.currentIndex = 0;
       renderQuizLoading();
 
@@ -1965,8 +2296,9 @@ const itemsByType = sections.map((section) => ({
         }
 
         quizState.cards = Array.isArray(data.cards) ? data.cards : [];
-        if (quizState.cards.length !== 3) {
-          throw new Error("AI 没有返回完整的 3 张 Quiz 卡片。");
+        const expectedCount = getQuizExpectedCount(material);
+        if (quizState.cards.length !== expectedCount) {
+          throw new Error(`AI 没有返回完整的 ${expectedCount} 张 Quiz 卡片。`);
         }
 
         renderQuizCard();
