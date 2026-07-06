@@ -12,10 +12,12 @@ type QuizOption = {
 type QuizCard = {
   index: number;
   scene: string;
+  question_type?: string;
   english_sentence: string;
   target_text?: string;
   options: QuizOption[];
   correct_label: string;
+  hint?: string;
   feedback?: string;
 };
 
@@ -98,11 +100,14 @@ const normalizeCard = (value: unknown, index: number, scene: string): QuizCard =
   return {
     index,
     scene: typeof candidate.scene === "string" ? candidate.scene.trim() || scene : scene,
+    question_type:
+      typeof candidate.question_type === "string" ? candidate.question_type.trim() : undefined,
     english_sentence:
       typeof candidate.english_sentence === "string" ? candidate.english_sentence.trim() : "",
     target_text: typeof candidate.target_text === "string" ? candidate.target_text.trim() : undefined,
     options,
     correct_label: correctLabel,
+    hint: typeof candidate.hint === "string" ? candidate.hint.trim() : undefined,
     feedback: typeof candidate.feedback === "string" ? candidate.feedback.trim() : undefined
   };
 };
@@ -257,7 +262,7 @@ Rules:
   } else if (isAdverbQuiz) {
     systemPrompt = `You are an expert IELTS discourse and tone trainer for Chinese learners.
 
-Create adverb contextual-fit quiz cards.
+Create Adverb Sense Quiz cards.
 
 Return only valid JSON. Do not return Markdown, code fences, headings, or extra explanation.
 
@@ -267,15 +272,17 @@ JSON shape:
     {
       "index": 1,
       "scene": "Education",
-      "english_sentence": "The first short sentence gives context. _____, the second short sentence completes the logic.",
+      "question_type": "Meaning & Intensity",
+      "english_sentence": "An IELTS-style sentence with one _____ blank.",
       "options": [
-        { "label": "A", "text": "TargetAdverb 中文意思" },
-        { "label": "B", "text": "AdvancedDistractor 中文意思" },
-        { "label": "C", "text": "AdvancedDistractor 中文意思" },
-        { "label": "D", "text": "AdvancedDistractor 中文意思" }
+        { "label": "A", "text": "slightly" },
+        { "label": "B", "text": "TargetAdverb" },
+        { "label": "C", "text": "barely" },
+        { "label": "D", "text": "rarely" }
       ],
       "correct_label": "A",
-      "feedback": "A brief Chinese explanation of the context relationship."
+      "hint": "A short Chinese hint shown after a wrong answer.",
+      "feedback": "A brief Chinese explanation of what the adverb adds."
     }
   ]
 }
@@ -283,16 +290,31 @@ JSON shape:
 Rules:
 - Create exactly 3 cards.
 - Use the provided scenes in order, one scene per card.
-- Each card must contain exactly two short English sentences.
-- The two sentences must have a clear causal, contrastive, concessive, evaluative, emotional, or attitude-based relationship.
-- The blank must appear in the second sentence at the adverb position and be written exactly as _____.
-- The correct option must be the target adverb itself with Chinese meaning, for example "However 然而".
-- Each card must have exactly 4 options: A, B, C, D.
+- Card 1 must be question_type "Meaning & Intensity".
+  - It tests what strength, degree, frequency, certainty, attitude, or logical force the target adverb adds.
+  - The question must be one IELTS-style sentence with one _____ blank where the target adverb naturally fits.
+  - Options must be 4 short English adverbs only.
+  - Distractors should be same-category adverbs with different intensity, frequency, certainty, or attitude.
+- Card 2 must be question_type "Position & Grammar".
+  - The question must be exactly: "Choose the most natural sentence."
+  - Options must be 4 full English sentences using the target adverb in different positions.
+  - Exactly one option should place the adverb most naturally.
+  - Wrong options should be plausible but awkward because of adverb placement, word order, or scope.
+  - Test realistic positions such as after an auxiliary, before a main verb, before an adjective/participle, clause-final, or sentence-initial only when natural.
+  - Provide a hint that points to the key position rule without revealing the exact answer.
+- Card 3 must be question_type "Context Fit".
+  - The question must be: "Which sentence best fits \"TARGET_ADVERB\"?" replacing TARGET_ADVERB with the actual target adverb.
+  - Options must be 4 full English sentences.
+  - Exactly one sentence should fit the semantic scenario of the target adverb.
+  - The other sentences should be grammatical but semantically odd, trivial, or mismatched for that adverb.
+  - Provide a hint that names the semantic scenario to look for without revealing the exact answer.
+- Every card must have exactly 4 options: A, B, C, D.
 - Exactly one option must be correct.
-- The other three options must be advanced adverbs of similar difficulty, but logically unsuitable in the current context.
-- Avoid distractors that are obviously lower-level, grammatically impossible, or too easy to eliminate.
-- Keep each context suitable for IELTS writing or academic discussion.
-- Keep feedback in Chinese and under 28 Chinese characters.
+- Keep all examples suitable for IELTS writing or academic discussion.
+- For Card 2 and Card 3, hint is required.
+- Keep hint in Chinese and under 36 Chinese characters.
+- Keep feedback in Chinese and under 32 Chinese characters.
+- Do not add Chinese translations in options for adverb cards; options should stay visually quick to scan.
 - Keep all explanations out of the JSON except the feedback field.`;
   } else {
     systemPrompt = `You are an expert IELTS reading trainer for Chinese learners.
@@ -405,7 +427,7 @@ Scenes:
     const isValid = cards.every(
       (card) =>
         card.english_sentence &&
-        (!(isChunkQuiz || isAdverbQuiz) || card.english_sentence.includes("_____")) &&
+        (!isChunkQuiz || card.english_sentence.includes("_____")) &&
         (!isVocabularyQuiz ||
           (card.target_text &&
             card.english_sentence.toLocaleLowerCase().includes(card.target_text.toLocaleLowerCase()))) &&

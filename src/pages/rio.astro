@@ -1858,9 +1858,10 @@ const itemsByType = sections.map((section) => ({
         Array.isArray(card.options) ? card.options : [],
         card.correct_label
       );
+      const sceneLabel = [card.question_type, card.scene].filter(Boolean).join(" · ");
       quizStage.innerHTML = `<article class="rio-quiz-question">
         <span class="rio-quiz-progress">${quizState.currentIndex + 1}/3</span>
-        <p class="rio-quiz-scene">${escapeHtml(card.scene ?? "")}</p>
+        <p class="rio-quiz-scene">${escapeHtml(sceneLabel)}</p>
         <p class="rio-quiz-sentence">${renderQuizSentence(card)}</p>
         <div class="rio-quiz-options">
           ${options
@@ -1916,13 +1917,14 @@ const itemsByType = sections.map((section) => ({
           button.classList.add("is-wrong");
           if (feedback instanceof HTMLElement) {
             feedback.textContent =
-              quizState.material?.type === "chunk"
+              card.hint ??
+              (quizState.material?.type === "chunk"
                 ? "再看一眼这个语块的固定搭配。"
                 : quizState.material?.type === "vocabulary"
                   ? "别只看词形，回到句子语境。"
-                : quizState.material?.type === "adverb"
-                  ? "再看前后两句的逻辑和态度。"
-                  : "再看一眼句型的逻辑关系。";
+                  : quizState.material?.type === "adverb"
+                    ? "再看副词位置、强度或适用场景。"
+                    : "再看一眼句型的逻辑关系。");
           }
           window.setTimeout(() => {
             button.classList.remove("is-wrong");
