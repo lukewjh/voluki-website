@@ -1,5 +1,39 @@
+-- =========================================================
+-- Voluki English Items Seed Data
+-- Goal: IELTS 6.5+ Foundation
+-- Compatible with Cloudflare D1 / SQLite
+-- =========================================================
+
+CREATE TABLE IF NOT EXISTS english_items (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  type TEXT NOT NULL CHECK (
+    type IN (
+      'chunk',
+      'sentence_pattern',
+      'vocabulary',
+      'adverb'
+    )
+  ),
+  text TEXT NOT NULL,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(type, text)
+);
+
+CREATE INDEX IF NOT EXISTS idx_english_items_type
+ON english_items(type);
+
+CREATE INDEX IF NOT EXISTS idx_english_items_text
+ON english_items(text);
+
+BEGIN TRANSACTION;
+
 INSERT OR IGNORE INTO english_items (type, text) VALUES
--- Chunks (10)
+
+-- =========================================================
+-- Chunks / Collocations
+-- 目标：写作、口语中可以直接套用的高频表达
+-- =========================================================
+
 ('chunk', 'take advantage of'),
 ('chunk', 'play a vital role in'),
 ('chunk', 'be responsible for'),
@@ -11,7 +45,110 @@ INSERT OR IGNORE INTO english_items (type, text) VALUES
 ('chunk', 'rather than'),
 ('chunk', 'have access to'),
 
--- Sentence Patterns (10)
+('chunk', 'contribute to'),
+('chunk', 'be associated with'),
+('chunk', 'be likely to'),
+('chunk', 'be unlikely to'),
+('chunk', 'be exposed to'),
+('chunk', 'be aware of'),
+('chunk', 'be concerned about'),
+('chunk', 'be beneficial to'),
+('chunk', 'be harmful to'),
+('chunk', 'be related to'),
+
+('chunk', 'give rise to'),
+('chunk', 'pose a threat to'),
+('chunk', 'pose a challenge to'),
+('chunk', 'make a difference to'),
+('chunk', 'have an impact on'),
+('chunk', 'have a negative effect on'),
+('chunk', 'have a positive effect on'),
+('chunk', 'take into account'),
+('chunk', 'take measures to'),
+('chunk', 'take steps to'),
+
+('chunk', 'deal with'),
+('chunk', 'focus on'),
+('chunk', 'rely on'),
+('chunk', 'depend on'),
+('chunk', 'adapt to'),
+('chunk', 'adjust to'),
+('chunk', 'benefit from'),
+('chunk', 'suffer from'),
+('chunk', 'prevent someone from doing something'),
+('chunk', 'encourage someone to do something'),
+
+('chunk', 'discourage someone from doing something'),
+('chunk', 'enable someone to do something'),
+('chunk', 'allow someone to do something'),
+('chunk', 'help someone do something'),
+('chunk', 'make it possible for someone to do something'),
+('chunk', 'make it difficult for someone to do something'),
+('chunk', 'provide someone with something'),
+('chunk', 'offer an opportunity to'),
+('chunk', 'create opportunities for'),
+('chunk', 'improve the quality of'),
+
+('chunk', 'raise awareness of'),
+('chunk', 'reduce the risk of'),
+('chunk', 'increase the likelihood of'),
+('chunk', 'meet the needs of'),
+('chunk', 'achieve a balance between'),
+('chunk', 'strike a balance between'),
+('chunk', 'bridge the gap between'),
+('chunk', 'narrow the gap between'),
+('chunk', 'widen the gap between'),
+('chunk', 'address the problem of'),
+
+('chunk', 'solve the problem of'),
+('chunk', 'find a solution to'),
+('chunk', 'from my perspective'),
+('chunk', 'in my view'),
+('chunk', 'to some extent'),
+('chunk', 'in the long term'),
+('chunk', 'in the short term'),
+('chunk', 'under certain circumstances'),
+('chunk', 'in modern society'),
+('chunk', 'in everyday life'),
+
+('chunk', 'academic performance'),
+('chunk', 'social interaction'),
+('chunk', 'public transport'),
+('chunk', 'environmental protection'),
+('chunk', 'economic growth'),
+('chunk', 'technological development'),
+('chunk', 'cultural diversity'),
+('chunk', 'global competition'),
+('chunk', 'work-life balance'),
+('chunk', 'mental health'),
+
+('chunk', 'living standards'),
+('chunk', 'job opportunities'),
+('chunk', 'career prospects'),
+('chunk', 'higher education'),
+('chunk', 'lifelong learning'),
+('chunk', 'critical thinking'),
+('chunk', 'practical skills'),
+('chunk', 'communication skills'),
+('chunk', 'problem-solving skills'),
+('chunk', 'a sense of responsibility'),
+
+('chunk', 'a sense of achievement'),
+('chunk', 'a sense of belonging'),
+('chunk', 'a wide range of'),
+('chunk', 'a large number of'),
+('chunk', 'a growing number of'),
+('chunk', 'a variety of'),
+('chunk', 'an increasing amount of'),
+('chunk', 'a lack of'),
+('chunk', 'the majority of'),
+('chunk', 'the minority of'),
+
+-- =========================================================
+-- Sentence Patterns
+-- 目标：Task 2、口语 Part 3、长句表达
+-- =========================================================
+
 ('sentence_pattern', 'Not only..., but also...'),
 ('sentence_pattern', 'The more..., the more...'),
 ('sentence_pattern', 'There is no denying that...'),
@@ -23,7 +160,88 @@ INSERT OR IGNORE INTO english_items (type, text) VALUES
 ('sentence_pattern', 'One of the most important...is...'),
 ('sentence_pattern', 'Compared with...'),
 
--- Vocabulary (10)
+('sentence_pattern', 'It is clear that...'),
+('sentence_pattern', 'It is obvious that...'),
+('sentence_pattern', 'It is true that...'),
+('sentence_pattern', 'It is important to note that...'),
+('sentence_pattern', 'It is difficult to deny that...'),
+('sentence_pattern', 'It can be argued that...'),
+('sentence_pattern', 'It seems reasonable to suggest that...'),
+('sentence_pattern', 'It is commonly argued that...'),
+('sentence_pattern', 'It is often claimed that...'),
+('sentence_pattern', 'It remains unclear whether...'),
+
+('sentence_pattern', 'There are several reasons why...'),
+('sentence_pattern', 'There are both advantages and disadvantages to...'),
+('sentence_pattern', 'There is a growing concern that...'),
+('sentence_pattern', 'There is a strong connection between...and...'),
+('sentence_pattern', 'There is little evidence to suggest that...'),
+('sentence_pattern', 'There is no simple solution to...'),
+('sentence_pattern', 'There is a need to...'),
+('sentence_pattern', 'There is a tendency for people to...'),
+('sentence_pattern', 'There has been a significant increase in...'),
+('sentence_pattern', 'There has been a gradual decline in...'),
+
+('sentence_pattern', 'Although..., ...'),
+('sentence_pattern', 'While..., ...'),
+('sentence_pattern', 'Even though..., ...'),
+('sentence_pattern', 'Despite the fact that..., ...'),
+('sentence_pattern', 'Given that..., ...'),
+('sentence_pattern', 'Provided that..., ...'),
+('sentence_pattern', 'Unless..., ...'),
+('sentence_pattern', 'If..., then...'),
+('sentence_pattern', 'As long as..., ...'),
+('sentence_pattern', 'Once..., ...'),
+
+('sentence_pattern', 'This is because...'),
+('sentence_pattern', 'This means that...'),
+('sentence_pattern', 'This suggests that...'),
+('sentence_pattern', 'This explains why...'),
+('sentence_pattern', 'This may result in...'),
+('sentence_pattern', 'This can lead to...'),
+('sentence_pattern', 'This is likely to...'),
+('sentence_pattern', 'This is unlikely to...'),
+('sentence_pattern', 'This makes it possible to...'),
+('sentence_pattern', 'This makes it difficult to...'),
+
+('sentence_pattern', 'The main reason is that...'),
+('sentence_pattern', 'Another reason is that...'),
+('sentence_pattern', 'A possible explanation is that...'),
+('sentence_pattern', 'A clear example of this is...'),
+('sentence_pattern', 'For example, ...'),
+('sentence_pattern', 'For instance, ...'),
+('sentence_pattern', 'In other words, ...'),
+('sentence_pattern', 'That is to say, ...'),
+('sentence_pattern', 'As a result, ...'),
+('sentence_pattern', 'As a consequence, ...'),
+
+('sentence_pattern', 'On the one hand, ... On the other hand, ...'),
+('sentence_pattern', 'Some people believe that..., while others argue that...'),
+('sentence_pattern', 'Although some people argue that..., I believe that...'),
+('sentence_pattern', 'Instead of..., people should...'),
+('sentence_pattern', 'Rather than..., it is better to...'),
+('sentence_pattern', 'The extent to which...depends on...'),
+('sentence_pattern', 'The reason why...is that...'),
+('sentence_pattern', 'What matters most is...'),
+('sentence_pattern', 'What is particularly important is...'),
+('sentence_pattern', 'What should be emphasized is...'),
+
+('sentence_pattern', 'If this trend continues, ...'),
+('sentence_pattern', 'Without proper measures, ...'),
+('sentence_pattern', 'In order to solve this problem, ...'),
+('sentence_pattern', 'To address this issue, ...'),
+('sentence_pattern', 'Governments should take measures to...'),
+('sentence_pattern', 'Individuals should be encouraged to...'),
+('sentence_pattern', 'Schools should place more emphasis on...'),
+('sentence_pattern', 'Employers should provide more opportunities for...'),
+('sentence_pattern', 'Society as a whole should...'),
+('sentence_pattern', 'In conclusion, I believe that...'),
+
+-- =========================================================
+-- Vocabulary
+-- 目标：IELTS 阅读、写作、口语常用核心词
+-- =========================================================
+
 ('vocabulary', 'enhance'),
 ('vocabulary', 'maintain'),
 ('vocabulary', 'implement'),
@@ -35,7 +253,154 @@ INSERT OR IGNORE INTO english_items (type, text) VALUES
 ('vocabulary', 'efficient'),
 ('vocabulary', 'challenge'),
 
--- Adverbs (10)
+('vocabulary', 'benefit'),
+('vocabulary', 'drawback'),
+('vocabulary', 'advantage'),
+('vocabulary', 'disadvantage'),
+('vocabulary', 'factor'),
+('vocabulary', 'issue'),
+('vocabulary', 'solution'),
+('vocabulary', 'evidence'),
+('vocabulary', 'argument'),
+('vocabulary', 'opinion'),
+
+('vocabulary', 'impact'),
+('vocabulary', 'effect'),
+('vocabulary', 'influence'),
+('vocabulary', 'consequence'),
+('vocabulary', 'outcome'),
+('vocabulary', 'cause'),
+('vocabulary', 'reason'),
+('vocabulary', 'trend'),
+('vocabulary', 'change'),
+('vocabulary', 'development'),
+
+('vocabulary', 'increase'),
+('vocabulary', 'decrease'),
+('vocabulary', 'decline'),
+('vocabulary', 'growth'),
+('vocabulary', 'reduction'),
+('vocabulary', 'improvement'),
+('vocabulary', 'progress'),
+('vocabulary', 'innovation'),
+('vocabulary', 'technology'),
+('vocabulary', 'globalization'),
+
+('vocabulary', 'education'),
+('vocabulary', 'employment'),
+('vocabulary', 'environment'),
+('vocabulary', 'economy'),
+('vocabulary', 'society'),
+('vocabulary', 'culture'),
+('vocabulary', 'community'),
+('vocabulary', 'government'),
+('vocabulary', 'individual'),
+('vocabulary', 'generation'),
+
+('vocabulary', 'communication'),
+('vocabulary', 'interaction'),
+('vocabulary', 'relationship'),
+('vocabulary', 'responsibility'),
+('vocabulary', 'opportunity'),
+('vocabulary', 'access'),
+('vocabulary', 'resource'),
+('vocabulary', 'ability'),
+('vocabulary', 'skill'),
+('vocabulary', 'knowledge'),
+
+('vocabulary', 'awareness'),
+('vocabulary', 'attitude'),
+('vocabulary', 'behavior'),
+('vocabulary', 'habit'),
+('vocabulary', 'lifestyle'),
+('vocabulary', 'pressure'),
+('vocabulary', 'stress'),
+('vocabulary', 'competition'),
+('vocabulary', 'motivation'),
+('vocabulary', 'confidence'),
+
+('vocabulary', 'essential'),
+('vocabulary', 'necessary'),
+('vocabulary', 'important'),
+('vocabulary', 'valuable'),
+('vocabulary', 'useful'),
+('vocabulary', 'effective'),
+('vocabulary', 'practical'),
+('vocabulary', 'convenient'),
+('vocabulary', 'available'),
+('vocabulary', 'affordable'),
+
+('vocabulary', 'traditional'),
+('vocabulary', 'modern'),
+('vocabulary', 'digital'),
+('vocabulary', 'global'),
+('vocabulary', 'local'),
+('vocabulary', 'public'),
+('vocabulary', 'private'),
+('vocabulary', 'personal'),
+('vocabulary', 'social'),
+('vocabulary', 'economic'),
+
+('vocabulary', 'environmental'),
+('vocabulary', 'educational'),
+('vocabulary', 'technological'),
+('vocabulary', 'cultural'),
+('vocabulary', 'professional'),
+('vocabulary', 'academic'),
+('vocabulary', 'financial'),
+('vocabulary', 'physical'),
+('vocabulary', 'mental'),
+('vocabulary', 'emotional'),
+
+('vocabulary', 'positive'),
+('vocabulary', 'negative'),
+('vocabulary', 'serious'),
+('vocabulary', 'major'),
+('vocabulary', 'minor'),
+('vocabulary', 'complex'),
+('vocabulary', 'simple'),
+('vocabulary', 'common'),
+('vocabulary', 'rare'),
+('vocabulary', 'similar'),
+
+('vocabulary', 'different'),
+('vocabulary', 'appropriate'),
+('vocabulary', 'suitable'),
+('vocabulary', 'reasonable'),
+('vocabulary', 'sustainable'),
+('vocabulary', 'reliable'),
+('vocabulary', 'accurate'),
+('vocabulary', 'flexible'),
+('vocabulary', 'independent'),
+('vocabulary', 'creative'),
+
+('vocabulary', 'analyse'),
+('vocabulary', 'compare'),
+('vocabulary', 'contrast'),
+('vocabulary', 'explain'),
+('vocabulary', 'describe'),
+('vocabulary', 'discuss'),
+('vocabulary', 'suggest'),
+('vocabulary', 'recommend'),
+('vocabulary', 'support'),
+('vocabulary', 'oppose'),
+
+('vocabulary', 'solve'),
+('vocabulary', 'address'),
+('vocabulary', 'reduce'),
+('vocabulary', 'improve'),
+('vocabulary', 'promote'),
+('vocabulary', 'protect'),
+('vocabulary', 'encourage'),
+('vocabulary', 'discourage'),
+('vocabulary', 'provide'),
+('vocabulary', 'require'),
+
+-- =========================================================
+-- Adverbs
+-- 目标：让表达更自然、更有逻辑、更像 6.5+ 写作/口语
+-- =========================================================
+
 ('adverb', 'gradually'),
 ('adverb', 'significantly'),
 ('adverb', 'ultimately'),
@@ -45,4 +410,83 @@ INSERT OR IGNORE INTO english_items (type, text) VALUES
 ('adverb', 'apparently'),
 ('adverb', 'roughly'),
 ('adverb', 'frequently'),
-('adverb', 'effectively');
+('adverb', 'effectively'),
+
+('adverb', 'clearly'),
+('adverb', 'obviously'),
+('adverb', 'generally'),
+('adverb', 'usually'),
+('adverb', 'normally'),
+('adverb', 'commonly'),
+('adverb', 'widely'),
+('adverb', 'largely'),
+('adverb', 'mainly'),
+('adverb', 'mostly'),
+
+('adverb', 'partly'),
+('adverb', 'fully'),
+('adverb', 'completely'),
+('adverb', 'entirely'),
+('adverb', 'highly'),
+('adverb', 'deeply'),
+('adverb', 'strongly'),
+('adverb', 'seriously'),
+('adverb', 'slightly'),
+('adverb', 'moderately'),
+
+('adverb', 'considerably'),
+('adverb', 'dramatically'),
+('adverb', 'substantially'),
+('adverb', 'remarkably'),
+('adverb', 'noticeably'),
+('adverb', 'steadily'),
+('adverb', 'rapidly'),
+('adverb', 'slowly'),
+('adverb', 'quickly'),
+('adverb', 'eventually'),
+
+('adverb', 'initially'),
+('adverb', 'previously'),
+('adverb', 'currently'),
+('adverb', 'recently'),
+('adverb', 'nowadays'),
+('adverb', 'traditionally'),
+('adverb', 'historically'),
+('adverb', 'temporarily'),
+('adverb', 'permanently'),
+('adverb', 'constantly'),
+
+('adverb', 'occasionally'),
+('adverb', 'rarely'),
+('adverb', 'seldom'),
+('adverb', 'regularly'),
+('adverb', 'repeatedly'),
+('adverb', 'continuously'),
+('adverb', 'directly'),
+('adverb', 'indirectly'),
+('adverb', 'naturally'),
+('adverb', 'personally'),
+
+('adverb', 'socially'),
+('adverb', 'economically'),
+('adverb', 'environmentally'),
+('adverb', 'culturally'),
+('adverb', 'academically'),
+('adverb', 'professionally'),
+('adverb', 'financially'),
+('adverb', 'physically'),
+('adverb', 'mentally'),
+('adverb', 'emotionally'),
+
+('adverb', 'therefore'),
+('adverb', 'however'),
+('adverb', 'moreover'),
+('adverb', 'furthermore'),
+('adverb', 'nevertheless'),
+('adverb', 'consequently'),
+('adverb', 'otherwise'),
+('adverb', 'similarly'),
+('adverb', 'alternatively'),
+('adverb', 'meanwhile');
+
+COMMIT;
