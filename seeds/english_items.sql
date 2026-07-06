@@ -25,8 +25,6 @@ ON english_items(type);
 CREATE INDEX IF NOT EXISTS idx_english_items_text
 ON english_items(text);
 
-BEGIN TRANSACTION;
-
 INSERT OR IGNORE INTO english_items (type, text) VALUES
 
 -- =========================================================
@@ -488,5 +486,3 @@ INSERT OR IGNORE INTO english_items (type, text) VALUES
 ('adverb', 'similarly'),
 ('adverb', 'alternatively'),
 ('adverb', 'meanwhile');
-
-COMMIT;
