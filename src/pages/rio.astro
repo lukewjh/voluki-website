@@ -1590,6 +1590,8 @@ const itemsByType = sections.map((section) => ({
       loadingTypeTimer: undefined,
       lastFocusedElement: null
     };
+    let quizMatchHeightFrame;
+    let quizMatchResizeTimer;
     const quizLoadingMessages = [
       "正在生成 Quiz 卡片...",
       "题目正在路上...",
@@ -2092,6 +2094,8 @@ const itemsByType = sections.map((section) => ({
       if (!(quizModal instanceof HTMLElement)) return;
 
       stopQuizLoadingMessages();
+      window.clearTimeout(quizMatchResizeTimer);
+      window.cancelAnimationFrame(quizMatchHeightFrame);
       quizModal.classList.remove("is-opening");
       quizModal.hidden = true;
       quizState.material = null;
@@ -2245,6 +2249,40 @@ const itemsByType = sections.map((section) => ({
         return total + matchedIds.length;
       }, 0);
 
+    const syncMatchingCardHeights = () => {
+      if (!(quizStage instanceof HTMLElement)) return;
+
+      window.cancelAnimationFrame(quizMatchHeightFrame);
+      quizMatchHeightFrame = window.requestAnimationFrame(() => {
+        const cards = Array.from(quizStage.querySelectorAll(".rio-vocab-match-card")).filter(
+          (card) => card instanceof HTMLElement
+        );
+        if (!cards.length) return;
+
+        cards.forEach((card) => {
+          card.style.height = "auto";
+        });
+
+        const tallest = Math.ceil(
+          cards.reduce((height, card) => Math.max(height, card.scrollHeight), 0)
+        );
+
+        cards.forEach((card) => {
+          card.style.height = `${tallest}px`;
+        });
+      });
+    };
+
+    const scheduleMatchingCardHeightSync = () => {
+      window.clearTimeout(quizMatchResizeTimer);
+      quizMatchResizeTimer = window.setTimeout(() => {
+        if (!(quizModal instanceof HTMLElement) || quizModal.hidden) return;
+        if (!isMatchingQuiz(quizState.material)) return;
+
+        syncMatchingCardHeights();
+      }, 120);
+    };
+
     const advanceVocabularyRound = () => {
       const roundCount = getVocabularyRoundCount();
       if (quizState.currentIndex >= roundCount - 1) {
@@ -2397,6 +2435,8 @@ const itemsByType = sections.map((section) => ({
           }, 420);
         });
       });
+
+      syncMatchingCardHeights();
     };
 
     const renderQuizCard = () => {
@@ -3086,6 +3126,7 @@ const itemsByType = sections.map((section) => ({
       showPage(2);
     });
     pageButtons.complete?.addEventListener("click", launchCompletionCelebration);
+    window.addEventListener("resize", scheduleMatchingCardHeightSync);
     updateSelectionUi();
 
     document.addEventListener("keydown", (event) => {
