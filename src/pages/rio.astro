@@ -1023,6 +1023,103 @@ const itemsByType = sections.map((section) => ({
       padding-top: 2px;
     }
 
+    :global(.rio-vocab-match) {
+      gap: 16px;
+    }
+
+    :global(.rio-vocab-match-head) {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    :global(.rio-vocab-match-total) {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    :global(.rio-vocab-match-board) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 12px;
+    }
+
+    :global(.rio-vocab-match-column) {
+      display: grid;
+      align-content: start;
+      gap: 10px;
+    }
+
+    :global(.rio-vocab-match-card) {
+      display: grid;
+      gap: 6px;
+      width: 100%;
+      min-height: 76px;
+      align-content: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 12px 14px;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.38;
+      text-align: left;
+      cursor: pointer;
+      transition:
+        background 160ms ease,
+        border-color 160ms ease,
+        transform 160ms ease;
+    }
+
+    :global(.rio-vocab-match-card:hover),
+    :global(.rio-vocab-match-card:focus-visible),
+    :global(.rio-vocab-match-card.is-selected) {
+      border-color: color-mix(in srgb, var(--accent) 72%, var(--line));
+      background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    :global(.rio-vocab-match-card.is-matched) {
+      border-color: color-mix(in srgb, #22c55e 68%, var(--line));
+      background: color-mix(in srgb, #22c55e 10%, var(--surface));
+      color: color-mix(in srgb, #166534 70%, var(--text));
+      cursor: default;
+      transform: none;
+    }
+
+    :global(.rio-vocab-match-card.is-wrong) {
+      border-color: color-mix(in srgb, #e5484d 72%, var(--line));
+      background: color-mix(in srgb, #e5484d 10%, var(--surface));
+    }
+
+    :global(.rio-vocab-match-card:disabled) {
+      opacity: 0.86;
+    }
+
+    :global(.rio-vocab-match-type) {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 680px) {
+      :global(.rio-vocab-match-board) {
+        grid-template-columns: 1fr;
+      }
+
+      :global(.rio-vocab-match-card) {
+        min-height: 64px;
+      }
+    }
+
     :global(.rio-quiz-builder) {
       display: grid;
       gap: 14px;
@@ -1457,6 +1554,7 @@ const itemsByType = sections.map((section) => ({
       cards: [],
       answers: [],
       currentIndex: 0,
+      startedAt: 0,
       isLoading: false,
       generationId: 0,
       loadingMessageIndex: 0,
@@ -1714,7 +1812,44 @@ const itemsByType = sections.map((section) => ({
           ? "下一个副词"
           : "下一个句型";
 
-    const getQuizExpectedCount = (material) => (material?.type === "chunk" ? 5 : 3);
+    const isVocabularyMatchQuiz = (material) => material?.type === "vocabulary";
+
+    const getQuizExpectedCount = (material) =>
+      material?.type === "chunk" ? 5 : isVocabularyMatchQuiz(material) ? 20 : 3;
+
+    const getVocabularyRoundSize = () => 5;
+
+    const getVocabularyRoundCount = () =>
+      Math.ceil(getQuizExpectedCount(quizState.material) / getVocabularyRoundSize());
+
+    const shuffleItems = (items) => {
+      const shuffled = [...items];
+
+      for (let index = shuffled.length - 1; index > 0; index -= 1) {
+        const target = Math.floor(Math.random() * (index + 1));
+        [shuffled[index], shuffled[target]] = [shuffled[target], shuffled[index]];
+      }
+
+      return shuffled;
+    };
+
+    const getVocabularyTypeLabel = (type) =>
+      type === "collocation"
+        ? "Collocation"
+        : type === "short_sentence"
+          ? "Context"
+        : type === "word_family"
+          ? "Word Family"
+          : "Meaning";
+
+    const formatQuizElapsedTime = () => {
+      if (!quizState.startedAt) return "";
+      const elapsedSeconds = Math.max(0, Math.round((Date.now() - quizState.startedAt) / 1000));
+      const minutes = Math.floor(elapsedSeconds / 60);
+      const seconds = String(elapsedSeconds % 60).padStart(2, "0");
+
+      return `${minutes}:${seconds}`;
+    };
 
     const normalizeBuilderChunk = (value) =>
       String(value ?? "")
@@ -1881,6 +2016,7 @@ const itemsByType = sections.map((section) => ({
       quizState.cards = [];
       quizState.answers = [];
       quizState.currentIndex = 0;
+      quizState.startedAt = 0;
       quizState.isLoading = false;
       quizState.generationId += 1;
       document.body.style.overflow = "";
@@ -2013,10 +2149,180 @@ const itemsByType = sections.map((section) => ({
       launchQuizCompleteConfetti();
     };
 
+    const getVocabularyRoundItems = () => {
+      const roundSize = getVocabularyRoundSize();
+      const start = quizState.currentIndex * roundSize;
+
+      return quizState.cards.slice(start, start + roundSize);
+    };
+
+    const getVocabularyMatchedTotal = () =>
+      quizState.answers.reduce((total, answer) => {
+        const matchedIds = Array.isArray(answer?.matchedIds) ? answer.matchedIds : [];
+
+        return total + matchedIds.length;
+      }, 0);
+
+    const advanceVocabularyRound = () => {
+      const roundCount = getVocabularyRoundCount();
+      if (quizState.currentIndex >= roundCount - 1) {
+        renderQuizComplete();
+        return;
+      }
+
+      quizState.currentIndex += 1;
+      renderQuizCard();
+    };
+
+    const renderVocabularyMatchRound = () => {
+      if (!(quizStage instanceof HTMLElement)) return;
+
+      const roundItems = getVocabularyRoundItems();
+      const roundCount = getVocabularyRoundCount();
+      const expectedCount = getQuizExpectedCount(quizState.material);
+      const answerState = quizState.answers[quizState.currentIndex] ?? {};
+      const matchedIds = Array.isArray(answerState.matchedIds) ? answerState.matchedIds : [];
+      const selectedLeftId = typeof answerState.selectedLeftId === "string" ? answerState.selectedLeftId : "";
+      const wrongRightId = typeof answerState.wrongRightId === "string" ? answerState.wrongRightId : "";
+      let rightIds = Array.isArray(answerState.rightIds) ? answerState.rightIds : [];
+
+      if (rightIds.length !== roundItems.length) {
+        rightIds = shuffleItems(roundItems).map((item) => item.id);
+        quizState.answers[quizState.currentIndex] = {
+          ...answerState,
+          matchedIds,
+          selectedLeftId,
+          rightIds
+        };
+      }
+
+      const rightItems = rightIds
+        .map((id) => roundItems.find((item) => item.id === id))
+        .filter(Boolean);
+      const roundComplete = roundItems.length > 0 && matchedIds.length === roundItems.length;
+      const matchedTotal = getVocabularyMatchedTotal();
+
+      quizStage.innerHTML = `<article class="rio-quiz-question rio-vocab-match">
+        <div class="rio-vocab-match-head">
+          <span class="rio-quiz-progress">Round ${quizState.currentIndex + 1}/${roundCount}</span>
+          <span class="rio-vocab-match-total">${matchedTotal}/${expectedCount}</span>
+        </div>
+        <p class="rio-quiz-scene">Vocabulary Match</p>
+        <div class="rio-vocab-match-board">
+          <div class="rio-vocab-match-column" aria-label="English items">
+            ${roundItems
+              .map((item) => {
+                const isMatched = matchedIds.includes(item.id);
+                const isSelected = selectedLeftId === item.id;
+
+                return `<button class="rio-vocab-match-card${isMatched ? " is-matched" : ""}${isSelected ? " is-selected" : ""}" type="button" data-rio-vocab-left="${escapeHtml(
+                  item.id
+                )}" ${isMatched ? "disabled" : ""}>
+                  <span class="rio-vocab-match-type">${escapeHtml(getVocabularyTypeLabel(item.type))}</span>
+                  <span>${escapeHtml(item.left)}</span>
+                </button>`;
+              })
+              .join("")}
+          </div>
+          <div class="rio-vocab-match-column" aria-label="Chinese matches">
+            ${rightItems
+              .map((item) => {
+                const isMatched = matchedIds.includes(item.id);
+                const isWrong = wrongRightId === item.id;
+
+                return `<button class="rio-vocab-match-card rio-vocab-match-answer${isMatched ? " is-matched" : ""}${isWrong ? " is-wrong" : ""}" type="button" data-rio-vocab-right="${escapeHtml(
+                  item.id
+                )}" ${isMatched ? "disabled" : ""}>
+                  <span>${escapeHtml(item.right)}</span>
+                </button>`;
+              })
+              .join("")}
+          </div>
+        </div>
+        <p class="rio-quiz-feedback" data-rio-quiz-feedback>${
+          roundComplete
+            ? "\u672c\u8f6e\u5b8c\u6210\uff0c\u6b63\u5728\u8fdb\u5165\u4e0b\u4e00\u8f6e\u3002"
+            : selectedLeftId
+              ? "\u518d\u70b9\u51fb\u53f3\u4fa7\u5bf9\u5e94\u7684\u4e2d\u6587\u3002"
+              : "\u5148\u70b9\u51fb\u5de6\u4fa7\u82f1\u6587\uff0c\u518d\u70b9\u51fb\u53f3\u4fa7\u4e2d\u6587\u3002"
+        }</p>
+      </article>`;
+
+      quizStage.querySelectorAll("[data-rio-vocab-left]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (!(button instanceof HTMLButtonElement)) return;
+          const id = button.getAttribute("data-rio-vocab-left") ?? "";
+          if (!id || matchedIds.includes(id)) return;
+
+          quizState.answers[quizState.currentIndex] = {
+            ...quizState.answers[quizState.currentIndex],
+            selectedLeftId: id,
+            wrongRightId: ""
+          };
+          renderVocabularyMatchRound();
+        });
+      });
+
+      quizStage.querySelectorAll("[data-rio-vocab-right]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (!(button instanceof HTMLButtonElement)) return;
+
+          const rightId = button.getAttribute("data-rio-vocab-right") ?? "";
+          const currentAnswer = quizState.answers[quizState.currentIndex] ?? {};
+          const currentMatchedIds = Array.isArray(currentAnswer.matchedIds)
+            ? currentAnswer.matchedIds
+            : [];
+          const currentSelectedLeftId =
+            typeof currentAnswer.selectedLeftId === "string" ? currentAnswer.selectedLeftId : "";
+
+          if (!currentSelectedLeftId || currentMatchedIds.includes(rightId)) return;
+
+          if (currentSelectedLeftId === rightId) {
+            const nextMatchedIds = [...currentMatchedIds, rightId];
+            quizState.answers[quizState.currentIndex] = {
+              ...currentAnswer,
+              matchedIds: nextMatchedIds,
+              selectedLeftId: "",
+              wrongRightId: "",
+              isCorrect: nextMatchedIds.length === roundItems.length
+            };
+            renderVocabularyMatchRound();
+
+            if (nextMatchedIds.length === roundItems.length) {
+              window.setTimeout(advanceVocabularyRound, 650);
+            }
+            return;
+          }
+
+          quizState.answers[quizState.currentIndex] = {
+            ...currentAnswer,
+            wrongRightId: rightId,
+            isCorrect: false
+          };
+          renderVocabularyMatchRound();
+          window.setTimeout(() => {
+            const latestAnswer = quizState.answers[quizState.currentIndex] ?? {};
+            if (latestAnswer.wrongRightId !== rightId) return;
+            quizState.answers[quizState.currentIndex] = {
+              ...latestAnswer,
+              wrongRightId: ""
+            };
+            renderVocabularyMatchRound();
+          }, 420);
+        });
+      });
+    };
+
     const renderQuizCard = () => {
       if (!(quizStage instanceof HTMLElement)) return;
 
       stopQuizLoadingMessages();
+
+      if (isVocabularyMatchQuiz(quizState.material)) {
+        renderVocabularyMatchRound();
+        return;
+      }
+
       const card = quizState.cards[quizState.currentIndex];
       if (!card) {
         renderQuizComplete();
@@ -2271,6 +2577,7 @@ const itemsByType = sections.map((section) => ({
       quizState.cards = [];
       quizState.answers = [];
       quizState.currentIndex = 0;
+      quizState.startedAt = Date.now();
       renderQuizLoading();
 
       try {

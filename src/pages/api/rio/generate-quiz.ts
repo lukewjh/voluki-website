@@ -23,6 +23,13 @@ type QuizCard = {
   feedback?: string;
 };
 
+type VocabularyMatchItem = {
+  id: string;
+  type: "vocabulary" | "collocation" | "short_sentence" | "word_family";
+  left: string;
+  right: string;
+};
+
 const scenes = [
   "教育",
   "科技",
@@ -120,6 +127,23 @@ const normalizeCard = (value: unknown, index: number, scene: string): QuizCard =
   };
 };
 
+const vocabularyMatchTypes = ["vocabulary", "collocation", "short_sentence", "word_family"] as const;
+
+const normalizeVocabularyMatchItem = (value: unknown, index: number): VocabularyMatchItem => {
+  const candidate = value && typeof value === "object" ? (value as Record<string, unknown>) : {};
+  const rawType = typeof candidate.type === "string" ? candidate.type.trim() : "";
+  const type = vocabularyMatchTypes.includes(rawType as VocabularyMatchItem["type"])
+    ? (rawType as VocabularyMatchItem["type"])
+    : "vocabulary";
+
+  return {
+    id: `vocab-${index + 1}`,
+    type,
+    left: typeof candidate.left === "string" ? candidate.left.trim() : "",
+    right: typeof candidate.right === "string" ? candidate.right.trim() : ""
+  };
+};
+
 const getMaterial = (body: Record<string, unknown>) => {
   const materialCandidate =
     body.material && typeof body.material === "object"
@@ -179,7 +203,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     return jsonResponse({ error: "Unsupported Quiz material type" }, 400);
   }
 
-  const expectedCardCount = material.type === "chunk" ? 5 : 3;
+  const expectedCardCount = material.type === "chunk" ? 5 : material.type === "vocabulary" ? 20 : 3;
   const selectedScenes = sample(scenes, expectedCardCount);
   const isChunkQuiz = material.type === "chunk";
   const isVocabularyQuiz = material.type === "vocabulary";
@@ -262,7 +286,7 @@ Rules:
   } else if (isVocabularyQuiz) {
     systemPrompt = `You are an expert IELTS vocabulary and reading trainer for Chinese learners.
 
-Create vocabulary contextual-paraphrase quiz cards.
+Create a Vocabulary Match knowledge network for one target word.
 
 Return only valid JSON. Do not return Markdown, code fences, headings, or extra explanation.
 
@@ -270,38 +294,29 @@ JSON shape:
 {
   "cards": [
     {
-      "index": 1,
-      "scene": "Education",
-      "english_sentence": "One natural English sentence that includes the target vocabulary exactly once.",
-      "target_text": "exact target vocabulary from the sentence",
-      "options": [
-        { "label": "A", "text": "precise synonym" },
-        { "label": "B", "text": "look-alike trap" },
-        { "label": "C", "text": "wrong-sense trap" },
-        { "label": "D", "text": "unrelated trap" }
-      ],
-      "correct_label": "A",
-      "feedback": "A brief Chinese explanation of the contextual meaning."
+      "id": "vocab-1",
+      "type": "collocation",
+      "left": "implement a policy",
+      "right": "实施政策"
     }
   ]
 }
 
 Rules:
-- Create exactly 3 cards.
-- Use the provided scenes in order, one scene per card.
-- Each card must contain one natural English sentence.
-- The sentence must include the target vocabulary exactly once.
-- The target vocabulary must be used in a meaningful IELTS-style context.
-- The question is: which option can best replace the target vocabulary in this context?
-- The correct option must be the most precise synonym or paraphrase in the current context.
-- Each option must be a very short English word or phrase, usually one word.
-- Distractor A should be a spelling/look-alike confusion when possible, such as complement vs compliment.
-- Distractor B should reflect a different common meaning, wrong part of speech, or familiar-word trap.
-- Distractor C should be an antonym, unrelated advanced word, or context-related but semantically wrong word.
-- Avoid options that are obviously silly.
-- Return target_text as the exact word or phrase in the sentence that should be highlighted.
-- Keep feedback in Chinese and explain the contextual meaning in under 28 Chinese characters.
-- Keep all explanations out of the JSON except the feedback field.`;
+- Create exactly 20 matching pairs.
+- Mix these item types:
+  - exactly 4 "vocabulary" items: core meanings or very common direct translations.
+  - exactly 8 "collocation" items: IELTS/academic high-frequency collocations. This is the most important type.
+  - exactly 5 "short_sentence" items: natural B2-C1 sentences no more than 15 English words.
+  - exactly 3 "word_family" items: useful forms such as noun, verb forms, adjective, or adverb if natural.
+- Randomly interleave the types; do not group all items of the same type together.
+- Every left value must be English.
+- Every right value must be concise Simplified Chinese.
+- Use the target word or its natural word-family form in every left value.
+- Collocations must be natural IELTS/academic expressions, not rare or awkward phrases.
+- Short sentences must be brief, natural, and useful for writing.
+- Chinese answers in the same round should be distinguishable, so avoid near-duplicate translations.
+- Do not include notes, explanations, Markdown, or fields outside id, type, left, and right.`;
   } else if (isAdverbQuiz) {
     systemPrompt = `You are an expert IELTS discourse and tone trainer for Chinese learners.
 
@@ -429,7 +444,7 @@ ${selectedScenes.map((scene, index) => `${index + 1}. ${scene}`).join("\n")}`;
           }
         ],
         response_format: { type: "json_object" },
-        max_tokens: 1800,
+        max_tokens: isVocabularyQuiz ? 3200 : 1800,
         stream: false
       })
     });
@@ -464,6 +479,34 @@ ${selectedScenes.map((scene, index) => `${index + 1}. ${scene}`).join("\n")}`;
   try {
     const parsed = JSON.parse(outputText);
     const rawCards = Array.isArray(parsed.cards) ? parsed.cards : [];
+
+    if (isVocabularyQuiz) {
+      const cards = rawCards.map((item, index) => normalizeVocabularyMatchItem(item, index));
+      const typeCounts = cards.reduce(
+        (counts, item) => ({
+          ...counts,
+          [item.type]: (counts[item.type] ?? 0) + 1
+        }),
+        {} as Record<VocabularyMatchItem["type"], number>
+      );
+      const isValid =
+        cards.length === expectedCardCount &&
+        cards.every((item) => item.id && item.left && item.right) &&
+        typeCounts.vocabulary === 4 &&
+        typeCounts.collocation === 8 &&
+        typeCounts.short_sentence === 5 &&
+        typeCounts.word_family === 3;
+
+      if (!isValid) {
+        return jsonResponse({ error: "AI returned invalid Vocabulary Match pairs" }, 502);
+      }
+
+      return jsonResponse({
+        material,
+        cards
+      });
+    }
+
     const cards = selectedScenes.map((scene, index) => normalizeCard(rawCards[index], index + 1, scene));
     const isValid = cards.every(
       (card) =>
