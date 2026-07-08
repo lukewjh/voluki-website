@@ -1813,11 +1813,13 @@ const itemsByType = sections.map((section) => ({
           : "下一个句型";
 
     const isVocabularyMatchQuiz = (material) => material?.type === "vocabulary";
+    const isChunkMatchQuiz = (material) => material?.type === "chunk";
+    const isMatchingQuiz = (material) => isVocabularyMatchQuiz(material) || isChunkMatchQuiz(material);
 
     const getQuizExpectedCount = (material) =>
-      material?.type === "chunk" ? 5 : isVocabularyMatchQuiz(material) ? 20 : 3;
+      isChunkMatchQuiz(material) ? 24 : isVocabularyMatchQuiz(material) ? 20 : 3;
 
-    const getVocabularyRoundSize = () => 5;
+    const getVocabularyRoundSize = () => (isChunkMatchQuiz(quizState.material) ? 6 : 5);
 
     const getVocabularyRoundCount = () =>
       Math.ceil(getQuizExpectedCount(quizState.material) / getVocabularyRoundSize());
@@ -1834,7 +1836,9 @@ const itemsByType = sections.map((section) => ({
     };
 
     const getVocabularyTypeLabel = (type) =>
-      type === "collocation"
+      isChunkMatchQuiz(quizState.material)
+        ? type
+        : type === "collocation"
         ? "Collocation"
         : type === "short_sentence"
           ? "Context"
@@ -1849,6 +1853,56 @@ const itemsByType = sections.map((section) => ({
       const seconds = String(elapsedSeconds % 60).padStart(2, "0");
 
       return `${minutes}:${seconds}`;
+    };
+
+    let quizAudioContext;
+
+    const getQuizAudioContext = () => {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return null;
+
+      if (!quizAudioContext) {
+        quizAudioContext = new AudioContext();
+      }
+
+      if (quizAudioContext.state === "suspended") {
+        quizAudioContext.resume().catch(() => {});
+      }
+
+      return quizAudioContext;
+    };
+
+    const playQuizTone = (type) => {
+      const context = getQuizAudioContext();
+      if (!context) return;
+
+      const toneSets = {
+        correct: [523.25, 659.25],
+        wrong: [196, 146.83],
+        round: [523.25, 659.25, 783.99],
+        complete: [523.25, 659.25, 783.99, 1046.5]
+      };
+      const tones = toneSets[type] ?? toneSets.correct;
+      const startAt = context.currentTime + 0.01;
+      const volume = type === "wrong" ? 0.032 : 0.042;
+      const noteLength = type === "complete" ? 0.09 : 0.075;
+
+      tones.forEach((frequency, index) => {
+        const oscillator = context.createOscillator();
+        const gain = context.createGain();
+        const noteStart = startAt + index * noteLength;
+        const noteEnd = noteStart + noteLength * 0.82;
+
+        oscillator.type = type === "wrong" ? "triangle" : "sine";
+        oscillator.frequency.setValueAtTime(frequency, noteStart);
+        gain.gain.setValueAtTime(0.0001, noteStart);
+        gain.gain.exponentialRampToValueAtTime(volume, noteStart + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001, noteEnd);
+        oscillator.connect(gain);
+        gain.connect(context.destination);
+        oscillator.start(noteStart);
+        oscillator.stop(noteEnd + 0.02);
+      });
     };
 
     const normalizeBuilderChunk = (value) =>
@@ -2207,7 +2261,7 @@ const itemsByType = sections.map((section) => ({
           <span class="rio-quiz-progress">Round ${quizState.currentIndex + 1}/${roundCount}</span>
           <span class="rio-vocab-match-total">${matchedTotal}/${expectedCount}</span>
         </div>
-        <p class="rio-quiz-scene">Vocabulary Match</p>
+        <p class="rio-quiz-scene">${isChunkMatchQuiz(quizState.material) ? "Chunk Match" : "Vocabulary Match"}</p>
         <div class="rio-vocab-match-board">
           <div class="rio-vocab-match-column" aria-label="English items">
             ${roundItems
@@ -2279,21 +2333,25 @@ const itemsByType = sections.map((section) => ({
 
           if (currentSelectedLeftId === rightId) {
             const nextMatchedIds = [...currentMatchedIds, rightId];
+            const isRoundComplete = nextMatchedIds.length === roundItems.length;
+            const isFinalRound = quizState.currentIndex >= roundCount - 1;
+            playQuizTone(isRoundComplete ? (isFinalRound ? "complete" : "round") : "correct");
             quizState.answers[quizState.currentIndex] = {
               ...currentAnswer,
               matchedIds: nextMatchedIds,
               selectedLeftId: "",
               wrongRightId: "",
-              isCorrect: nextMatchedIds.length === roundItems.length
+              isCorrect: isRoundComplete
             };
             renderVocabularyMatchRound();
 
-            if (nextMatchedIds.length === roundItems.length) {
+            if (isRoundComplete) {
               window.setTimeout(advanceVocabularyRound, 650);
             }
             return;
           }
 
+          playQuizTone("wrong");
           quizState.answers[quizState.currentIndex] = {
             ...currentAnswer,
             wrongRightId: rightId,
@@ -2318,7 +2376,7 @@ const itemsByType = sections.map((section) => ({
 
       stopQuizLoadingMessages();
 
-      if (isVocabularyMatchQuiz(quizState.material)) {
+      if (isMatchingQuiz(quizState.material)) {
         renderVocabularyMatchRound();
         return;
       }

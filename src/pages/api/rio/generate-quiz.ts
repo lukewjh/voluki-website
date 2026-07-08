@@ -30,6 +30,13 @@ type VocabularyMatchItem = {
   right: string;
 };
 
+type ChunkMatchItem = {
+  id: string;
+  type: string;
+  left: string;
+  right: string;
+};
+
 const scenes = [
   "教育",
   "科技",
@@ -144,6 +151,17 @@ const normalizeVocabularyMatchItem = (value: unknown, index: number): Vocabulary
   };
 };
 
+const normalizeChunkMatchItem = (value: unknown, index: number): ChunkMatchItem => {
+  const candidate = value && typeof value === "object" ? (value as Record<string, unknown>) : {};
+
+  return {
+    id: `chunk-${index + 1}`,
+    type: typeof candidate.type === "string" && candidate.type.trim() ? candidate.type.trim() : "Chunk",
+    left: typeof candidate.left === "string" ? candidate.left.trim() : "",
+    right: typeof candidate.right === "string" ? candidate.right.trim() : ""
+  };
+};
+
 const getMaterial = (body: Record<string, unknown>) => {
   const materialCandidate =
     body.material && typeof body.material === "object"
@@ -203,8 +221,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
     return jsonResponse({ error: "Unsupported Quiz material type" }, 400);
   }
 
-  const expectedCardCount = material.type === "chunk" ? 5 : material.type === "vocabulary" ? 20 : 3;
-  const selectedScenes = sample(scenes, expectedCardCount);
+  const expectedCardCount = material.type === "chunk" ? 24 : material.type === "vocabulary" ? 20 : 3;
+  const selectedSceneCount = material.type === "chunk" ? 8 : expectedCardCount;
+  const selectedScenes = sample(scenes, selectedSceneCount);
   const isChunkQuiz = material.type === "chunk";
   const isVocabularyQuiz = material.type === "vocabulary";
   const isAdverbQuiz = material.type === "adverb";
@@ -283,6 +302,35 @@ Rules:
 - Exactly one option must be correct on every multiple-choice card.
 - Keep feedback in Chinese and under 45 Chinese characters.
 - Keep all explanations out of the JSON except the feedback field.`;
+    systemPrompt = `You are an expert IELTS collocation trainer for Chinese learners.
+
+Create a Chunk Match sentence network for one target chunk.
+
+Return only valid JSON. Do not return Markdown, code fences, headings, or extra explanation.
+
+JSON shape:
+{
+  "cards": [
+    {
+      "id": "chunk-1",
+      "type": "Education",
+      "left": "Schools play a crucial role in child development.",
+      "right": "学校在儿童发展中发挥关键作用。"
+    }
+  ]
+}
+
+Rules:
+- Create exactly 24 matching pairs.
+- Use the provided 8 scenes. Create exactly 3 pairs for each scene.
+- Every left value must be one natural English sentence using the target chunk.
+- Each English sentence should be about 8-12 words where possible.
+- Sentences should be B1-C1, IELTS-writing friendly, and academically useful.
+- Vary subjects, objects, and sentence frames. Avoid repetitive templates.
+- Every right value must be a concise, natural Simplified Chinese translation.
+- Chinese answers in the same round should be distinguishable, so avoid near-duplicate translations.
+- The type field should be the English scene name, such as "Education", "Technology", or "Environment".
+- Do not include notes, explanations, Markdown, or fields outside id, type, left, and right.`;
   } else if (isVocabularyQuiz) {
     systemPrompt = `You are an expert IELTS vocabulary and reading trainer for Chinese learners.
 
@@ -444,7 +492,7 @@ ${selectedScenes.map((scene, index) => `${index + 1}. ${scene}`).join("\n")}`;
           }
         ],
         response_format: { type: "json_object" },
-        max_tokens: isVocabularyQuiz ? 3200 : 1800,
+        max_tokens: isChunkQuiz || isVocabularyQuiz ? 3600 : 1800,
         stream: false
       })
     });
@@ -479,6 +527,22 @@ ${selectedScenes.map((scene, index) => `${index + 1}. ${scene}`).join("\n")}`;
   try {
     const parsed = JSON.parse(outputText);
     const rawCards = Array.isArray(parsed.cards) ? parsed.cards : [];
+
+    if (isChunkQuiz) {
+      const cards = rawCards.map((item, index) => normalizeChunkMatchItem(item, index));
+      const isValid =
+        cards.length === expectedCardCount &&
+        cards.every((item) => item.id && item.type && item.left && item.right);
+
+      if (!isValid) {
+        return jsonResponse({ error: "AI returned invalid Chunk Match pairs" }, 502);
+      }
+
+      return jsonResponse({
+        material,
+        cards
+      });
+    }
 
     if (isVocabularyQuiz) {
       const cards = rawCards.map((item, index) => normalizeVocabularyMatchItem(item, index));
