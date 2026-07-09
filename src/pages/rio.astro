@@ -238,7 +238,7 @@ const itemsByType = sections.map((section) => ({
     </div>
 
     <div class="rio-quiz-modal" hidden data-rio-quiz-modal>
-      <div class="rio-modal-backdrop" data-rio-quiz-close></div>
+      <div class="rio-modal-backdrop"></div>
       <section
         class="rio-modal-card rio-quiz-card"
         role="dialog"
@@ -3133,7 +3133,6 @@ const itemsByType = sections.map((section) => ({
       if (event.key !== "Escape") return;
 
       if (quizModal instanceof HTMLElement && !quizModal.hidden) {
-        closeQuizModal();
         return;
       }
 
