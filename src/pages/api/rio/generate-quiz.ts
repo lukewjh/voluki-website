@@ -9,6 +9,14 @@ type QuizOption = {
   text: string;
 };
 
+type PatternBuilderSentence = {
+  scene: string;
+  chunks: string[];
+  answer_chunks: string[];
+  hint?: string;
+  feedback?: string;
+};
+
 type QuizCard = {
   index: number;
   scene: string;
@@ -17,6 +25,7 @@ type QuizCard = {
   target_text?: string;
   chunks?: string[];
   answer_chunks?: string[];
+  builder_sentences?: PatternBuilderSentence[];
   options: QuizOption[];
   correct_label: string;
   hint?: string;
@@ -105,6 +114,40 @@ const normalizeOption = (value: unknown, fallbackLabel: string): QuizOption => {
   };
 };
 
+const shuffleChunks = (chunks: string[]) => {
+  if (chunks.length < 2) return [...chunks];
+
+  let shuffled = sample(chunks, chunks.length);
+  if (shuffled.every((chunk, index) => chunk === chunks[index])) {
+    shuffled = [...chunks.slice(1), chunks[0]];
+  }
+
+  return shuffled;
+};
+
+const normalizePatternBuilderSentence = (
+  value: unknown,
+  fallbackScene: string
+): PatternBuilderSentence => {
+  const candidate = value && typeof value === "object" ? (value as Record<string, unknown>) : {};
+  const answerChunks = Array.isArray(candidate.answer_chunks)
+    ? candidate.answer_chunks.filter(
+        (item): item is string => typeof item === "string" && Boolean(item.trim())
+      )
+    : [];
+
+  return {
+    scene:
+      typeof candidate.scene === "string" && candidate.scene.trim()
+        ? candidate.scene.trim()
+        : fallbackScene,
+    chunks: shuffleChunks(answerChunks),
+    answer_chunks: answerChunks,
+    hint: typeof candidate.hint === "string" ? candidate.hint.trim() : undefined,
+    feedback: typeof candidate.feedback === "string" ? candidate.feedback.trim() : undefined
+  };
+};
+
 const normalizeCard = (value: unknown, index: number, scene: string): QuizCard => {
   const candidate = value && typeof value === "object" ? (value as Record<string, unknown>) : {};
   const rawOptions = Array.isArray(candidate.options) ? candidate.options : [];
@@ -128,6 +171,11 @@ const normalizeCard = (value: unknown, index: number, scene: string): QuizCard =
       : undefined,
     answer_chunks: Array.isArray(candidate.answer_chunks)
       ? candidate.answer_chunks.filter((item): item is string => typeof item === "string" && item.trim())
+      : undefined,
+    builder_sentences: Array.isArray(candidate.builder_sentences)
+      ? candidate.builder_sentences.map((item, builderIndex) =>
+          normalizePatternBuilderSentence(item, `${scene} ${builderIndex + 1}`)
+        )
       : undefined,
     options,
     correct_label: correctLabel,
@@ -205,6 +253,46 @@ const getMaterial = (body: Record<string, unknown>) => {
   };
 };
 
+const getBatchConfig = (body: Record<string, unknown>, materialType: string) => {
+  const requestedBatchIndex = Number(body.batchIndex);
+
+  if (materialType === "sentence_pattern") {
+    const batchIndex = Number.isInteger(requestedBatchIndex)
+      ? Math.min(Math.max(requestedBatchIndex, 0), 1)
+      : 0;
+
+    return {
+      totalCount: 4,
+      batchSize: batchIndex === 0 ? 3 : 1,
+      batchCount: 2,
+      batchIndex,
+      offset: batchIndex === 0 ? 0 : 3
+    };
+  }
+
+  const totalCount = materialType === "chunk" ? 24 : materialType === "vocabulary" ? 20 : 3;
+  const batchSize = materialType === "chunk" ? 6 : totalCount;
+  const batchCount = Math.ceil(totalCount / batchSize);
+  const batchIndex = Number.isInteger(requestedBatchIndex)
+    ? Math.min(Math.max(requestedBatchIndex, 0), batchCount - 1)
+    : 0;
+
+  return {
+    totalCount,
+    batchSize,
+    batchCount,
+    batchIndex,
+    offset: batchIndex * batchSize
+  };
+};
+
+const vocabularyTypeCounts = {
+  vocabulary: 4,
+  collocation: 8,
+  short_sentence: 5,
+  word_family: 3
+} as const;
+
 export const POST: APIRoute = async ({ request, locals }) => {
   const apiKey = getEnv(locals, "DEEPSEEK_API_KEY") ?? getEnv(locals, "OPENAI_API_KEY");
   const model = getEnv(locals, "OPENAI_MODEL") ?? "deepseek-v4-pro";
@@ -232,8 +320,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
     return jsonResponse({ error: "Unsupported Quiz material type" }, 400);
   }
 
-  const expectedCardCount = material.type === "chunk" ? 24 : material.type === "vocabulary" ? 20 : 3;
-  const selectedSceneCount = material.type === "chunk" ? 8 : expectedCardCount;
+  const batch = getBatchConfig(body, material.type);
+  const expectedCardCount = batch.batchSize;
+  const selectedSceneCount =
+    material.type === "chunk" ? 2 : material.type === "sentence_pattern" ? 3 : expectedCardCount;
   const selectedScenes = sample(scenes, selectedSceneCount);
   const isChunkQuiz = material.type === "chunk";
   const isVocabularyQuiz = material.type === "vocabulary";
@@ -334,12 +424,12 @@ JSON shape:
 }
 
 Rules:
-- Create exactly 24 matching pairs.
-- Use the provided 8 scenes. Create exactly 3 pairs for each scene.
+- Create exactly ${expectedCardCount} matching pairs for batch ${batch.batchIndex + 1} of ${batch.batchCount}.
+- Use the provided ${selectedSceneCount} scenes. Create exactly 3 pairs for each scene.
 - For each scene, use 3 different sentence types.
-- Across the full set, include a wide sentence-type mix. Aim to use at least 8 of these sentence types:
+- Include a wide sentence-type mix in this batch. Prefer different types across the two scenes:
   Declarative, Yes/No Question, Wh-Question, Negative Sentence, Passive Voice, Conditional, Concession, Cause/Result, Comparative, Emphasis, Inversion, Relative Clause, Noun Clause, There-be Pattern, It-as-Subject, Participle Phrase, Imperative, Rhetorical Question.
-- Do not let more than 10 of the 24 sentences be plain declarative sentences.
+- Do not let more than 3 sentences in this batch be plain declarative sentences.
 - If sentence-type diversity conflicts with valid JSON or natural English, prioritize valid JSON and natural English.
 - Questions must end with a question mark and be natural IELTS-style questions, not awkward grammar drills.
 - Inversion must be natural, such as "Not only does...", "Only when...", or "Rarely do...".
@@ -354,6 +444,7 @@ Rules:
 - The type field must combine scene and sentence_type, for example "Education / Passive Voice".
 - Do not include notes, explanations, Markdown, or fields outside id, type, scene, sentence_type, left, and right.`;
   } else if (isVocabularyQuiz) {
+    const typeCounts = vocabularyTypeCounts;
     systemPrompt = `You are an expert IELTS vocabulary and reading trainer for Chinese learners.
 
 Create a Vocabulary Match knowledge network for one target word.
@@ -373,16 +464,18 @@ JSON shape:
 }
 
 Rules:
-- Create exactly 20 matching pairs.
+- Create exactly ${expectedCardCount} matching pairs for batch ${batch.batchIndex + 1} of ${batch.batchCount}.
 - Mix these item types:
-  - exactly 4 "vocabulary" items: core meanings or very common direct translations.
-  - exactly 8 "collocation" items: IELTS/academic high-frequency collocations. This is the most important type.
-  - exactly 5 "short_sentence" items: natural B2-C1 sentences no more than 15 English words.
-  - exactly 3 "word_family" items: useful forms such as noun, verb forms, adjective, or adverb if natural.
+  - exactly ${typeCounts.vocabulary} "vocabulary" items: core meanings or very common direct translations.
+  - exactly ${typeCounts.collocation} "collocation" items: IELTS/academic high-frequency collocations. This is the most important type.
+  - exactly ${typeCounts.short_sentence} "short_sentence" items: natural B2-C1 sentences no more than 15 English words.
+  - exactly ${typeCounts.word_family} "word_family" items: useful forms such as noun, verb forms, adjective, or adverb if natural.
 - Randomly interleave the types; do not group all items of the same type together.
 - Every left value must be English.
 - Every right value must be concise Simplified Chinese.
 - Use the target word or its natural word-family form in every left value.
+- Every left value must be unique. Do not repeat the same expression, sentence frame, or meaning.
+- Before returning JSON, check the full set and replace near-duplicate collocations or translations.
 - Collocations must be natural IELTS/academic expressions, not rare or awkward phrases.
 - Short sentences must be brief, natural, and useful for writing.
 - Chinese answers in the same round should be distinguishable, so avoid near-duplicate translations.
@@ -445,7 +538,8 @@ Rules:
 - Do not add Chinese translations in options for adverb cards; options should stay visually quick to scan.
 - Keep all explanations out of the JSON except the feedback field.`;
   } else {
-    systemPrompt = `You are an expert IELTS reading trainer for Chinese learners.
+    systemPrompt = batch.batchIndex === 0
+      ? `You are an expert IELTS reading trainer for Chinese learners.
 
 Create sentence-pattern recognition quiz cards.
 
@@ -470,13 +564,50 @@ JSON shape:
 }
 
 Rules:
-- Create exactly 3 cards.
-- Use the same target sentence pattern in every English sentence.
+- Create exactly 3 recognition cards. Use the same target sentence pattern in every English sentence.
 - Use the provided scenes in order, one scene per card.
-- Each English sentence should be 25-45 words, natural, academic, and suitable for IELTS reading practice.
-- Each card must have exactly 4 Chinese translation options: A, B, C, D.
+- Each recognition sentence should be 25-45 words, natural, academic, and suitable for IELTS reading practice.
+- Every card must have exactly 4 Chinese translation options: A, B, C, D.
 - Exactly one option must be the accurate translation.
 - The other three options must be plausible but wrong. Make them wrong through common reading mistakes: reversed subject/object, wrong logical relation, wrong scope of modifier, missed negation, missed emphasis, or confused concession/cause/contrast.
+- Keep all explanations out of the JSON.`
+      : `You are an expert IELTS sentence-pattern trainer for Chinese learners.
+
+Create one semantic-block sentence-building card.
+
+Return only valid JSON. Do not return Markdown, code fences, headings, or extra explanation.
+
+JSON shape:
+{
+  "cards": [
+    {
+      "index": 4,
+      "scene": "Pattern Builder",
+      "question_type": "Pattern Builder",
+      "english_sentence": "Build three sentences with the target pattern.",
+      "builder_sentences": [
+        {
+          "scene": "Education",
+          "answer_chunks": ["meaningful block 1", "meaningful block 2", "meaningful block 3", "meaningful block 4", "meaningful block 5"],
+          "hint": "A short Chinese structure hint.",
+          "feedback": "A short Chinese explanation."
+        }
+      ],
+      "options": [],
+      "correct_label": "A"
+    }
+  ]
+}
+
+Rules:
+- Create exactly 1 card with question_type "Pattern Builder" and exactly 3 builder_sentences.
+- Each builder sentence must naturally and clearly use the target sentence pattern.
+- Make the three builder sentences progressively harder: about 15-20, 20-30, and 30-45 words.
+- Split each sentence into 5-8 meaningful semantic blocks in correct order under answer_chunks.
+- Never split into individual words. Keep articles, prepositions, auxiliaries, and their phrases together.
+- Do not return a shuffled chunks field; the application will shuffle answer_chunks.
+- Give every builder sentence a distinct IELTS topic scene, a concise Chinese hint, and a concise Chinese feedback note.
+- The card must use an empty options array and correct_label "A".
 - Keep all explanations out of the JSON.`;
   }
 
@@ -514,7 +645,13 @@ ${selectedScenes.map((scene, index) => `${index + 1}. ${scene}`).join("\n")}`;
           }
         ],
         response_format: { type: "json_object" },
-        max_tokens: isChunkQuiz ? 5200 : isVocabularyQuiz ? 3600 : 1800,
+        max_tokens: isChunkQuiz
+          ? 1600
+          : isVocabularyQuiz
+            ? 3600
+            : isAdverbQuiz || batch.batchIndex === 0
+              ? 1800
+              : 1400,
         stream: false
       })
     });
@@ -553,7 +690,7 @@ ${selectedScenes.map((scene, index) => `${index + 1}. ${scene}`).join("\n")}`;
     if (isChunkQuiz) {
       const cards = rawCards
         .slice(0, expectedCardCount)
-        .map((item, index) => normalizeChunkMatchItem(item, index));
+        .map((item, index) => normalizeChunkMatchItem(item, batch.offset + index));
       const isValid =
         cards.length === expectedCardCount &&
         cards.every((item) => item.id && item.type && item.left && item.right);
@@ -564,12 +701,16 @@ ${selectedScenes.map((scene, index) => `${index + 1}. ${scene}`).join("\n")}`;
 
       return jsonResponse({
         material,
-        cards
+        cards,
+        batch: { ...batch, hasMore: batch.batchIndex < batch.batchCount - 1 }
       });
     }
 
     if (isVocabularyQuiz) {
-      const cards = rawCards.map((item, index) => normalizeVocabularyMatchItem(item, index));
+      const cards = rawCards
+        .slice(0, expectedCardCount)
+        .map((item, index) => normalizeVocabularyMatchItem(item, batch.offset + index));
+      const expectedTypeCounts = vocabularyTypeCounts;
       const typeCounts = cards.reduce(
         (counts, item) => ({
           ...counts,
@@ -580,10 +721,10 @@ ${selectedScenes.map((scene, index) => `${index + 1}. ${scene}`).join("\n")}`;
       const isValid =
         cards.length === expectedCardCount &&
         cards.every((item) => item.id && item.left && item.right) &&
-        typeCounts.vocabulary === 4 &&
-        typeCounts.collocation === 8 &&
-        typeCounts.short_sentence === 5 &&
-        typeCounts.word_family === 3;
+        (typeCounts.vocabulary ?? 0) === expectedTypeCounts.vocabulary &&
+        (typeCounts.collocation ?? 0) === expectedTypeCounts.collocation &&
+        (typeCounts.short_sentence ?? 0) === expectedTypeCounts.short_sentence &&
+        (typeCounts.word_family ?? 0) === expectedTypeCounts.word_family;
 
       if (!isValid) {
         return jsonResponse({ error: "AI returned invalid Vocabulary Match pairs" }, 502);
@@ -591,11 +732,18 @@ ${selectedScenes.map((scene, index) => `${index + 1}. ${scene}`).join("\n")}`;
 
       return jsonResponse({
         material,
-        cards
+        cards,
+        batch: { ...batch, hasMore: batch.batchIndex < batch.batchCount - 1 }
       });
     }
 
-    const cards = selectedScenes.map((scene, index) => normalizeCard(rawCards[index], index + 1, scene));
+    const cards = Array.from({ length: expectedCardCount }, (_, index) =>
+      normalizeCard(
+        rawCards[index],
+        batch.offset + index + 1,
+        selectedScenes[index] ?? "Pattern Builder"
+      )
+    );
     const isValid = cards.every(
       (card) =>
         card.english_sentence &&
@@ -611,7 +759,16 @@ ${selectedScenes.map((scene, index) => `${index + 1}. ${scene}`).join("\n")}`;
         (!isVocabularyQuiz ||
           (card.target_text &&
             card.english_sentence.toLocaleLowerCase().includes(card.target_text.toLocaleLowerCase()))) &&
-        (card.question_type === "Sentence Builder" ||
+        (card.question_type === "Pattern Builder"
+          ? Array.isArray(card.builder_sentences) &&
+            card.builder_sentences.length === 3 &&
+            card.builder_sentences.every(
+              (sentence) =>
+                sentence.answer_chunks.length >= 5 &&
+                sentence.answer_chunks.length <= 8 &&
+                sentence.chunks.length === sentence.answer_chunks.length
+            )
+          : card.question_type === "Sentence Builder" ||
           (card.options.length === 4 &&
             card.options.every((option) => option.label && option.text) &&
             ["A", "B", "C", "D"].includes(card.correct_label)))
@@ -624,7 +781,8 @@ ${selectedScenes.map((scene, index) => `${index + 1}. ${scene}`).join("\n")}`;
     return jsonResponse({
       material,
       pattern: material.type === "sentence_pattern" ? material.text : undefined,
-      cards
+      cards,
+      batch: { ...batch, hasMore: false }
     });
   } catch {
     return jsonResponse({ error: "AI returned invalid Quiz JSON" }, 502);

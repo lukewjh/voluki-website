@@ -1584,6 +1584,10 @@ const itemsByType = sections.map((section) => ({
       currentIndex: 0,
       startedAt: 0,
       isLoading: false,
+      isBackgroundLoading: false,
+      nextBatchIndex: 0,
+      batchCount: 1,
+      batchError: "",
       generationId: 0,
       loadingMessageIndex: 0,
       loadingCycleTimer: undefined,
@@ -1844,10 +1848,17 @@ const itemsByType = sections.map((section) => ({
 
     const isVocabularyMatchQuiz = (material) => material?.type === "vocabulary";
     const isChunkMatchQuiz = (material) => material?.type === "chunk";
+    const isSentencePatternQuiz = (material) => material?.type === "sentence_pattern";
     const isMatchingQuiz = (material) => isVocabularyMatchQuiz(material) || isChunkMatchQuiz(material);
 
     const getQuizExpectedCount = (material) =>
-      isChunkMatchQuiz(material) ? 24 : isVocabularyMatchQuiz(material) ? 20 : 3;
+      isChunkMatchQuiz(material)
+        ? 24
+        : isVocabularyMatchQuiz(material)
+          ? 20
+          : isSentencePatternQuiz(material)
+            ? 4
+            : 3;
 
     const getVocabularyRoundSize = () => (isChunkMatchQuiz(quizState.material) ? 6 : 5);
 
@@ -2104,6 +2115,10 @@ const itemsByType = sections.map((section) => ({
       quizState.currentIndex = 0;
       quizState.startedAt = 0;
       quizState.isLoading = false;
+      quizState.isBackgroundLoading = false;
+      quizState.nextBatchIndex = 0;
+      quizState.batchCount = 1;
+      quizState.batchError = "";
       quizState.generationId += 1;
       document.body.style.overflow = "";
 
@@ -2294,10 +2309,42 @@ const itemsByType = sections.map((section) => ({
       renderQuizCard();
     };
 
+    const renderQuizBatchWait = () => {
+      if (!(quizStage instanceof HTMLElement)) return;
+
+      const hasError = Boolean(quizState.batchError);
+      quizStage.innerHTML = `<div class="rio-quiz-complete">
+        <span class="rio-quiz-progress">${quizState.cards.length}/${getQuizExpectedCount(quizState.material)}</span>
+        <p class="rio-analysis-placeholder">${escapeHtml(
+          hasError ? quizState.batchError : "下一批题目正在生成，请稍候…"
+        )}</p>
+        ${
+          hasError
+            ? '<div class="rio-quiz-retry-actions"><button class="rio-quiz-retry-button" type="button" data-rio-quiz-batch-retry>重试当前批次</button></div>'
+            : ""
+        }
+      </div>`;
+
+      quizStage.querySelector("[data-rio-quiz-batch-retry]")?.addEventListener("click", () => {
+        if (!quizState.material || quizState.isBackgroundLoading) return;
+        quizState.batchError = "";
+        renderQuizBatchWait();
+        void loadRemainingQuizBatches(
+          quizState.material,
+          quizState.generationId,
+          quizState.nextBatchIndex
+        );
+      });
+    };
+
     const renderVocabularyMatchRound = () => {
       if (!(quizStage instanceof HTMLElement)) return;
 
       const roundItems = getVocabularyRoundItems();
+      if (roundItems.length < getVocabularyRoundSize()) {
+        renderQuizBatchWait();
+        return;
+      }
       const roundCount = getVocabularyRoundCount();
       const expectedCount = getQuizExpectedCount(quizState.material);
       const answerState = quizState.answers[quizState.currentIndex] ?? {};
@@ -2451,12 +2498,164 @@ const itemsByType = sections.map((section) => ({
 
       const card = quizState.cards[quizState.currentIndex];
       if (!card) {
-        renderQuizComplete();
+        if (quizState.cards.length < getQuizExpectedCount(quizState.material)) {
+          renderQuizBatchWait();
+        } else {
+          renderQuizComplete();
+        }
         return;
       }
 
       const expectedCount = getQuizExpectedCount(quizState.material);
       const sceneLabel = [card.question_type, card.scene].filter(Boolean).join(" · ");
+
+      if (card.question_type === "Pattern Builder") {
+        const sentences = Array.isArray(card.builder_sentences) ? card.builder_sentences : [];
+        const answerState = quizState.answers[quizState.currentIndex] ?? {};
+        const step = Math.min(
+          Math.max(Number(answerState.patternBuilderStep) || 0, 0),
+          Math.max(sentences.length - 1, 0)
+        );
+        const selections = Array.from({ length: sentences.length }, (_, index) =>
+          Array.isArray(answerState.patternBuilderSelections?.[index])
+            ? [...answerState.patternBuilderSelections[index]]
+            : []
+        );
+        const completed = Array.from(
+          { length: sentences.length },
+          (_, index) => answerState.patternBuilderCompleted?.[index] === true
+        );
+        const sentence = sentences[step] ?? {};
+        const chunks = Array.isArray(sentence.chunks) ? sentence.chunks : [];
+        const answerChunks = Array.isArray(sentence.answer_chunks) ? sentence.answer_chunks : [];
+        const selectedIndexes = selections[step] ?? [];
+        const currentComplete = completed[step] === true;
+
+        const savePatternBuilderState = (extra = {}) => {
+          quizState.answers[quizState.currentIndex] = {
+            ...quizState.answers[quizState.currentIndex],
+            patternBuilderStep: step,
+            patternBuilderSelections: selections,
+            patternBuilderCompleted: completed,
+            isCorrect: completed.length === 3 && completed.every(Boolean),
+            ...extra
+          };
+        };
+
+        quizStage.innerHTML = `<article class="rio-quiz-question">
+          <span class="rio-quiz-progress">${quizState.currentIndex + 1}/${expectedCount}</span>
+          <p class="rio-quiz-scene">${escapeHtml(sentence.scene ?? "句型拼搭")} · Sentence ${step + 1}/${sentences.length}</p>
+          <p class="rio-quiz-sentence">用语义积木拼出一个自然、完整的句子。</p>
+          <div class="rio-quiz-builder">
+            <div class="rio-quiz-builder-pool">
+              ${chunks
+                .map(
+                  (chunk, index) =>
+                    `<button class="rio-quiz-builder-chip" type="button" data-rio-pattern-pick="${index}" ${
+                      currentComplete || selectedIndexes.includes(index) ? "disabled" : ""
+                    }>${escapeHtml(chunk)}</button>`
+                )
+                .join("")}
+            </div>
+            <div class="rio-quiz-builder-answer" data-rio-pattern-answer>
+              ${
+                selectedIndexes.length
+                  ? selectedIndexes
+                      .map(
+                        (chunkIndex, answerIndex) =>
+                          `<button class="rio-quiz-builder-chip" type="button" data-rio-pattern-remove="${answerIndex}" ${
+                            currentComplete ? "disabled" : ""
+                          }>${escapeHtml(chunks[chunkIndex] ?? "")}</button>`
+                      )
+                      .join("")
+                  : '<span class="rio-analysis-placeholder">点击上方语义块开始拼句</span>'
+              }
+            </div>
+            <div class="rio-quiz-builder-actions">
+              <button class="rio-quiz-builder-action" type="button" data-rio-pattern-reset ${
+                currentComplete ? "disabled" : ""
+              }>重排</button>
+              <button class="rio-quiz-builder-action primary" type="button" data-rio-pattern-check ${
+                currentComplete ? "disabled" : ""
+              }>检查</button>
+              ${
+                currentComplete && step < sentences.length - 1
+                  ? '<button class="rio-quiz-builder-action primary" type="button" data-rio-pattern-next>下一句</button>'
+                  : ""
+              }
+            </div>
+          </div>
+          <p class="rio-quiz-feedback">${escapeHtml(
+            answerState.feedbackText ?? sentence.hint ?? "先找句型主干，再安排修饰成分。"
+          )}</p>
+          ${renderQuizNav()}
+        </article>`;
+
+        quizStage.querySelectorAll("[data-rio-pattern-pick]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const index = Number(button.getAttribute("data-rio-pattern-pick"));
+            if (!Number.isFinite(index) || currentComplete || selectedIndexes.includes(index)) return;
+            selectedIndexes.push(index);
+            savePatternBuilderState({ feedbackText: "按句型主干和自然语序继续拼搭。" });
+            renderQuizCard();
+          });
+        });
+
+        quizStage.querySelectorAll("[data-rio-pattern-remove]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const index = Number(button.getAttribute("data-rio-pattern-remove"));
+            if (!Number.isFinite(index) || currentComplete) return;
+            selectedIndexes.splice(index, 1);
+            savePatternBuilderState({ feedbackText: "已撤回一个语义块。" });
+            renderQuizCard();
+          });
+        });
+
+        quizStage.querySelector("[data-rio-pattern-reset]")?.addEventListener("click", () => {
+          if (currentComplete) return;
+          selections[step] = [];
+          savePatternBuilderState({
+            patternBuilderSelections: selections,
+            feedbackText: sentence.hint ?? "先找句型主干，再安排修饰成分。"
+          });
+          renderQuizCard();
+        });
+
+        quizStage.querySelector("[data-rio-pattern-check]")?.addEventListener("click", () => {
+          if (currentComplete) return;
+          const selected = selectedIndexes.map((index) => normalizeBuilderChunk(chunks[index] ?? ""));
+          const expected = answerChunks.map(normalizeBuilderChunk);
+          const isCorrect =
+            selected.length === expected.length &&
+            selected.every((chunk, index) => chunk === expected[index]);
+
+          if (isCorrect) {
+            completed[step] = true;
+            playQuizTone(step === sentences.length - 1 ? "complete" : "correct");
+            savePatternBuilderState({
+              feedbackText: sentence.feedback ?? "正确，句型结构和语序都很自然。"
+            });
+          } else {
+            playQuizTone("wrong");
+            savePatternBuilderState({
+              feedbackText: sentence.hint ?? "再检查句型主干、从句位置和逻辑顺序。"
+            });
+          }
+          renderQuizCard();
+        });
+
+        quizStage.querySelector("[data-rio-pattern-next]")?.addEventListener("click", () => {
+          if (!currentComplete || step >= sentences.length - 1) return;
+          savePatternBuilderState({
+            patternBuilderStep: step + 1,
+            feedbackText: sentences[step + 1]?.hint ?? "先找句型主干，再安排修饰成分。"
+          });
+          renderQuizCard();
+        });
+
+        bindQuizNav();
+        return;
+      }
 
       if (card.question_type === "Sentence Builder") {
         const chunks = Array.isArray(card.chunks) ? card.chunks : [];
@@ -2695,6 +2894,92 @@ const itemsByType = sections.map((section) => ({
       bindQuizNav();
     };
 
+    const requestQuizBatch = async (material, batchIndex) => {
+      const response = await fetch("/api/rio/generate-quiz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          material: {
+            id: material.id,
+            type: material.type,
+            text: material.text
+          },
+          batchIndex
+        })
+      });
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data.error ?? "Quiz 生成失败，请稍后重试。");
+      }
+
+      const cards = Array.isArray(data.cards) ? data.cards : [];
+      const expectedBatchSize = isChunkMatchQuiz(material)
+        ? 6
+        : isVocabularyMatchQuiz(material)
+          ? 20
+          : isSentencePatternQuiz(material)
+            ? batchIndex === 0
+              ? 3
+              : 1
+          : getQuizExpectedCount(material);
+
+      if (cards.length !== expectedBatchSize) {
+        throw new Error(`AI 没有返回完整的 ${expectedBatchSize} 张 Quiz 卡片。`);
+      }
+
+      return { cards, batch: data.batch ?? {} };
+    };
+
+    async function loadRemainingQuizBatches(material, currentGeneration, startBatchIndex) {
+      if (
+        (!isMatchingQuiz(material) && !isSentencePatternQuiz(material)) ||
+        quizState.isBackgroundLoading
+      ) return;
+
+      quizState.isBackgroundLoading = true;
+      quizState.batchError = "";
+
+      try {
+        for (
+          let batchIndex = startBatchIndex;
+          batchIndex < quizState.batchCount;
+          batchIndex += 1
+        ) {
+          const data = await requestQuizBatch(material, batchIndex);
+          if (currentGeneration !== quizState.generationId) return;
+
+          const currentItemStart = isMatchingQuiz(material)
+            ? quizState.currentIndex * getVocabularyRoundSize()
+            : quizState.currentIndex;
+          const wasWaitingForCurrentItem = currentItemStart >= quizState.cards.length;
+          const nextCards = isMatchingQuiz(material)
+            ? (() => {
+                const existingIds = new Set(quizState.cards.map((card) => card.id));
+                return data.cards.filter((card) => !existingIds.has(card.id));
+              })()
+            : data.cards;
+          quizState.cards.push(...nextCards);
+          quizState.nextBatchIndex = batchIndex + 1;
+
+          if (wasWaitingForCurrentItem) renderQuizCard();
+        }
+      } catch (error) {
+        if (currentGeneration !== quizState.generationId) return;
+        quizState.batchError =
+          error instanceof Error ? error.message : "后续 Quiz 生成失败，请重试当前批次。";
+
+        const currentItemStart = isMatchingQuiz(material)
+          ? quizState.currentIndex * getVocabularyRoundSize()
+          : quizState.currentIndex;
+        if (currentItemStart >= quizState.cards.length) renderQuizBatchWait();
+      } finally {
+        if (currentGeneration === quizState.generationId) {
+          quizState.isBackgroundLoading = false;
+        }
+      }
+    }
+
     const generateQuiz = async (material) => {
       const currentGeneration = quizState.generationId + 1;
 
@@ -2704,37 +2989,29 @@ const itemsByType = sections.map((section) => ({
       quizState.answers = [];
       quizState.currentIndex = 0;
       quizState.startedAt = Date.now();
+      quizState.isBackgroundLoading = false;
+      quizState.nextBatchIndex = 0;
+      quizState.batchCount = 1;
+      quizState.batchError = "";
       renderQuizLoading();
 
       try {
-        const response = await fetch("/api/rio/generate-quiz", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            material: {
-              id: material.id,
-              type: material.type,
-              text: material.text
-            }
-          })
-        });
-        const data = await response.json().catch(() => ({}));
+        const data = await requestQuizBatch(material, 0);
 
         if (currentGeneration !== quizState.generationId) return;
 
-        if (!response.ok) {
-          throw new Error(data.error ?? "Quiz 生成失败，请稍后重试。");
-        }
-
-        quizState.cards = Array.isArray(data.cards) ? data.cards : [];
-        const expectedCount = getQuizExpectedCount(material);
-        if (quizState.cards.length !== expectedCount) {
-          throw new Error(`AI 没有返回完整的 ${expectedCount} 张 Quiz 卡片。`);
-        }
+        quizState.cards = data.cards;
+        quizState.batchCount = Number(data.batch.batchCount) || 1;
+        quizState.nextBatchIndex = 1;
+        quizState.isLoading = false;
 
         renderQuizCard();
+        if (
+          (isMatchingQuiz(material) || isSentencePatternQuiz(material)) &&
+          quizState.nextBatchIndex < quizState.batchCount
+        ) {
+          void loadRemainingQuizBatches(material, currentGeneration, quizState.nextBatchIndex);
+        }
       } catch (error) {
         if (currentGeneration !== quizState.generationId) return;
 
