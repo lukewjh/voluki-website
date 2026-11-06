@@ -1521,6 +1521,7 @@ const itemsByType = sections.map((section) => ({
   </style>
 
   <script>
+    import { aiRequestHeaders } from "../lib/aiClient";
     const modal = document.querySelector("[data-rio-modal]");
     const modalCard = document.querySelector(".rio-modal-card");
     const openButton = document.querySelector("[data-rio-modal-open]");
@@ -2897,7 +2898,7 @@ const itemsByType = sections.map((section) => ({
     const requestQuizBatch = async (material, batchIndex) => {
       const response = await fetch("/api/rio/generate-quiz", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: aiRequestHeaders(),
         body: JSON.stringify({
           material: {
             id: material.id,
@@ -3090,9 +3091,7 @@ const itemsByType = sections.map((section) => ({
       try {
         const response = await fetch("/api/rio/generate", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: aiRequestHeaders(),
           body: JSON.stringify({
             selected: getSelectedPayload()
           }),
@@ -3327,9 +3326,7 @@ const itemsByType = sections.map((section) => ({
       try {
         const response = await fetch("/api/rio/check-grammar", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: aiRequestHeaders(),
           body: JSON.stringify({
             challenges: modalState.challenges,
             user_answers: modalState.userAnswers.map((answer) => answer.trim()),

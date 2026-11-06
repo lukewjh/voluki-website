@@ -1677,6 +1677,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   </style>
 
   <script>
+    import { aiRequestHeaders } from "../lib/aiClient";
     import MarkdownIt from "markdown-it";
 
     const markdown = new MarkdownIt({
@@ -2013,7 +2014,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const postJson = async (url, body) => {
       const response = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: aiRequestHeaders(),
         body: JSON.stringify(body)
       });
 

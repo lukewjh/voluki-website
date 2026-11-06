@@ -1,4 +1,5 @@
 ---
+import AiSettings from "../components/AiSettings.astro";
 interface Props {
   title?: string;
   description?: string;
@@ -32,6 +33,7 @@ const isHomePage = Astro.url.pathname === "/";
           {!isHomePage && <a href="/blog">文章</a>}
           <a href="/about">关于</a>
         </nav>
+        <AiSettings />
         <button class="theme-toggle" type="button" aria-label="切换深色模式">
           <svg aria-hidden="true" viewBox="0 0 24 24">
             <path d="M21 13.2A7.2 7.2 0 0 1 10.8 3 8.7 8.7 0 1 0 21 13.2Z" />

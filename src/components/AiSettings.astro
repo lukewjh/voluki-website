@@ -1,0 +1,101 @@
+<button class="ai-settings-toggle" type="button" aria-label="AI 请求设置" aria-haspopup="dialog" aria-controls="ai-settings-dialog" title="AI 请求设置">
+  <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9.5 3-.6 2.3-1.6.9L5 5.6 2.5 9.9l1.7 1.7v1.8l-1.7 1.7L5 19.4l2.3-.6 1.6.9.6 2.3h5l.6-2.3 1.6-.9 2.3.6 2.5-4.3-1.7-1.7v-1.8l1.7-1.7L19 5.6l-2.3.6-1.6-.9L14.5 3Z"/><circle cx="12" cy="12.5" r="3"/></svg>
+</button>
+<dialog id="ai-settings-dialog" aria-labelledby="ai-settings-title" aria-describedby="ai-settings-description">
+  <form id="ai-settings-form">
+    <div class="ai-settings-heading"><h2 id="ai-settings-title">AI 请求设置</h2><button type="button" class="ai-settings-close" aria-label="关闭 AI 设置">×</button></div>
+    <p id="ai-settings-description">配置用于写作练习和 RIO，保存后对下一次 AI 请求生效。</p>
+    <p class="ai-settings-mode" id="ai-settings-mode"></p>
+    <label for="ai-api-key">API Key <small>DEEPSEEK_API_KEY / OPENAI_API_KEY</small></label>
+    <input id="ai-api-key" type="password" autocomplete="off" spellcheck="false" placeholder="输入你的 API Key" required maxlength="2048" />
+    <label for="ai-model">模型名称 <small>OPENAI_MODEL</small></label>
+    <input id="ai-model" type="text" autocomplete="off" spellcheck="false" placeholder="例如 deepseek-v4-pro" required maxlength="200" />
+    <label for="ai-base-url">API Base URL <small>AI_BASE_URL</small></label>
+    <input id="ai-base-url" type="url" autocomplete="off" spellcheck="false" placeholder="https://api.deepseek.com" required maxlength="2048" aria-describedby="ai-base-url-help" />
+    <p id="ai-base-url-help" class="ai-settings-hint">支持 Chat Completions 兼容接口，例如 https://api.openai.com/v1。</p>
+    <p class="ai-settings-hint">配置仅保存在当前标签页会话中，刷新仍有效，关闭标签页后清除。你填写的密钥会随请求发往本站后端，再用于所填 AI 地址。服务器默认密钥不会显示在此处。</p>
+    <p id="ai-settings-status" role="status" aria-live="polite"></p>
+    <div class="ai-settings-footer"><button type="button" id="ai-settings-reset">恢复默认</button><button type="submit" class="ai-settings-save">保存配置</button></div>
+  </form>
+</dialog>
+
+<script>
+  import { readAiSettings, saveAiSettings } from "../lib/aiClient";
+  import { validateAiSettings } from "../lib/aiSettings";
+
+  const dialog = document.querySelector<HTMLDialogElement>("#ai-settings-dialog")!;
+  const form = document.querySelector<HTMLFormElement>("#ai-settings-form")!;
+  const toggle = document.querySelector<HTMLButtonElement>(".ai-settings-toggle")!;
+  const apiKey = document.querySelector<HTMLInputElement>("#ai-api-key")!;
+  const model = document.querySelector<HTMLInputElement>("#ai-model")!;
+  const baseUrl = document.querySelector<HTMLInputElement>("#ai-base-url")!;
+  const status = document.querySelector<HTMLElement>("#ai-settings-status")!;
+  const mode = document.querySelector<HTMLElement>("#ai-settings-mode")!;
+  const updateMode = (custom: boolean) => {
+    mode.textContent = custom ? "当前：自定义配置" : "当前：服务器默认配置";
+    toggle.classList.toggle("is-configured", custom);
+  };
+  const showError = (error: unknown) => {
+    status.textContent = error instanceof Error ? error.message : "无法保存配置，请检查浏览器是否允许会话存储。";
+  };
+  try { updateMode(Boolean(readAiSettings())); } catch { /* Opening the dialog offers recovery. */ }
+  toggle.addEventListener("click", () => {
+    form.reset();
+    status.textContent = "";
+    try {
+      const settings = readAiSettings();
+      apiKey.value = settings?.apiKey ?? "";
+      model.value = settings?.model ?? "";
+      baseUrl.value = settings?.baseUrl ?? "";
+      updateMode(Boolean(settings));
+    } catch { status.textContent = "无法读取已保存配置，请重新填写或恢复默认。"; }
+    dialog.showModal();
+  });
+  dialog.querySelector(".ai-settings-close")!.addEventListener("click", () => dialog.close());
+  dialog.addEventListener("click", (event) => {
+    const bounds = dialog.getBoundingClientRect();
+    if (event.target === dialog && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) dialog.close();
+  });
+  dialog.addEventListener("close", () => { form.reset(); });
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    try {
+      const settings = validateAiSettings({ apiKey: apiKey.value, model: model.value, baseUrl: baseUrl.value });
+      saveAiSettings(settings);
+      baseUrl.value = settings.baseUrl;
+      updateMode(true);
+      status.textContent = "已保存，下一次 AI 请求将使用此配置。";
+    } catch (error) { showError(error); }
+  });
+  document.querySelector("#ai-settings-reset")!.addEventListener("click", () => {
+    try {
+      saveAiSettings(null);
+      form.reset();
+      updateMode(false);
+      status.textContent = "已恢复服务器默认配置。";
+    } catch (error) { showError(error); }
+  });
+</script>
+
+<style>
+  .ai-settings-toggle { position: relative; display: grid; flex: 0 0 32px; width: 32px; height: 32px; padding: 5px; place-items: center; color: var(--text); background: transparent; border: 1px solid var(--line); border-radius: 4px; cursor: pointer; }
+  .ai-settings-toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linejoin: round; }
+  .ai-settings-toggle.is-configured::after { content: ""; position: absolute; right: -3px; top: -3px; width: 7px; height: 7px; border-radius: 50%; background: var(--text); border: 1px solid var(--bg); }
+  dialog { width: min(520px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 28px; color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow-y: auto; }
+  dialog::backdrop { background: rgb(0 0 0 / 48%); }
+  .ai-settings-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+  h2 { margin: 0; font-size: 22px; }
+  p { margin: 0 0 16px; font-size: 14px; color: var(--muted); }
+  .ai-settings-mode { display: inline-block; padding: 4px 10px; background: var(--surface-soft); border-radius: 4px; color: var(--text); font-size: 12px; }
+  label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 650; }
+  small { display: block; color: var(--muted); font-size: 11px; font-weight: 400; overflow-wrap: anywhere; }
+  input { width: 100%; min-width: 0; padding: 10px 12px; margin-bottom: 18px; border: 1px solid var(--line); border-radius: 5px; color: var(--text); background: var(--bg); font-size: 16px; }
+  .ai-settings-hint { font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
+  #ai-settings-status { color: var(--text); min-height: 24px; }
+  .ai-settings-footer { display: flex; justify-content: space-between; gap: 12px; }
+  button { cursor: pointer; color: var(--text); background: var(--surface); border: 1px solid var(--line); padding: 9px 14px; border-radius: 5px; }
+  .ai-settings-close { border: 0; padding: 0; width: 32px; height: 32px; font-size: 26px; line-height: 1; }
+  .ai-settings-save { color: var(--bg); background: var(--text); border-color: var(--text); }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+  @media (max-width: 480px) { dialog { padding: 20px; } }
+</style>

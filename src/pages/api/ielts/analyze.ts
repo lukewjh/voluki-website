@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { getEnv } from "../../../lib/env";
+import { resolveAiConfig } from "../../../lib/aiConfig";
 import { getErrorMessage, readJsonBody } from "../../../lib/readJsonBody";
 
 export const prerender = false;
@@ -14,12 +14,12 @@ const extractOutputText = (data: any) => {
 };
 
 export const POST: APIRoute = async ({ request, locals }) => {
-  const apiKey = getEnv(locals, "DEEPSEEK_API_KEY") ?? getEnv(locals, "OPENAI_API_KEY");
-  const model = getEnv(locals, "OPENAI_MODEL") ?? "deepseek-v4-pro";
-  const apiBaseUrl = getEnv(locals, "AI_BASE_URL") ?? "https://api.deepseek.com";
+  const config = resolveAiConfig(request, locals);
+  if (config instanceof Response) return config;
+  const { apiKey, model, apiBaseUrl } = config;
 
   if (!apiKey) {
-    return new Response(JSON.stringify({ error: "Missing DEEPSEEK_API_KEY" }), {
+    return new Response(JSON.stringify({ error: "请在顶部 AI 设置中填写配置，或配置服务器 DEEPSEEK_API_KEY。" }), {
       status: 500,
       headers: { "Content-Type": "application/json" }
     });
@@ -49,6 +49,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
   try {
     response = await fetch(`${apiBaseUrl}/chat/completions`, {
+      redirect: "error",
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,

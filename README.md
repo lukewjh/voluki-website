@@ -30,6 +30,16 @@ Your post goes here.
 - Build command: `npm run build`
 - Output directory: `dist`
 
+## AI 请求设置
+
+顶部齿轮图标可配置 API Key、模型名称（`OPENAI_MODEL`）和 API Base URL（`AI_BASE_URL`）。支持 Chat Completions 兼容的 HTTPS 接口。三个字段填写完整并保存后，写作练习和 RIO 的下一次 AI 请求即使用自定义配置，无需重新部署。
+
+配置保存在当前标签页的 `sessionStorage` 中，刷新及同标签页页面跳转后仍有效。点击「恢复默认」可清除自定义配置，重新使用服务器环境变量。此操作只覆盖当前会话的请求参数，不修改 `.env` 或 Cloudflare 环境变量，也不影响其他访客。浏览器恢复已关闭会话时可能恢复会话存储；需要明确清除密钥时请点击「恢复默认」。
+
+自定义地址必须搭配用户自己填写的密钥；后端不会将服务器密钥用于自定义地址，也不会回传服务器密钥。请求禁用上游重定向。
+
+配置及请求集成检查：`node --test tests/ai-settings.test.mjs`（使用模拟 AI 响应，不调用付费接口）。
+
 ## Vibe Coding
 ### 2026.6.11
 新增了SRT Console（Sentence Reverse Translation Console）
