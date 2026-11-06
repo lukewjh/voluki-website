@@ -1,0 +1,68 @@
+media:
+  input: public/content_imgs
+  output: /blog-media
+  extensions: [png, jpg, jpeg, webp, gif, avif]
+  rename: safe
+
+content:
+  - name: blog
+    label: 博客文章
+    type: collection
+    path: src/content/blog
+    format: yaml-frontmatter
+    subfolders: false
+    filename:
+      template: "{year}-{month}-{day}-{primary}.md"
+      field: create
+    operations:
+      rename: false
+    view:
+      primary: title
+      fields: [title, date, draft, tags]
+      sort: date
+      order: desc
+    fields:
+      - name: title
+        label: 标题
+        type: string
+        required: true
+      - name: description
+        label: 摘要
+        type: text
+        required: true
+      - name: date
+        label: 发布日期
+        type: date
+        required: true
+        options:
+          format: yyyy-MM-dd
+      - name: updated
+        label: 更新日期
+        type: date
+        default: ""
+        options:
+          format: yyyy-MM-dd
+      - name: tags
+        label: 标签
+        type: string
+        list: true
+      - name: category
+        label: 分类
+        type: string
+      - name: image
+        label: 封面图片
+        type: image
+      - name: imageAlt
+        label: 封面图片描述
+        type: string
+      - name: draft
+        label: 草稿
+        type: boolean
+        default: true
+        description: 开启时仅保存草稿；关闭后保存，文章会在短缓存更新后公开展示。
+      - name: body
+        label: 正文
+        type: rich-text
+        required: true
+        options:
+          format: markdown

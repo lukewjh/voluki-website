@@ -3,6 +3,7 @@ title: "会动的静态图"
 description: "为什么有些图明明是静态图，但是看起来在动？"
 date: "2026-06-25"
 tags: ["其他"]
+draft: false
 ---
 
 <p align="center">

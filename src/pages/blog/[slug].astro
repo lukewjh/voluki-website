@@ -1,40 +1,56 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getBlog } from "../../lib/blog";
+import { blogImageUrl, type BlogPost } from "../../lib/blogMarkdown";
+import "highlight.js/styles/github-dark.css";
 
-export async function getStaticPaths() {
-  const posts = (await getCollection("blog")).filter((post) => !post.data.draft);
-
-  return posts.map((post) => ({
-    params: { slug: post.slug },
-    props: { post }
-  }));
+export const prerender = false;
+Astro.response.headers.set("Cache-Control", "no-store");
+let post: BlogPost | undefined;
+let unavailable = false;
+try {
+  post = (await getBlog(Astro)).posts.find((entry) => entry.slug === Astro.params.slug);
+  if (!post) {
+    Astro.response.status = 404;
+    Astro.response.statusText = "Not Found";
+  }
+} catch (error) {
+  unavailable = true;
+  Astro.response.status = 503;
+  Astro.response.statusText = "Service Unavailable";
+  Astro.response.headers.set("Retry-After", "60");
+  console.error("Blog content is temporarily unavailable:", error instanceof Error ? error.message : "Unknown error");
 }
-
-const { post } = Astro.props;
-const { Content } = await post.render();
 ---
 
-<BaseLayout title={post.data.title} description={post.data.description}>
-  <article class="article">
-    <header class="article-header">
-      <time datetime={post.data.date.toISOString()}>
-        {post.data.date.toLocaleDateString("zh-CN", {
-          year: "numeric",
-          month: "long",
-          day: "numeric"
-        })}
-      </time>
-      <h1>{post.data.title}</h1>
-      <p>{post.data.description}</p>
-      {post.data.tags.length > 0 && (
-        <div class="tags">
-          {post.data.tags.map((tag) => <span>{tag}</span>)}
-        </div>
-      )}
-    </header>
-    <div class="prose">
-      <Content />
-    </div>
-  </article>
+<BaseLayout title={post?.data.title ?? (unavailable ? "文章暂时无法加载" : "文章未找到")} description={post?.data.description}>
+  {post ? (
+    <article class="article">
+      <header class="article-header">
+        <time datetime={post.data.date.toISOString()}>
+          {post.data.date.toLocaleDateString("zh-CN", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            timeZone: "Asia/Shanghai"
+          })}
+        </time>
+        <h1>{post.data.title}</h1>
+        <p>{post.data.description}</p>
+        {post.data.tags.length > 0 && (
+          <div class="tags">
+            {post.data.tags.map((tag) => <span>{tag}</span>)}
+          </div>
+        )}
+      </header>
+      {post.data.image && <img class="article-cover" src={blogImageUrl(post.data.image)} alt={post.data.imageAlt ?? post.data.title} />}
+      <div class="prose" set:html={post.html} />
+    </article>
+  ) : (
+    <section class="page-head">
+      <h1>{unavailable ? "文章暂时无法加载" : "文章未找到"}</h1>
+      <p>{unavailable ? "请稍后重试。" : "这篇文章可能尚未发布，或链接已发生变化。"}</p>
+      <p><a href="/blog/">返回文章列表</a></p>
+    </section>
+  )}
 </BaseLayout>

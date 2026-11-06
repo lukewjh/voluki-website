@@ -55,7 +55,7 @@ test("split API sends the configured key, model and endpoint to the AI provider"
     assert.equal(url, "https://api.openai.com/v1/chat/completions");
     assert.equal(options.headers.Authorization, "Bearer test-user-key");
     assert.equal(JSON.parse(options.body).model, "test-model");
-    assert.equal(options.redirect, "error");
+    assert.equal(options.redirect, "manual");
     return Response.json({ choices: [{ message: { content: JSON.stringify({ sentences: [{ sequence: 1, english_text: "Hello.", chinese_text: "你好。" }] }) } }] });
   };
   try {

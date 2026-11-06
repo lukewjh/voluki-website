@@ -12,7 +12,11 @@ npm run build
 
 ## Writing
 
-Add posts in `src/content/blog`.
+博客已接入 Pages CMS 配置。日常可在 [Pages CMS](https://app.pagescms.org/) 管理 `lukewjh/voluki-website` 的 `main` 分支，支持可视化写作、图片上传和草稿。生产博客动态读取 GitHub 内容，正常缓存窗口约 60 秒，纯文章更新无需重新构建。
+
+首次接入需完成 GitHub App 授权、Cloudflare 的只读 `BLOG_GITHUB_TOKEN` 和构建监听路径配置，详见 [博客 CMS 接入说明](docs/blog-cms.md)。
+
+本地开发仍可直接编辑 `src/content/blog`。
 
 ```md
 ---

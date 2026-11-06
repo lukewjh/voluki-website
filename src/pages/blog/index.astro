@@ -1,10 +1,21 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getBlog } from "../../lib/blog";
+import type { BlogPost } from "../../lib/blogMarkdown";
 
-const posts = (await getCollection("blog"))
-  .filter((post) => !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+export const prerender = false;
+Astro.response.headers.set("Cache-Control", "no-store");
+let posts: BlogPost[] = [];
+let unavailable = false;
+try {
+  posts = (await getBlog(Astro)).posts;
+} catch (error) {
+  unavailable = true;
+  Astro.response.status = 503;
+  Astro.response.statusText = "Service Unavailable";
+  Astro.response.headers.set("Retry-After", "60");
+  console.error("Blog content is temporarily unavailable:", error instanceof Error ? error.message : "Unknown error");
+}
 ---
 
 <BaseLayout title="文章" description="Voluki 的文章列表。">
@@ -13,15 +24,18 @@ const posts = (await getCollection("blog"))
     <p>所有公开发布的文字都会在这里。</p>
   </section>
 
+  {unavailable && <p class="prose">文章暂时无法加载，请稍后重试。</p>}
+  {!unavailable && posts.length === 0 && <p class="prose">还没有公开发布的文章。</p>}
   <div class="post-list">
     {posts.map((post) => (
       <article class="post-item">
-        <a href={`/blog/${post.slug}/`}>
+        <a href={`/blog/${encodeURIComponent(post.slug)}/`}>
           <time datetime={post.data.date.toISOString()}>
             {post.data.date.toLocaleDateString("zh-CN", {
               year: "numeric",
               month: "2-digit",
-              day: "2-digit"
+              day: "2-digit",
+              timeZone: "Asia/Shanghai"
             })}
           </time>
           <h2>{post.data.title}</h2>

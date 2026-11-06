@@ -281,7 +281,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
   try {
     response = await fetch(`${apiBaseUrl}/chat/completions`, {
-      redirect: "error",
+      redirect: "manual",
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,

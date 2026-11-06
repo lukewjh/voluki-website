@@ -781,6 +781,34 @@ h3 {
   border-bottom: 1px solid currentColor;
 }
 
+.article-cover {
+  display: block;
+  width: 100%;
+  max-height: 520px;
+  margin-top: 30px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+}
+
+.prose table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin-bottom: 22px;
+}
+
+.prose th,
+.prose td {
+  border: 1px solid var(--line);
+  padding: 8px 12px;
+}
+
 .prose code {
   border-radius: 5px;
   background: var(--surface-soft);

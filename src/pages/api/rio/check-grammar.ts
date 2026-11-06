@@ -186,7 +186,7 @@ User answer: ${userAnswers[index]}`;
 
   try {
     response = await fetch(`${apiBaseUrl}/chat/completions`, {
-      redirect: "error",
+      redirect: "manual",
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,

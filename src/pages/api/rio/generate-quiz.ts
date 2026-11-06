@@ -627,7 +627,7 @@ ${selectedScenes.map((scene, index) => `${index + 1}. ${scene}`).join("\n")}`;
 
   try {
     response = await fetch(`${apiBaseUrl}/chat/completions`, {
-      redirect: "error",
+      redirect: "manual",
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
