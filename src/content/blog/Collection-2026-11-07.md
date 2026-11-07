@@ -18,5 +18,11 @@ draft: false
 
 ## chunks
 
+> obscure jargon  晦涩的行话
+>
+> And it often doesn’t feel worth it to learn more because documentation about the terminal is so fragmented and full of obscure jargon.
+
+
+
 ## sentence pattern
 
