@@ -8,6 +8,14 @@ draft: false
 ---
 ## vocabulary
 
+> portfolio 投资组合
+>
+> an investment portfolio
+
+
+
+&nbsp;
+
 ## chunks
 
 ## sentence pattern
