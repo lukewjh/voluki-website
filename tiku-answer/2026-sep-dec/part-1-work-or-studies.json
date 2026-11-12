@@ -11,110 +11,98 @@
       "questions": [
         {
           "id": "p1-work-or-studies-student-01",
-          "variant": "student",
           "prompt": "What subjects are you studying?",
+          "variant": "student",
           "answers": {
-            "basic": "I'm studying computer science. My classes cover programming and databases, and I like the projects where we have to build something that actually works. For a database assignment, I enjoyed deciding where to store the information and then checking whether I could find it again easily.",
-            "upgraded": null
+            "basic": "I'm studying computer science. My classes cover programming and databases, and I like the projects where we have to build something that actually works. For a database assignment, I enjoyed deciding where to store the information and then checking whether I could find it again easily."
           }
         },
         {
           "id": "p1-work-or-studies-student-02",
-          "variant": "student",
           "prompt": "Do you like your subject?",
+          "variant": "student",
           "answers": {
-            "basic": "Yes. I like the moment when a piece of code finally works and I can see what all the smaller steps were for. A recent example was getting a little app to save my notes, which felt more useful than just finishing an exercise.",
-            "upgraded": null
+            "basic": "Yes. I like the moment when a piece of code finally works and I can see what all the smaller steps were for. A recent example was getting a little app to save my notes, which felt more useful than just finishing an exercise."
           }
         },
         {
           "id": "p1-work-or-studies-student-03",
-          "variant": "student",
           "prompt": "Why did you choose to study that subject?",
+          "variant": "student",
           "answers": {
-            "basic": "I enjoyed solving problems and wanted to make things I could use myself. Once I'd built a small program, I wanted to see what else I could do. I liked that I could start with something as simple as a list and gradually add features that made it easier to use.",
-            "upgraded": null
+            "basic": "I enjoyed solving problems and wanted to make things I could use myself. Once I'd built a small program, I wanted to see what else I could do. I liked that I could start with something as simple as a list and gradually add features that made it easier to use."
           }
         },
         {
           "id": "p1-work-or-studies-student-04",
-          "variant": "student",
           "prompt": "Do you think that your subject is popular in your country?",
+          "variant": "student",
           "answers": {
-            "basic": "Yes, quite a few people choose it because software is used in so many jobs. There are also lots of projects you can try outside class. Several students I know started with a small website and kept learning once friends actually wanted to use it.",
-            "upgraded": null
+            "basic": "Yes, quite a few people choose it because software is used in so many jobs. There are also lots of projects you can try outside class. Several students I know started with a small website and kept learning once friends actually wanted to use it."
           }
         },
         {
           "id": "p1-work-or-studies-student-05",
-          "variant": "student",
           "prompt": "Do you have any plans for your studies in the next five years?",
+          "variant": "student",
           "answers": {
-            "basic": "I'd like to finish my degree and get some experience on a real software team. I'm particularly interested in how websites and apps work behind the scenes. An internship would be a good chance to see what happens between writing a feature and making it available to users.",
-            "upgraded": null
+            "basic": "I'd like to finish my degree and get some experience on a real software team. I'm particularly interested in how websites and apps work behind the scenes. An internship would be a good chance to see what happens between writing a feature and making it available to users."
           }
         },
         {
           "id": "p1-work-or-studies-student-06",
-          "variant": "student",
           "prompt": "What are the benefits of being your age?",
+          "variant": "student",
           "answers": {
-            "basic": "It's a good time to try different things and see what suits me. I can spend an afternoon on a small project just because I'm curious. If I find a subject I like, I can take a short course or build a small example before making a bigger decision.",
-            "upgraded": null
+            "basic": "It's a good time to try different things and see what suits me. I can spend an afternoon on a small project just because I'm curious. If I find a subject I like, I can take a short course or build a small example before making a bigger decision."
           }
         },
         {
           "id": "p1-work-or-studies-student-07",
-          "variant": "student",
           "prompt": "Do you want to change your major?",
+          "variant": "student",
           "answers": {
-            "basic": "I'm happy with computer science for now. There are still plenty of areas I haven't tried, so I'd rather explore those first. For instance, I'm curious about how servers handle lots of requests, and I'd like to try building something that lets me see that.",
-            "upgraded": null
+            "basic": "I'm happy with computer science for now. There are still plenty of areas I haven't tried, so I'd rather explore those first. For instance, I'm curious about how servers handle lots of requests, and I'd like to try building something that lets me see that."
           }
         },
         {
           "id": "p1-work-or-studies-student-08",
-          "variant": "student",
           "prompt": "Do you prefer to study in the mornings or in the afternoons?",
+          "variant": "student",
           "answers": {
-            "basic": "I prefer mornings for anything that takes real concentration. In the afternoon I'm usually better at reviewing something I've already learned. I might write new code before lunch, then go over my notes or tidy up a project later in the day.",
-            "upgraded": null
+            "basic": "I prefer mornings for anything that takes real concentration. In the afternoon I'm usually better at reviewing something I've already learned. I might write new code before lunch, then go over my notes or tidy up a project later in the day."
           }
         },
         {
           "id": "p1-work-or-studies-student-09",
-          "variant": "student",
           "prompt": "How much time do you spend on your studies each week?",
+          "variant": "student",
           "answers": {
-            "basic": "Outside class, I usually spend an hour or two studying on weekdays. I put in extra time when there's a project due. In a typical week that works out to several hours at my desk, mostly trying examples from class and checking what I understand.",
-            "upgraded": null
+            "basic": "Outside class, I usually spend an hour or two studying on weekdays. I put in extra time when there's a project due. In a typical week that works out to several hours at my desk, mostly trying examples from class and checking what I understand."
           }
         },
         {
           "id": "p1-work-or-studies-student-10",
-          "variant": "student",
           "prompt": "Are you looking forward to working?",
+          "variant": "student",
           "answers": {
-            "basic": "Yes. I want to see how a team builds something people actually use. I think I'd learn a lot from seeing how more experienced engineers work. I'd especially like to see how they decide what to fix first when there are several things going wrong at once.",
-            "upgraded": null
+            "basic": "Yes. I want to see how a team builds something people actually use. I think I'd learn a lot from seeing how more experienced engineers work. I'd especially like to see how they decide what to fix first when there are several things going wrong at once."
           }
         },
         {
           "id": "p1-work-or-studies-student-11",
-          "variant": "student",
           "prompt": "What technology do you use when you study?",
+          "variant": "student",
           "answers": {
-            "basic": "I use my laptop for coding, a notes app to keep track of questions and Git to save my work. I often check the official documentation when I'm stuck. Keeping my work in Git means I can try a change and go back to an earlier version if it breaks something.",
-            "upgraded": null
+            "basic": "I use my laptop for coding, a notes app to keep track of questions and Git to save my work. I often check the official documentation when I'm stuck. Keeping my work in Git means I can try a change and go back to an earlier version if it breaks something."
           }
         },
         {
           "id": "p1-work-or-studies-student-12",
-          "variant": "student",
           "prompt": "What changes would you like to see in your school?",
+          "variant": "student",
           "answers": {
-            "basic": "I'd like more classes where students work on a small project together. It would give us a chance to see how the ideas fit together. For example, one student could build a simple page while someone else works on saving the information it needs.",
-            "upgraded": null
+            "basic": "I'd like more classes where students work on a small project together. It would give us a chance to see how the ideas fit together. For example, one student could build a simple page while someone else works on saving the information it needs."
           }
         }
       ]
@@ -125,92 +113,82 @@
       "questions": [
         {
           "id": "p1-work-or-studies-work-01",
-          "variant": "work",
           "prompt": "What work do you do?",
+          "variant": "work",
           "answers": {
-            "basic": "I work full-time as a backend software engineer. I also coach badminton part-time, which gives me a very different way to spend time after work. On a typical day I work on the parts of an app users don't see, then head to the court to teach.",
-            "upgraded": null
+            "basic": "I work full-time as a backend software engineer. I also coach badminton part-time, which gives me a very different way to spend time after work. On a typical day I work on the parts of an app users don't see, then head to the court to teach. hhhhh"
           }
         },
         {
           "id": "p1-work-or-studies-work-02",
-          "variant": "work",
           "prompt": "Why did you choose to do that type of work?",
+          "variant": "work",
           "answers": {
-            "basic": "I like figuring out how things work behind the scenes. With backend development, I get to solve the problems that let an app do what people expect it to. I especially like tracing a problem from what the user sees all the way back to the piece of code that caused it.",
-            "upgraded": null
+            "basic": "I like figuring out how things work behind the scenes. With backend development, I get to solve the problems that let an app do what people expect it to. I especially like tracing a problem from what the user sees all the way back to the piece of code that caused it."
           }
         },
         {
           "id": "p1-work-or-studies-work-03",
-          "variant": "work",
           "prompt": "Do you like your job?",
+          "variant": "work",
           "answers": {
-            "basic": "Yes. My favourite part is taking a problem that seems confusing at first and figuring out where it actually starts. It's satisfying when a fix holds up. For example, if something runs slowly, I enjoy narrowing it down until there's one small change I can test.",
-            "upgraded": null
+            "basic": "Yes. My favourite part is taking a problem that seems confusing at first and figuring out where it actually starts. It's satisfying when a fix holds up. For example, if something runs slowly, I enjoy narrowing it down until there's one small change I can test."
           }
         },
         {
           "id": "p1-work-or-studies-work-04",
-          "variant": "work",
           "prompt": "What requirements did you need to meet to get your current job?",
+          "variant": "work",
           "answers": {
-            "basic": "I needed to be able to write code, work with databases and explain how I'd solve a problem. Being able to work with other engineers mattered too. I remember that explaining why I'd make a particular choice mattered almost as much as being able to write the code.",
-            "upgraded": null
+            "basic": "I needed to be able to write code, work with databases and explain how I'd solve a problem. Being able to work with other engineers mattered too. I remember that explaining why I'd make a particular choice mattered almost as much as being able to write the code."
           }
         },
         {
           "id": "p1-work-or-studies-work-05",
-          "variant": "work",
           "prompt": "Do you have any plans for your work in the next five years?",
+          "variant": "work",
           "answers": {
-            "basic": "I'd like to get better at designing reliable systems and take more responsibility for projects. I also want to keep coaching and build up my personal website. For example, I'd like to make more decisions about how a service is put together and write about what I learn.",
-            "upgraded": null
+            "basic": "I'd like to get better at designing reliable systems and take more responsibility for projects. I also want to keep coaching and build up my personal website. For example, I'd like to make more decisions about how a service is put together and write about what I learn."
           }
         },
         {
           "id": "p1-work-or-studies-work-06",
-          "variant": "work",
           "prompt": "What do you think is the most important at the moment?",
+          "variant": "work",
           "answers": {
-            "basic": "Right now it's keeping a steady pace. I want enough time to do my job well, coach and still have energy left for the things I'm learning. On a week with evening lessons, that might mean setting aside one quiet night for reading or catching up on sleep.",
-            "upgraded": null
+            "basic": "Right now it's keeping a steady pace. I want enough time to do my job well, coach and still have energy left for the things I'm learning. On a week with evening lessons, that might mean setting aside one quiet night for reading or catching up on sleep."
           }
         },
         {
           "id": "p1-work-or-studies-work-07",
-          "variant": "work",
           "prompt": "Do you want to change to another job?",
+          "variant": "work",
           "answers": {
-            "basic": "I'm happy working in backend development at the moment. There are still problems I want to learn how to solve, so I'm in no hurry to change fields. I still want to get better at designing services that are easy to maintain when more people start using them.",
-            "upgraded": null
+            "basic": "I'm happy working in backend development at the moment. There are still problems I want to learn how to solve, so I'm in no hurry to change fields. I still want to get better at designing services that are easy to maintain when more people start using them."
           }
         },
         {
           "id": "p1-work-or-studies-work-08",
-          "variant": "work",
           "prompt": "Do you miss being a student?",
+          "variant": "work",
           "answers": {
-            "basic": "Sometimes I miss having more time to explore a subject just because it interested me. I still get to do that now, but I have to make time for it. I used to be able to spend an entire afternoon figuring out a small program, which is harder to fit around work and coaching.",
-            "upgraded": null
+            "basic": "Sometimes I miss having more time to explore a subject just because it interested me. I still get to do that now, but I have to make time for it. I used to be able to spend an entire afternoon figuring out a small program, which is harder to fit around work and coaching."
           }
         },
         {
           "id": "p1-work-or-studies-work-09",
-          "variant": "work",
           "prompt": "What technology do you use at work?",
+          "variant": "work",
           "answers": {
-            "basic": "I spend a lot of time with a code editor, Git and database tools. When something goes wrong, I usually start with the logs to see what happened. If an app fails to save something, I can follow the request from the error message to the database.",
-            "upgraded": null
+            "basic": "I spend a lot of time with a code editor, Git and database tools. When something goes wrong, I usually start with the logs to see what happened. If an app fails to save something, I can follow the request from the error message to the database."
           }
         },
         {
           "id": "p1-work-or-studies-work-10",
-          "variant": "work",
           "prompt": "Who helps you the most? And how?",
+          "variant": "work",
           "answers": {
-            "basic": "My teammates help the most. They often know why a part of the system works a certain way, which can save me hours of guessing. One short conversation can explain why a decision was made and point me towards the right place to make a change.",
-            "upgraded": null
+            "basic": "My teammates help the most. They often know why a part of the system works a certain way, which can save me hours of guessing. One short conversation can explain why a decision was made and point me towards the right place to make a change."
           }
         }
       ]
