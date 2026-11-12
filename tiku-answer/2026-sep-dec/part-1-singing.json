@@ -1,0 +1,62 @@
+{
+  "id": "singing",
+  "title": "Singing",
+  "part": "1",
+  "category": "retained",
+  "order": 23,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-singing-01",
+          "prompt": "Do you like singing? Why?",
+          "answers": {
+            "basic": "A little, mostly when I'm on my own. I enjoy singing along to a song I know well, even if I miss a few notes. If a song I know comes on while I'm making dinner, I'll sometimes join in without really thinking about it.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-singing-02",
+          "prompt": "Have you ever learnt how to sing?",
+          "answers": {
+            "basic": "I learned a few songs in school music lessons. I never trained seriously, so I mostly just follow the tune when I sing now. At school it was easier to keep going when the whole class sang, because nobody could hear every mistake I made.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-singing-03",
+          "prompt": "Who do you want to sing for?",
+          "answers": {
+            "basic": "I'd sing for a small group of friends if we were doing karaoke. It's easier to enjoy it when nobody is taking it too seriously. I'd pick a song we all know, so people could join in when I forget a line or go off key.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-singing-04",
+          "prompt": "Do you think singing can bring happiness to people?",
+          "answers": {
+            "basic": "Yes. Singing a familiar song together can get people laughing and make a room feel less awkward, especially at a party. At karaoke, someone will often start out shy and then smile once everybody else joins in on the chorus.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-singing-05",
+          "prompt": "Do you like listening to others singing?",
+          "answers": {
+            "basic": "Yes, particularly when someone sounds like they're enjoying themselves. Even a friend singing at karaoke can be fun to listen to. At a live show, I enjoy the little differences in how someone sings a song compared with the version I've heard before.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-singing-06",
+          "prompt": "Have you ever taken a singing class?",
+          "answers": {
+            "basic": "Only as part of school music lessons. I've never taken a separate singing class, although I'd be curious about how people learn to control their breath. It would be interesting to see if one lesson could make it easier for me to hold a note without running out of air.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

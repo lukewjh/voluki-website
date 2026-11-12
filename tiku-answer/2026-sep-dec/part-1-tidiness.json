@@ -1,0 +1,46 @@
+{
+  "id": "tidiness",
+  "title": "Tidiness",
+  "part": "1",
+  "category": "retained",
+  "order": 14,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-tidiness-01",
+          "prompt": "Do you like to keep things tidy?",
+          "answers": {
+            "basic": "Yes, I like knowing where everything is. At work that goes for files and notes as much as the things on my desk. If a teammate asks about a decision from last week, I like being able to find the note while we're still talking.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-tidiness-02",
+          "prompt": "Did you keep your room tidy as a child?",
+          "answers": {
+            "basic": "My room was fairly messy as a child. I'd leave books or sports gear out and put them away when I was asked. My badminton gear was usually the first thing I dropped by the door because I knew I'd want it again the next day.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-tidiness-03",
+          "prompt": "How do you keep your work or study space tidy?",
+          "answers": {
+            "basic": "I keep just the things I'm using on my desk. On my computer I try to give files clear names so I can find them again. For example, I keep notes for each project together, so I can pick up where I left off without searching through downloads.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-tidiness-04",
+          "prompt": "Do you think that it is necessary to be tidy?",
+          "answers": {
+            "basic": "Some tidiness is useful because it saves time. I care more about being able to find things than about getting every object to line up. A desk can look a bit lived-in, and I'm happy as long as I can put my hands on the right notebook.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

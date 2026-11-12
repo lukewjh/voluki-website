@@ -1,0 +1,83 @@
+{
+  "id": "tech-problem",
+  "title": "遇到的科技问题",
+  "part": "2-3",
+  "category": "retained",
+  "order": 42,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-tech-problem",
+          "prompt": "Describe a challenging technological problem you faced",
+          "cuePoints": [
+            "What the problem was",
+            "When and where you faced it",
+            "How challenging it was",
+            "And explain how you solved it"
+          ],
+          "answers": {
+            "basic": "A problem I had with my personal website was that a picture showed up on my computer but disappeared after I published the page. I was working on it at home one evening. Because the preview looked fine, I kept refreshing the live page and wondering if it was just taking time to update.\n\nI tried another browser first because I thought I'd been looking at an old copy of the page. The picture was still missing, although everything around it loaded properly. That gave me a better question to ask, which was why this particular file was the only thing the site couldn't show. I made a small change to the page so I could be sure I was looking at the latest version. When the text changed and the picture still didn't appear, I knew there was little point refreshing it again and started looking more closely at the file.\n\nIn the end I opened the browser tools and checked the exact address the page was asking for. The live site couldn't find a file at that address. I compared it with where I'd actually put the image, moved the file into the right place and corrected the path. It was frustrating because the fix was small and I'd spent so long looking in the wrong place. Since then, when something doesn't load, I check the request first. It tells me where to start instead of making me guess.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-tech-problem-01",
+          "prompt": "What are the advantages and disadvantages of AI?",
+          "answers": {
+            "basic": "AI can save time on drafts and help you explore unfamiliar ideas. It can also give a convincing answer that's wrong, so important details still need to be checked. For instance, it can offer several ways to organise a messy set of notes in a few seconds. I'd still compare the result with the notes before sharing it, because an attractive summary can change the meaning of one important point and make that change surprisingly easy to miss.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-tech-problem-02",
+          "prompt": "Do you think people today should learn about AI technology?",
+          "answers": {
+            "basic": "Yes. People can learn where it's useful, how to ask a clear question and how to check the result. Those basics are enough to make better choices about using it. Someone might ask a tool to explain an unfamiliar instruction and then check its explanation against the original source. Practising that on a small task is useful, because you get a sense of which parts save you time and which parts still need your own judgment before you act on them.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-tech-problem-03",
+          "prompt": "Should children learn to use AI?",
+          "answers": {
+            "basic": "I think they can learn with a teacher or parent guiding them. A child can use it to ask for ideas and then check those ideas against a book or an experiment. For instance, a student could ask for ideas for a simple experiment, choose one and see whether the suggested result actually happens. The useful part of the lesson is being able to explain what they observed, and that gives the teacher a way to see whether the student has understood it.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-tech-problem-04",
+          "prompt": "How can AI help in our lives?",
+          "answers": {
+            "basic": "It can explain a confusing instruction, help practise a language or turn rough notes into a starting outline. I find it useful when I have a clear task in mind. For language practice, I might ask it to show me two ordinary ways to say something and then try using one in a sentence. It's easier to get a useful result if I know what I'm trying to express, and I can still check a phrase I'm unsure about with another source.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-tech-problem-05",
+          "prompt": "Do you think students are overly reliant on AI?",
+          "answers": {
+            "basic": "Some are, especially if they turn to it before trying a question themselves. Used after a first attempt, it can give them another explanation or help them spot a mistake. For instance, if a student asks for a complete answer every time, they can miss the practice of deciding where to start. A student who brings their own attempt to the tool has something to compare with the suggestion and can decide which parts of the feedback actually make sense.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-tech-problem-06",
+          "prompt": "What can teachers do to stop students from relying too much on AI?",
+          "answers": {
+            "basic": "Teachers can ask students to show their working or explain one choice aloud. They can also set clear rules about when AI is useful and how students should mention using it. For example, a teacher could ask students to write a first attempt in class and then use AI to suggest one improvement. Asking them to show what they changed and why turns the tool into something they have to think about, and it makes the learning more visible to the teacher.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

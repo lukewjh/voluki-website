@@ -1,0 +1,46 @@
+{
+  "id": "outer-space-and-stars",
+  "title": "Outer space and stars",
+  "part": "1",
+  "category": "retained",
+  "order": 22,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-outer-space-and-stars-01",
+          "prompt": "Have you ever learnt about outer space and stars?",
+          "answers": {
+            "basic": "Yes, I learned a little at school and picked up more from videos. I still find it surprising how far the light from a star has to travel. A video about the night sky made it click for me that looking at a distant star also means looking back in time.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-outer-space-and-stars-02",
+          "prompt": "Do you like science fiction movies? Why?",
+          "answers": {
+            "basic": "Yes, when the story makes me think about what life would be like in a different place. I enjoy the quieter parts as much as the space battles. I like films that spend a bit of time showing how ordinary people get used to living somewhere completely unfamiliar.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-outer-space-and-stars-03",
+          "prompt": "Do you want to know more about outer space?",
+          "answers": {
+            "basic": "Yes. I'd like to understand how people find planets around other stars. It's interesting that they can learn so much from a tiny change in light. I'd probably start with a short video showing what scientists see when a planet passes in front of its star.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-outer-space-and-stars-04",
+          "prompt": "Do you want to go into outer space in the future?",
+          "answers": {
+            "basic": "I'd love to see the Earth from above, but I don't think I'd enjoy the launch or being far from home. Watching footage is enough for now. I can picture myself spending ages by the window, but the idea of being strapped into a rocket makes me nervous.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

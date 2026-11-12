@@ -1,0 +1,67 @@
+{
+  "id": "memorable-party",
+  "title": "印象深刻的聚会",
+  "part": "2-3",
+  "category": "new",
+  "order": 25,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-memorable-party",
+          "prompt": "Describe a party for a special event that impressed you a lot",
+          "cuePoints": [
+            "When and where it was held",
+            "What the party was held for",
+            "How many people attended it",
+            "And explain why it impressed you a lot"
+          ],
+          "answers": {
+            "basic": "A party that stayed with me was a friend's birthday dinner in Shanghai. It was held on a Saturday evening in a small private room at a restaurant. There were about ten of us, including a few people I'd met through badminton. We ordered dishes to share and spent a long time talking before anyone even thought about bringing out the cake.\n\nThe meal had started like a fairly ordinary birthday dinner, with people arriving a few at a time and trying to work out who knew whom. I sat next to someone I usually only see on court, so it was nice to hear what they did outside badminton. The person who had brought the photos had kept them on a phone until everybody was there. I remember thinking they were just going to show us one picture. Instead, people started leaning closer to see which year each photo was from, and the whole table got involved.\n\nWhat made it memorable was that one friend had put together a few photos from different years. Some were from ordinary days our friend had almost forgotten. Everyone had a different memory of when a photo was taken, so we kept interrupting each other to fill in the details. The birthday person laughed so much they had to wait before blowing out the candles. I liked how personal it felt. It took more thought than simply booking a table.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-memorable-party-01",
+          "prompt": "What special events are celebrated in your country?",
+          "answers": {
+            "basic": "People celebrate weddings, birthdays and family milestones. During the Spring Festival, getting together for a meal is a big event for many families. A wedding is a chance for two families to meet and spend time together. At the Spring Festival, the occasion can be more about coming back to the same table each year, where even a dish someone makes in the usual way can remind everyone of the last time they were together.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-memorable-party-02",
+          "prompt": "Do most people prefer to hold a party in a restaurant or in a pub?",
+          "answers": {
+            "basic": "I'd say a restaurant is more common for a family celebration because it's easier to serve a full meal. A pub might suit a small group of friends. A restaurant is easier when you're inviting people of different ages and want them to sit and talk over food. A pub can work well for friends who only plan to stay for a drink, especially if they already know the place and can come and go when it suits them.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-memorable-party-03",
+          "prompt": "Do most people prefer to hold a party in a public place or a private place?",
+          "answers": {
+            "basic": "Some prefer a private place because they can talk freely and set their own schedule. A public venue is convenient if there's a big group and nobody wants to host at home. I'd probably book somewhere for a large celebration, because there's room for everyone and fewer things for the host to take care of during the party. For a small dinner with friends, I'd enjoy being at home, where we can stay at the table as long as the conversation lasts.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-memorable-party-04",
+          "prompt": "When do people like to hold a party?",
+          "answers": {
+            "basic": "People often choose weekends or holidays when guests are free. For a birthday, the nearest Saturday can be easier than the actual date. If you're inviting people who work different hours, getting a date early can matter more than picking a special venue. A Saturday afternoon might suit a family with children, while an evening after work can be easier for a few friends who are already in the same part of town.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

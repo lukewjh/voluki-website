@@ -1,0 +1,67 @@
+{
+  "id": "disliked-short-trip",
+  "title": "不喜欢的短途旅行",
+  "part": "2-3",
+  "category": "new",
+  "order": 21,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-disliked-short-trip",
+          "prompt": "Describe a short trip you often take but do not like",
+          "cuePoints": [
+            "Where you go",
+            "When you go there",
+            "Why you go there",
+            "And explain why you do not like the trip"
+          ],
+          "answers": {
+            "basic": "A short trip I don't enjoy is the subway journey I sometimes make from work to a badminton hall on a weekday evening. I go there to teach, and it's a good place once I arrive. The journey takes about half an hour on a normal day, but I often have to make a change during the evening rush.\n\nI usually try to get everything into one bag before I leave work, because I know the change between trains can be tight. On a quiet day the walk between platforms is easy, and I can use the journey to think about what I want to teach. At rush hour I spend most of that walk watching where people are going. The bags, the announcements and the people coming from several directions all make it hard to settle down. Sometimes I arrive at the next platform and realise I've been holding my shoulders up the whole way.\n\nThe annoying part is carrying a racket bag through a crowded station. I'm always checking that it isn't in someone's way, and I sometimes have to wait for another train if the first one is full. I also like to get to the court a little early, so I keep an eye on the time more than I'd like. I still make the trip because I enjoy the lesson itself. The walk out of the station is usually when I start to relax.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-disliked-short-trip-01",
+          "prompt": "Which is better for knowing more about a country? Travelling or reading books about it?",
+          "answers": {
+            "basic": "I'd choose travel if I wanted to see how people live day to day. A book is better for background, so I'd read a little before going if I had the time. You can see things on a trip that are hard to imagine from a description, like how people actually use a public square on a weekday. A book can explain why the square is there in the first place, which can make what you see more interesting once you arrive.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-disliked-short-trip-02",
+          "prompt": "How much time do you think people should spend on a trip abroad?",
+          "answers": {
+            "basic": "I'd give myself about a week for a first trip if I could. That allows time to settle in, visit a few places and have a day without a full schedule. A longer stay makes more sense if you're crossing several time zones, because the first day may be spent getting used to the schedule. For a place a short flight away, I'd be happy with a few days in one city if I could spend the time walking around and trying local food.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-disliked-short-trip-03",
+          "prompt": "Who prefers travelling abroad? The young or the old?",
+          "answers": {
+            "basic": "Younger people may be more willing to try a cheap trip with a loose plan. Older people can have more free time, and many of them are just as interested in going abroad. I'd put more weight on money, time and confidence than on age alone. A younger person might be ready to take an overnight bus to save money, while an older person with enough time might book a slower trip that gives them a chance to see several places without rushing.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-disliked-short-trip-04",
+          "prompt": "Do Chinese people like travelling abroad?",
+          "answers": {
+            "basic": "Many do. Some want to try different food or see how people live elsewhere. Cost, time off work and the distance can affect where they actually go. For example, a family with only a few free days might choose somewhere close enough to reach in one flight. Someone who's been saving for a particular trip may be willing to travel much farther, because seeing the place is the main reason they're taking the time off.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

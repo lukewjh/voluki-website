@@ -1,0 +1,70 @@
+{
+  "id": "public-gardens-and-parks",
+  "title": "Public gardens and parks",
+  "part": "1",
+  "category": "retained",
+  "order": 19,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-public-gardens-and-parks-01",
+          "prompt": "Did you like going to parks as a child?",
+          "answers": {
+            "basic": "Yes. In Hunan I liked having space to run around with other children. I paid more attention to the games than to the plants. Sometimes we'd bring rackets and see how many times we could hit the shuttle back and forth before the wind took it.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-public-gardens-and-parks-02",
+          "prompt": "Do you still like going to parks now?",
+          "answers": {
+            "basic": "Yes, although I go for a walk now. After sitting in front of a screen for most of the day, I enjoy being somewhere green. A loop around a park gives me a chance to stretch my legs and notice something beyond what's on my screen.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-public-gardens-and-parks-03",
+          "prompt": "Would you like to see more parks in your city?",
+          "answers": {
+            "basic": "Yes, especially small parks near places where people live and work. Even a short walk at lunchtime can make the afternoon feel better. If there were a small green space near the office, I'd use it on days when I only have twenty minutes to spare.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-public-gardens-and-parks-04",
+          "prompt": "Are there any parks you want to go to in the future?",
+          "answers": {
+            "basic": "I'd like to spend more time in the bigger parks on the edge of Shanghai. It would be nice to have a whole afternoon to walk around without rushing. I'd pick one with a path around some water and bring something to eat so I could stay as long as I felt like.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-public-gardens-and-parks-05",
+          "prompt": "Would you prefer to play in a personal garden or public garden?",
+          "answers": {
+            "basic": "I'd choose a public park because there's more space, and I can meet a friend there. If I wanted to grow plants, a private garden would be nice. I like being able to walk in a different direction each time and find a bench when we want to stop.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-public-gardens-and-parks-06",
+          "prompt": "How are the parks today different from those you visited as a kid?",
+          "answers": {
+            "basic": "The parks I remember from childhood were fairly simple. A lot of the ones I see now have marked walking paths, exercise equipment and more places to sit. Even a small park near my apartment has a marked route, so I can fit in a short walk before dinner.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-public-gardens-and-parks-07",
+          "prompt": "What do you like to do when visiting a park?",
+          "answers": {
+            "basic": "I usually take a walk and look for a quiet spot to sit. If a friend comes along, we often talk until we've gone all the way around. When I go by myself, I usually leave my headphones in my pocket and see what I can hear around me.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

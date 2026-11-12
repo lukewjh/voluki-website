@@ -1,0 +1,83 @@
+{
+  "id": "changed-plan",
+  "title": "近期改变的计划",
+  "part": "2-3",
+  "category": "retained",
+  "order": 36,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-changed-plan",
+          "prompt": "Describe a plan that you had to change recently",
+          "cuePoints": [
+            "When this happened",
+            "What made you change the plan",
+            "What the new plan was",
+            "And how you felt about the change"
+          ],
+          "answers": {
+            "basic": "One weekend a few friends and I had planned to play badminton together in Shanghai. We'd all left the afternoon free, but we found out quite late that the court we'd expected to use was unavailable. We checked a few other halls and everything nearby was booked.\n\nWe spent a while looking at the booking apps because none of us wanted to give up on the game too quickly. Someone found a court farther away, but the only time was late enough that one of us would already have to be heading home. At that point it made more sense to ask what we could still do with the afternoon. We had all left the time free, and it would have been a shame to stay home just because one part of the plan hadn't worked. That got us talking about food instead.\n\nOur new plan was to meet for an early dinner instead. One friend suggested a place we could all reach by subway, so we left our rackets at home and went there. At first I was a little annoyed because I'd been looking forward to playing all week. Once we sat down, I realised we hardly ever had that much time to talk during a session. We booked another court for the following week and spent the rest of the evening catching up. In the end I was glad we still met.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-changed-plan-01",
+          "prompt": "Do people often change their plans?",
+          "answers": {
+            "basic": "Yes, especially when a plan depends on other people or the weather. I usually leave some room to move things around when I make weekend plans. A group might decide to go for a walk and then find that it's raining heavily when everyone is free. If they've already thought of somewhere to eat indoors, changing the plan doesn't have to mean giving up the chance to see each other, and there is less rushing around at the last minute.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-changed-plan-02",
+          "prompt": "Would you tell others if you change your plan?",
+          "answers": {
+            "basic": "Yes, if the change affects them. I'd tell them as soon as I knew and suggest another time if we'd already agreed to meet. A quick message can stop another person from making a trip they no longer need to make. If we had booked a badminton court together, for instance, I'd say whether I could still help find another player, because my change affects what everyone else can do with the booking.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-changed-plan-03",
+          "prompt": "Why do you think parents still make plans for their children nowadays?",
+          "answers": {
+            "basic": "Parents often know what needs to be arranged and want to give their children a good start. It helps to let children make more choices as they grow. Sometimes a parent sees things a child doesn't have to think about yet, like whether they can get home from an activity safely. Once those practical details are clear, the child can still have a say in what they do, which gives them some experience making plans of their own.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-changed-plan-04",
+          "prompt": "How does technology help people make plans?",
+          "answers": {
+            "basic": "A shared calendar lets everyone see when they're free, and map apps help estimate travel time. It's also easy to tell people when a plan has changed. For a game after work, I can check the route to a hall and share it in the same chat where we decide who is coming. Everyone can work from the same information, although I still like confirming the time in one message so people can find it easily later.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-changed-plan-05",
+          "prompt": "What kind of plans do people often make?",
+          "answers": {
+            "basic": "People plan trips, work deadlines and meals. Even a quick plan for when to do the shopping can make a busy weekend feel easier. Some plans are about saving time, such as shopping on the way home instead of making another trip. Others make it possible for people to get together, because if friends work different hours, it often takes a little planning to find an evening that suits everybody.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-changed-plan-06",
+          "prompt": "Do you think people like the process of making plans more, or the moment of carrying them out?",
+          "answers": {
+            "basic": "I think planning is fun when you're choosing something like a holiday. For routine things, the best part is usually doing them and seeing that the plan worked. Looking through photos and choosing a place to visit can be fun in its own right because you get to imagine the trip before it happens. With a regular badminton booking, I spend as little time as possible on the arrangements and look forward to the moment we actually start playing.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

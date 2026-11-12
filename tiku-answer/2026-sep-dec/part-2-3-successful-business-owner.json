@@ -1,0 +1,84 @@
+{
+  "id": "successful-business-owner",
+  "title": "拥有成功商业的人",
+  "part": "2-3",
+  "category": "retained",
+  "order": 35,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-successful-business-owner",
+          "prompt": "Describe a person you know who has a successful business",
+          "cuePoints": [
+            "Who this person is",
+            "How you got to know him/her",
+            "Why and how he/she started the business",
+            "What business he/she does",
+            "And explain why you think the business is successful"
+          ],
+          "answers": {
+            "basic": "I'd talk about the owner of a badminton shop in Shanghai. I first met him when I went in to have a racket restrung. He asked how often I played and what I wanted the racket to feel like, then talked me through a couple of options. I got the impression he'd had that conversation hundreds of times and still paid attention to the answer.\n\nI went back another time because I wanted to understand why one setup had felt better in a game. He remembered the sort of thing we'd talked about and suggested I try a small change so I could feel the difference. I liked that he explained what to pay attention to, because it meant I could come back with a better question if it still felt wrong. After a few visits I realised I knew several players who did the same thing. The shop had become somewhere people went for advice as well as somewhere to buy equipment.\n\nHe told me he'd started by stringing rackets for people he played with. He found there were enough regular customers to rent a small shop, and now he also sells rackets, shoes and other gear. I think it's successful because people trust his advice and keep coming back. If I ask around at a court where to get a racket fixed, his shop comes up quite often. That says more to me than how big the shop is.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-successful-business-owner-01",
+          "prompt": "Why do some people start their own business?",
+          "answers": {
+            "basic": "Some want more control over their work. Others notice a problem customers keep having and think they can build something better around it. A person who has worked in a sports shop, for instance, might notice that players keep asking for a repair service they can't get nearby. Starting a business gives them room to try that idea, and it also means they're responsible for finding out whether people will pay enough to keep it going.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-successful-business-owner-02",
+          "prompt": "Should governments provide financial support to start-ups?",
+          "answers": {
+            "basic": "Some support can help, especially when a new idea needs time to be tested. I'd make the terms clear and check whether the money is actually helping the business develop. For instance, a small grant could help someone make an early version and try it with real customers. I'd want the next decision to depend on what they learn from that trial, so a useful idea has a chance to grow and money doesn't keep going into something people rarely use.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-successful-business-owner-03",
+          "prompt": "Do most people prefer shopping at big stores or small stores?",
+          "answers": {
+            "basic": "For a big weekly shop, a large store can be convenient. A small shop can be a better choice when you need one thing quickly or want advice from someone who knows the product. I don't think the same person chooses one type of shop for everything. I might go to a large store if I need several unrelated things, then visit a small badminton shop for a particular racket because the owner can tell me how it feels compared with the one I already use.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-successful-business-owner-04",
+          "prompt": "What makes a business successful?",
+          "answers": {
+            "basic": "A business needs to solve a real problem and give customers a reason to come back. It also needs enough control over costs to keep doing that. A local shop can do well by being especially useful to one group of people, such as players who need to get a racket repaired quickly. Repeat visits make it easier to know what to keep in stock, and that helps the owner avoid spending too much on things customers rarely ask for.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-successful-business-owner-05",
+          "prompt": "What makes a business fail?",
+          "answers": {
+            "basic": "Some businesses run out of money before they find enough customers. Others grow too fast and stop giving people the good service that made them popular in the first place. A shop that takes on a much bigger space might suddenly need more staff and more customers just to cover its bills. If it hasn't worked out why people came in the first place, it can end up making the service slower while still trying to pay for the extra room.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-successful-business-owner-06",
+          "prompt": "Is it easy to set up a new business in your country?",
+          "answers": {
+            "basic": "It depends on the type of business. Testing a small online service can be fairly simple, while opening a shop involves more money, staff and practical arrangements. For example, someone who gives lessons can test whether there is enough interest by booking a court one evening a week. If they want to open their own hall, the scale changes, because they need a place people can reach and enough regular bookings to pay for it.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

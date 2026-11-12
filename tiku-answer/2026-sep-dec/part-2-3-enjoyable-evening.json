@@ -1,0 +1,59 @@
+{
+  "id": "enjoyable-evening",
+  "title": "和朋友度过的愉快夜晚",
+  "part": "2-3",
+  "category": "new",
+  "order": 15,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-enjoyable-evening",
+          "prompt": "Describe an enjoyable evening you had with your friends",
+          "cuePoints": [
+            "When and where it was",
+            "What you did",
+            "Who you spent the evening with",
+            "And explain why it was enjoyable"
+          ],
+          "answers": {
+            "basic": "One Friday evening, I met three friends at a badminton hall in Shanghai. We'd all had a long week, so we booked a court and decided to warm up while we waited for everyone to arrive. Once everyone was there, we swapped partners a few times and stayed until our booking ended. One rally went on so long that both pairs started laughing before it was over.\n\nI remember the first game feeling a bit scrappy because everyone was still getting used to moving after sitting at work all day. Nobody minded much, and we kept changing sides until the games felt reasonably even. At one point somebody missed a very easy shot and tried to blame the lighting, which made the rest of us laugh. By the end of the session I'd completely forgotten what I'd been worrying about on my way there. One friend suggested noodles because the place was still open and we could walk there together.\n\nAfterwards we went to a small place nearby for noodles. We were still talking about the game at first, and then the conversation wandered to work and weekend plans. I remember looking at the time and being surprised we'd been sitting there for over an hour. I enjoyed it because none of us had to make a big plan. We got to move around, eat something warm and talk without anyone needing to rush off.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-enjoyable-evening-01",
+          "prompt": "What are the differences between young people’s leisure time activities and those of old people?",
+          "answers": {
+            "basic": "Younger people may choose faster activities or go out later. Some older people prefer a walk or a chat in the park, although plenty of people enjoy the same sports at different ages. Some of it comes down to time and energy, because people have different routines at different stages of life. I see that at badminton, where someone in their twenties may want a fast game after work and an older player may prefer a quieter morning session with time to talk afterwards.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-enjoyable-evening-02",
+          "prompt": "What can we do to bring family members closer together?",
+          "answers": {
+            "basic": "A regular meal or a short walk together can give everyone time to talk. When people live far apart, a quick call can keep them involved in each other's lives. A shared activity helps because the conversation can start with something simple, like what to cook or where to go. If you're away from home, even a short call while you're walking back from work can give your family a better idea of what your ordinary week is like.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-enjoyable-evening-03",
+          "prompt": "How do people get along in a big family?",
+          "answers": {
+            "basic": "It helps if people agree on everyday things like chores and quiet hours. In a big family, giving people a bit of space matters as much as spending time together. For example, it helps to talk about who can use the kitchen when several people come home at different times. If there's a disagreement, I'd raise the specific problem early, because small habits are usually easier to change before everyone has spent weeks getting annoyed about them.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

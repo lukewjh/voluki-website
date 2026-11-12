@@ -1,0 +1,83 @@
+{
+  "id": "handmade-things",
+  "title": "擅长做手工的人",
+  "part": "2-3",
+  "category": "new",
+  "order": 14,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-handmade-things",
+          "prompt": "Describe a person who is good at making things by hand",
+          "cuePoints": [
+            "Who this person is",
+            "What he/she makes",
+            "What materials or technologies he/she uses",
+            "And why you think this person is good at making things by hand"
+          ],
+          "answers": {
+            "basic": "A friend of mine makes small wooden things at home. He's made a phone stand and a little rack for keys, and he sometimes makes something for a friend when he knows what they need. The pieces are simple, but when you pick them up you can tell he's taken his time.\n\nThe phone stand is a good example of how he works. It looks like a small piece of wood with a groove in it, but the angle has to be right if you want to see the screen while sitting down. He tried it on the desk before deciding how much wood to take away. Then he checked whether he could tap the screen without knocking the whole thing over. I thought that was an interesting way to make something, because every small change came from seeing how the object behaved when somebody actually used it.\n\nHe usually starts with leftover pieces of wood. He marks the shape in pencil, cuts it with a small saw and sands the edges by hand. I once watched him make a stand a little wider so a phone would fit with its case still on. That extra bit of work is what makes me think he's good at it. He tests things as he goes and notices details other people might leave for later. The things he makes feel like they belong in someone's daily life.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-handmade-things-01",
+          "prompt": "Does art, like music or theater, have an impact on society?",
+          "answers": {
+            "basic": "Yes. A play or a song can get people talking about something they usually avoid. It can also bring people together when they enjoy the same performance. A play about a family disagreement can make people recognise a situation they've been in and understand the other person's side a little better. The conversation afterwards is often where the effect shows up, because people have a scene they can point to instead of having to start with a personal story.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-handmade-things-02",
+          "prompt": "Is it good to have creative people in a team?",
+          "answers": {
+            "basic": "Yes, creative people can suggest a different way to solve a problem when the team gets stuck. It's useful to have someone who can turn that idea into a practical plan, too. If a team is trying to make a form easier to use, someone might ask whether half the questions need to be there at all. That suggestion is useful if the team can try it on a small example and see what would actually change for the people filling it in.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-handmade-things-03",
+          "prompt": "What impact can artistic buildings have on society?",
+          "answers": {
+            "basic": "A distinctive building can give people a reason to explore an area. If the building is also useful, like a good public library, people may visit regularly and feel attached to it. A good building can change the way people spend time in a neighbourhood, especially if there's room to sit or something anyone can go in and do. A library with a bright reading room can draw people back long after they've got used to seeing its unusual shape from the street.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-handmade-things-04",
+          "prompt": "Do children these days still like doing arts and crafts?",
+          "answers": {
+            "basic": "Many do, especially when they can choose what to make. A screen can show them how to fold paper or paint a model, and then they get to try it themselves. I think the pleasure is still there when children have enough time and can get hold of simple materials. Making a paper plane, for instance, lets them see immediately what a different fold does, and that can be just as absorbing as something they watch on a screen.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-handmade-things-05",
+          "prompt": "Why do some children enjoy making things by hand?",
+          "answers": {
+            "basic": "They get to see an idea turn into a real thing. It feels good to show someone a model or a drawing and say, 'I made that.' Something like a cardboard model gives them lots of small decisions to make, from the shape to where the pieces go. If it falls apart, they can try another idea and see the difference themselves, which feels more satisfying than just being told what the right way is.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-handmade-things-06",
+          "prompt": "Do you think art classes are important for children?",
+          "answers": {
+            "basic": "Yes. Art gives children time to make choices and try again when something goes wrong. It's also a way for quiet children to share ideas. A child who finds writing difficult might show what they've understood about a story by drawing one scene from it. I also like that art makes room for several good answers, because children can explain their choices and see how someone else took the same task in a different direction.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

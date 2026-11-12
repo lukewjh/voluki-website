@@ -1,0 +1,70 @@
+{
+  "id": "the-area-you-live-in",
+  "title": "The area you live in",
+  "part": "1",
+  "category": "evergreen",
+  "order": 30,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-the-area-you-live-in-01",
+          "prompt": "Do you like the area that you live in?",
+          "answers": {
+            "basic": "Yes, it's easy to get around and I can pick up most things near home. Having places to play badminton within reach is a big plus. I can buy a few things on my way home and still get to an evening lesson without making a special trip across town.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-the-area-you-live-in-02",
+          "prompt": "Where do you like to go in that area?",
+          "answers": {
+            "basic": "I usually head to a badminton hall or take a walk if I've been at my desk all day. I like knowing I have both options nearby. If I've got a whole evening, I'll play badminton, and if I've only got twenty minutes I'll take a short walk instead.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-the-area-you-live-in-03",
+          "prompt": "Do you know any famous people in your area?",
+          "answers": {
+            "basic": "No, nobody famous comes to mind. I recognise some people from playing badminton, but most of us know each other through the courts. I'll often see a familiar player several times before I learn much about them outside the game.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-the-area-you-live-in-04",
+          "prompt": "What are some changes in the area recently?",
+          "answers": {
+            "basic": "I've noticed a few shops change hands and some small improvements around the street. I tend to notice those things when I take the same route home every day. For example, a new place to eat on my route can make it easier to grab dinner after a late lesson.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-the-area-you-live-in-05",
+          "prompt": "Do you know any of your neighbors?",
+          "answers": {
+            "basic": "I know a few faces in my building. We usually say hello in the lift, and sometimes we talk for a minute about the weather. Those little conversations make the building feel more familiar, even though we don't often see each other for long.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-the-area-you-live-in-06",
+          "prompt": "Are the people in your neighborhood nice and friendly?",
+          "answers": {
+            "basic": "Yes, in a quiet sort of way. People hold the door for each other or help out with a delivery, even when they don't know each other well. When my hands are full of groceries and sports gear, having someone keep the lift door open makes a difference.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-the-area-you-live-in-07",
+          "prompt": "Do you live in a noisy or a quiet area?",
+          "answers": {
+            "basic": "It's fairly quiet once I'm inside. You can hear the traffic on the main road, but it fades quite quickly when you turn into the smaller streets. By the time I'm home, it's usually quiet enough to read for a while without having to put my headphones on.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

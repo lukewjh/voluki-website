@@ -1,0 +1,83 @@
+{
+  "id": "getting-up-early",
+  "title": "早起经历",
+  "part": "2-3",
+  "category": "retained",
+  "order": 30,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-getting-up-early",
+          "prompt": "Describe a time when you got up early",
+          "cuePoints": [
+            "When it was",
+            "What you did",
+            "Why you got up early",
+            "And how you felt about it"
+          ],
+          "answers": {
+            "basic": "I got up early to catch a train from Shanghai back to Hunan for a holiday. My alarm went off while it was still dark. I'd packed the night before, so all I had to do was get dressed, make sure I had my phone and keys, and get out of the door.\n\nOutside, the street was much quieter than I was used to, and for a minute it felt like I was leaving in the middle of the night. Once I got to the station, I found there were already quite a few people there with bags and breakfast. I checked the board twice because I hadn't been fully awake the first time. Then I sent a quick message home to say I was on my way. That was when I started looking forward to getting there, even though my main thought had been getting back into bed.\n\nI chose an early train so I could get there in time to have a meal with my family. At first I was half asleep and kept wondering if I'd forgotten something. Once I was through the station and sitting by the window, I felt much better. I bought something warm to eat and watched the sun come up as we travelled. I wouldn't want to get up that early every day, but that morning I was glad I had a good reason to do it.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-getting-up-early-01",
+          "prompt": "Do you know anyone who likes to get up early?",
+          "answers": {
+            "basic": "Some people I meet through badminton like to play first thing in the morning. They say the hall is quiet and they can still use the rest of the day for other things. I can see the appeal because it's easier to hear your partner and practise the same shot for a while when only a few courts are in use. It also makes sense for someone with a busy weekend, because the game is finished before other plans start to compete with it.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-getting-up-early-02",
+          "prompt": "Why do people get up early?",
+          "answers": {
+            "basic": "Some have to start work or catch transport early. Others like having a quiet hour to exercise or do something for themselves before the day gets busy. There can be a big difference between getting up early because you have to and doing it because you like the extra time. Someone who wants a quieter training session can choose the hour that works for them, while a commuter may simply need to be on the first train.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-getting-up-early-03",
+          "prompt": "What kinds of occasions need people to arrive early?",
+          "answers": {
+            "basic": "It's sensible to arrive early for a flight, an exam or a job interview. Having extra time can help if you need to find the right room. For example, with a new exam venue I'd want enough time to find the entrance and settle down before the start. Being a little early also means a small delay on the subway doesn't turn into the thing I'm thinking about when I should be concentrating on the exam.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-getting-up-early-04",
+          "prompt": "Why do some people like to stay up late?",
+          "answers": {
+            "basic": "Late at night may be the only quiet part of their day. Some people also stay up because they get caught up in a show or in a conversation with friends. An evening can feel like the first part of the day that belongs entirely to you, especially if you've been dealing with work or family plans. It's easy to keep going for another hour when you finally get to watch something you enjoy, even if you know you'll feel tired in the morning.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-getting-up-early-05",
+          "prompt": "Is it good to arrive early in any situation?",
+          "answers": {
+            "basic": "A few minutes early is useful for most appointments. For dinner at someone's home, turning up very early can put pressure on the host while they're still getting ready. For a job interview I'd get to the area early, then wait nearby until it's close to the agreed time. The same idea works with a visit to a friend's home, because I get the benefit of having extra time and they still get the time they expected to prepare.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-getting-up-early-06",
+          "prompt": "What kind of people like getting up early?",
+          "answers": {
+            "basic": "People who enjoy quiet mornings or who have a regular morning routine often get up early. Others do it because of work or family commitments. Some people find it easier to focus before their phones start going off, so they use the morning for reading or exercise. People who work or coach late may get a better start a bit later, because the routine that suits them depends on what the rest of the day looks like.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

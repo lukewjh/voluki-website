@@ -1,0 +1,83 @@
+{
+  "id": "delayed-reply",
+  "title": "很久没收到回复的信息",
+  "part": "2-3",
+  "category": "retained",
+  "order": 49,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-delayed-reply",
+          "prompt": "Describe a time when you sent a message or an email to someone but received no reply for a long time",
+          "cuePoints": [
+            "Who you sent it to",
+            "What the message/email was about",
+            "Whether you finally received the reply",
+            "And explain how you felt about the experience"
+          ],
+          "answers": {
+            "basic": "I once messaged a friend to ask whether he could join a badminton session at the weekend. I was trying to decide how many people to invite before we booked a court, so I asked him fairly early. The message sat there for a couple of days, and I kept checking it because I didn't want to book the wrong amount of time.\n\nThe frustrating bit was that the answer would change the plan for everyone else. I could invite another person, but if my friend said yes later I'd have to work out how to give everybody enough time on court. I remember opening the chat during a break at work and seeing that I'd already checked it earlier that morning. That was when I realised I was spending more time waiting than it would take to explain the situation. I decided to be clear about what I needed and give him a little more time to get back to me.\n\nEventually I sent a short follow-up and told him when I needed to book. He replied later that evening and said he'd seen the first message while he was busy and then forgotten it. I was a little irritated at first, but it made sense when he explained. Now, if a decision depends on the answer, I say when I need it in the first message. That gives the other person something clearer to respond to.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-delayed-reply-01",
+          "prompt": "In what situations do people spend a long time responding to others’ messages?",
+          "answers": {
+            "basic": "People often take longer when they're in a meeting, travelling or thinking about a difficult question. A message can also get buried among newer ones. A simple message can still take time to answer if it involves checking a date or asking somebody else. For example, when I get a question about a lesson during work, I may wait until I can look at my calendar and give a useful answer in one go.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-delayed-reply-02",
+          "prompt": "In what situations do people not respond to messages at all?",
+          "answers": {
+            "basic": "They may forget, feel unsure what to say or think that the message doesn't need an answer. Sometimes they simply haven't seen it. A group chat is one example, because someone may assume the question has already been answered or is meant for somebody else. If I need a reply from one person, asking them directly and giving them one clear thing to respond to makes it easier for both of us.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-delayed-reply-03",
+          "prompt": "What would you do if you did not receive a reply after sending out a message?",
+          "answers": {
+            "basic": "If it were urgent, I'd call or try another way to contact them. Otherwise I'd wait a bit and send one short follow-up if I still needed an answer. For instance, if I had to book a court that evening, I'd say when the booking had to be made and what I planned to do if I didn't hear back. That way I can make a decision without sending several messages, and the other person can see why the timing matters.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-delayed-reply-04",
+          "prompt": "Why do some people prefer sending a message instead of making a call?",
+          "answers": {
+            "basic": "A message lets the other person answer when they're free. It's also useful when you need to share an address or leave a written record. If I'm telling someone where to meet for a game, they can open the message again as they walk from the station. A call makes more sense for something that needs several decisions at once, especially if ten short messages would leave both of us unsure what we've agreed.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-delayed-reply-05",
+          "prompt": "How do you show your respect in your messages?",
+          "answers": {
+            "basic": "I keep the message clear, say please when asking for something, and thank the person for helping. If there's a deadline, I explain why it matters. For example, when I ask someone at work to check a problem, I give them enough context to see what I need and when. That shows I respect their time, because they can judge whether they can help without having to spend the first few messages asking for the basic details.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-delayed-reply-06",
+          "prompt": "Why do some people feel angry when others don’t reply to their message?",
+          "answers": {
+            "basic": "They might feel ignored or worry that the other person is upset. It feels worse when they've shared something important and expected at least a brief response. When plans depend on a reply, the silence can feel worse because the person doesn't know what to do next. I'd still try to leave room for an ordinary explanation, since someone may have seen the message in a busy moment and forgotten they hadn't actually answered it.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

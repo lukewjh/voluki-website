@@ -1,0 +1,54 @@
+{
+  "id": "paper",
+  "title": "Paper",
+  "part": "1",
+  "category": "new",
+  "order": 8,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-paper-01",
+          "prompt": "Do you carry paper and pens with you when you go out?",
+          "answers": {
+            "basic": "Usually I just take my phone. I sometimes bring a small notebook to a badminton session if I want to write down a few things to cover. It's handy on court because I can glance at a short list between drills without getting distracted by a notification.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-paper-02",
+          "prompt": "Do people still keep handwritten letters today?",
+          "answers": {
+            "basic": "Yes, especially letters from relatives or people they don't see often. A handwritten note feels personal, so I can see why someone would keep it for years. A friend might keep a letter from home because even the handwriting can remind them of the person who sent it.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-paper-03",
+          "prompt": "Do you still write physical letters?",
+          "answers": {
+            "basic": "Hardly ever. I send messages for most things, but I'd still write a few lines by hand in a birthday card. A card gives me a good reason to slow down and write something specific about the person I'm giving it to.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-paper-04",
+          "prompt": "What did you like to do with paper as a child?",
+          "answers": {
+            "basic": "I used to fold paper planes and change the wings to see how far they'd go. Half the fun was seeing whose plane would land first. I liked that a small fold could make one plane turn sharply while another one flew almost straight across the room.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-paper-05",
+          "prompt": "Have you made any crafts with paper?",
+          "answers": {
+            "basic": "Yes, I made simple paper boats and planes as a child. I remember trying to make a boat strong enough to float in a bowl of water. I enjoyed seeing whether a different fold made it float longer, even when it sank almost as soon as I let go.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

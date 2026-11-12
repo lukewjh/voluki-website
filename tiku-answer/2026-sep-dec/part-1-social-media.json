@@ -1,0 +1,54 @@
+{
+  "id": "social-media",
+  "title": "Social media",
+  "part": "1",
+  "category": "retained",
+  "order": 13,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-social-media-01",
+          "prompt": "Have you ever posted anything on social media?",
+          "answers": {
+            "basic": "Yes, I've shared the odd update about what I'm learning or working on. My own blog gives me more room to write about a topic properly. A quick post might be a photo from a session, while a blog entry gives me space to explain a drill in more detail.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-social-media-02",
+          "prompt": "When did you start using social media?",
+          "answers": {
+            "basic": "I started using it when I was at school, mainly to stay in touch with classmates. Now I use it to follow people with similar interests. I remember using it to make plans after school, whereas now I'm more likely to save a video that helps me with a skill.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-social-media-03",
+          "prompt": "Do you think you spend too much time on social media?",
+          "answers": {
+            "basic": "Sometimes. I can open an app to answer one message and spend much longer scrolling through videos. It helps if I put my phone away when I have something else planned. If I open a clip during a break, for example, I try to stop when I've seen what I came for.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-social-media-04",
+          "prompt": "Do your friends use social media?",
+          "answers": {
+            "basic": "Yes, most of my friends use it. We share clips, arrange badminton sessions and occasionally send each other something useful about work. Our group chat is especially useful because somebody can post a free court time and see who can make it within a few minutes.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-social-media-05",
+          "prompt": "What do people often do on social media?",
+          "answers": {
+            "basic": "They chat, watch videos and keep up with friends. Some people also use it to show their work or build a name in their field. I often see people share a small thing they've made, which can start a conversation with someone who has the same interests.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

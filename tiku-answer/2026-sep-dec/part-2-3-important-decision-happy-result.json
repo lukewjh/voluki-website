@@ -1,0 +1,83 @@
+{
+  "id": "important-decision-happy-result",
+  "title": "对结果开心的重要决定",
+  "part": "2-3",
+  "category": "new",
+  "order": 1,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-important-decision-happy-result",
+          "prompt": "Describe a time you made an important decision and were happy with the result",
+          "cuePoints": [
+            "What the decision was",
+            "Why you made the decision",
+            "How easy it was for you to make the decision",
+            "And explain why you were happy with the result"
+          ],
+          "answers": {
+            "basic": "One decision I'm really glad I made was to start coaching badminton part-time. I'd been playing since I was ten, and somewhere along the way I realised that I understood a shot better when I tried to explain it to someone else. That's the idea I took from the Feynman technique. If I couldn't explain a movement in simple words, there was usually a part I hadn't understood myself.\n\nI noticed that most clearly when people asked me for tips between games. I could show a movement quite easily, but sometimes I had to stop and think when someone asked what to do with their feet first. I'd try giving them one thing to focus on, then watch what happened on their next attempt. If the movement got easier, I had a better idea of what I'd explained well. If they were still confused, I'd go back and work out which part of the movement I was taking for granted. Those little conversations made me want to spend more time teaching.\n\nI liked the idea straight away, but committing to it took some thought. I work full-time as a backend engineer, and I wondered whether I'd have the energy to teach after work. I also knew that doing a shot and helping someone else do it were different skills. What makes me happy now is that little moment when a student stops, tries the movement again and goes, 'Oh, I get it.' It still feels good every time.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-important-decision-happy-result-01",
+          "prompt": "Which is better, to make a decision quickly or slowly?",
+          "answers": {
+            "basic": "For everyday choices, I think it's better to decide quickly. If the choice could affect your life for years, like moving to another city, it's worth taking your time. With something like choosing lunch, spending ten minutes comparing options probably costs more than getting it slightly wrong. A move is different because you might need to check the commute and talk it over with your family before you know whether the new place would work on an ordinary weekday.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-important-decision-happy-result-02",
+          "prompt": "Do you think most people's decisions are made in their 20s?",
+          "answers": {
+            "basic": "A lot of firsts happen in your twenties, like choosing a job or moving out. But people make important decisions at every age, especially when their family or work situation changes. In your twenties, a lot of decisions feel connected because one choice about work can affect where you live and who you see every day. Someone in their forties might have to weigh a different set of things, like whether a new job would leave enough time to care for a parent.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-important-decision-happy-result-03",
+          "prompt": "What if people in a group have different opinions on a decision?",
+          "answers": {
+            "basic": "I'd let everyone explain what matters to them first. Once we know what we agree on, it's easier to choose something the whole group can live with. At work, for instance, two engineers can prefer different designs because one is worried about speed and the other is worried about maintenance. I'd try to agree on which concern matters most for this release, and if we're still stuck, I'd test both ideas on a small example.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-important-decision-happy-result-04",
+          "prompt": "What little decisions do people make every day?",
+          "answers": {
+            "basic": "People decide what to wear, what to eat, and how to get to work. They also make small choices about whether to reply to a message now or later. Many of these choices follow a routine, so you barely notice making them until something changes. If it's raining when I leave work, for instance, I have to decide whether to walk to the usual station or take a bus that's closer but might get stuck in traffic.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-important-decision-happy-result-05",
+          "prompt": "Do you think it is a good idea to make a small decision every day?",
+          "answers": {
+            "basic": "Yes. Making small decisions helps you notice what you actually want. Picking what to cook, for example, can make the day feel a bit more like your own. It gives you practice at choosing without making every little decision feel like a big test. For instance, when I decide whether to take a walk or go straight home, I can check how much energy I have and see whether the choice leaves me feeling better an hour later.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-important-decision-happy-result-06",
+          "prompt": "How can we tell the difference between an important and an easy decision?",
+          "answers": {
+            "basic": "An important decision has lasting consequences, while an easy decision is simply one you can make without much effort. Sometimes an important choice is easy because you already know what matters most to you. I'd ask what would happen if I changed my mind a week later. Ordering the wrong meal is easy to put right the next day, whereas accepting a job can affect your schedule for years, even if you feel sure it's the right choice the moment you hear about it.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

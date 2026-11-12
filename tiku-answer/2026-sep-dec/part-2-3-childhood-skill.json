@@ -1,0 +1,83 @@
+{
+  "id": "childhood-skill",
+  "title": "小时候学到的新技能",
+  "part": "2-3",
+  "category": "new",
+  "order": 9,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-childhood-skill",
+          "prompt": "Describe a new skill you learned when you were a child",
+          "cuePoints": [
+            "What the skill was",
+            "Who taught you this skill",
+            "How you learned it",
+            "And explain how you felt about learning the skill"
+          ],
+          "answers": {
+            "basic": "I started learning badminton when I was about ten. At first I thought it was mostly about swinging hard enough to get the shuttle over the net. An older player at the court showed me how to hold the racket and asked me to try hitting the shuttle with a much smaller swing.\n\nThe first few times, I wanted to stand at the back and hit the shuttle as far as I could. The person helping me moved me much closer and asked me to see whether I could send it back to roughly the same spot twice. That was harder than I expected, because I was still changing the way I held the racket every time. I practised with a friend and we counted how many shots we managed before somebody dropped the shuttle. Keeping track of that number gave us a reason to try again even when progress was quite slow.\n\nOnce I could return the shuttle a few times near the net, we tried to keep a short rally going. My feet used to stay where they were after I hit, so I had to learn to get ready again before the next shot. I remember how good it felt when we finally kept the shuttle in the air for several hits. That was enough to make me want to come back. I still remember how quickly one small improvement can change the way a game feels, and I see that now when I teach.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-childhood-skill-01",
+          "prompt": "Is it important for everyone to have a specialized skill?",
+          "answers": {
+            "basic": "I think it's helpful to have one skill you can do well. It gives you confidence and something useful to offer, whether it's cooking, fixing things or writing code. A specialised skill can also open up conversations with people you might not meet otherwise. Badminton did that for me, because getting better at a particular shot made me curious about how other people learned it, and that eventually helped me find a way into teaching the sport as well.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-childhood-skill-02",
+          "prompt": "Can a child learn skills from another child?",
+          "answers": {
+            "basic": "Yes. A child may feel more comfortable asking a friend to show them a new move in a game. They can take turns and learn by copying each other. On a badminton court, two beginners can work out a simple rally together, then swap tips about what helped them keep the shuttle in the air. An adult can step in when they need help, but a friend often gives them the courage to try again right away after a mistake.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-childhood-skill-03",
+          "prompt": "Do you think it is easier for children to learn new skills than for adults?",
+          "answers": {
+            "basic": "It depends on the skill. Children often pick up sounds and movements through play, while adults can set a clear goal and find good instructions. An adult learning a badminton movement might understand an explanation about foot position very quickly. A child might get there by playing a game that naturally puts their feet in the right place, so I think the best approach depends on what the learner can already do and what keeps them interested.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-childhood-skill-04",
+          "prompt": "What are the differences between the way adults learn and the way children learn?",
+          "answers": {
+            "basic": "Children often learn by trying things and watching others. Adults are more likely to look for an explanation and connect the new skill to something they already know. A child might learn to catch a ball by asking for another throw until it feels natural. An adult often wants to know what to look for before they try again, which can be helpful when the movement is unfamiliar and they have only a short practice session.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-childhood-skill-05",
+          "prompt": "What are the differences between learning in a group and learning by yourself?",
+          "answers": {
+            "basic": "In a group, you can ask for help and see how other people do things. On your own, you can repeat a tricky bit without holding anyone up. I like combining the two when I'm learning badminton. A group gives me someone to play against and shows me where a shot breaks down, then I can go back and practise the first step by myself until I feel ready to try the whole thing at the next session.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-childhood-skill-06",
+          "prompt": "What skills should children learn before they go to school?",
+          "answers": {
+            "basic": "I'd focus on everyday skills like taking turns, asking for help and looking after their things. Those habits make the first weeks of school a bit easier. For example, a child who can say they don't understand an instruction is already in a better position to get help. Being able to wait for a turn also makes shared activities feel fairer, so the teacher can spend more time helping everyone enjoy what they're doing.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "id": "organised-person",
+  "title": "有条理的人",
+  "part": "2-3",
+  "category": "new",
+  "order": 5,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-organised-person",
+          "prompt": "Describe a person you know who is very organized",
+          "cuePoints": [
+            "Who this person is",
+            "What this person usually does to stay organized",
+            "In what situations you have noticed this quality",
+            "And explain why you think being organized is important to him/her"
+          ],
+          "answers": {
+            "basic": "One organised person I know is a colleague on my software team. When we get a new job to do, she writes down the next few steps and keeps any decisions in the same place. If someone asks what we agreed last week, she can usually find it while the rest of us are still searching through messages.\n\nWhat I noticed over time was how little effort it took to use her system. The notes were usually a few lines long, and she'd put the decision at the top so we could find it without reading the whole conversation. In meetings she'd write down questions that were still open and leave the rest for later. I started doing something similar on my own tasks because it was useful to have a record I could come back to the next day. It made more sense once I saw how much time we saved by doing it regularly.\n\nI noticed this when we were getting a feature ready to release. She had a short list of things to check and, next to each one, the name of the person doing it. When one test took longer than expected, she moved the other tasks around and told us what we could do in the meantime. I think being organised matters to her because she hates making people wait for information. It also lets her finish work without carrying the whole project around in her head.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-organised-person-01",
+          "prompt": "Do you think it is important for managers to be well organized?",
+          "answers": {
+            "basic": "Yes, because a manager has to keep track of several people's work at once. A clear plan helps everyone see who is doing what and when it is due. A small example is having one place to check who owns each task. If someone is off sick, the manager can see what's about to be held up and move things around before the rest of the team has spent half a day waiting for an answer.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-organised-person-02",
+          "prompt": "Should parents teach their children to be organized?",
+          "answers": {
+            "basic": "Yes, and I'd start with little habits like putting school things in the same place. Doing it together a few times can help the child remember the routine. A child might start by packing their bag with a parent and then check it on their own once the steps feel familiar. In the morning they get to see the benefit for themselves, because they can find their things and leave the house without a last-minute search.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-organised-person-03",
+          "prompt": "What can people do to become more organized?",
+          "answers": {
+            "basic": "I'd start by writing tasks down in one place and choosing the most important one each morning. A system you can stick with is more useful than a complicated one. If a task is too big to fit on that list, I'd write down the first action, like asking a colleague for a file. Once that step is clear, it's easier to start, and at the end of the day you can see what is actually left to do.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-organised-person-04",
+          "prompt": "Are organized people more likely to be successful at work or in their studies?",
+          "answers": {
+            "basic": "Usually, yes. They are more likely to meet deadlines and have time to check their work. They still need the skills to do the work well. For instance, a student who starts an assignment early can ask a question while there's still time to use the answer. Someone else might know the subject just as well and end up rushing, so organisation helps the first student make better use of the knowledge they already have.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-organised-person-05",
+          "prompt": "Do you think children should learn to be organized from a young age?",
+          "answers": {
+            "basic": "Yes. Small routines like packing a school bag the night before are easy to learn. They also let children do more things for themselves over time. It can be as simple as asking a child to put a book back where they found it. The benefit becomes obvious when they want the book again the next day, and they can apply the same idea to other things without needing an adult to remind them every time.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-organised-person-06",
+          "prompt": "Why is it important for people to be organized?",
+          "answers": {
+            "basic": "It saves time and makes life less stressful. When you know where things are and what needs doing, you can spend more energy on the work itself. I notice it most when I'm switching between work and coaching on the same day. If my equipment is packed and my lesson notes are in one place, I can arrive thinking about the student in front of me, which makes the first few minutes of the lesson easier.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,336 @@
+---
+import "../styles/speaking-question.css";
+
+interface Props {
+  topic?: string;
+}
+
+const { topic } = Astro.props;
+---
+
+<div data-speaking-view data-speaking-topic={topic}>
+  <div class="view-toolbar" data-view-toolbar hidden>
+    <div class="view-selector" role="group" aria-label="题库显示模式">
+      <button type="button" data-view-mode="cards" aria-pressed="true">卡片</button>
+      <button type="button" data-view-mode="map" aria-pressed="false">导图</button>
+    </div>
+    <div class="card-actions"><slot name="card-actions" /></div>
+  </div>
+
+  <div data-speaking-cards><slot /></div>
+
+  <section class="map-panel" data-map-panel aria-label="IELTS-Speaking 导图" hidden>
+    <div class="map-toolbar" role="group" aria-label="导图视图控制">
+      <button type="button" data-map-reset>总览</button>
+      <button type="button" data-map-resume disabled>回到当前题</button>
+      <span class="zoom-controls">
+        <button type="button" data-map-zoom-out aria-label="缩小">−</button>
+        <button type="button" data-map-zoom-in aria-label="放大">+</button>
+      </span>
+    </div>
+    <div class="map-viewport" data-map-viewport role="group" aria-label="题库思维导图画布">
+      <canvas aria-hidden="true"></canvas>
+      <div class="map-nodes" data-map-nodes></div>
+      <div class="map-status">
+        <p role="status" data-map-status></p>
+        <button type="button" data-map-retry hidden>重试</button>
+      </div>
+    </div>
+    <p class="map-hint">
+      <span class="map-hint-mouse">拖动画布 · Ctrl + 滚轮缩放</span>
+      <span class="map-hint-touch">单指拖动 · 双指缩放</span>
+    </p>
+  </section>
+
+  <dialog class="map-reader" data-map-reader aria-labelledby="speaking-reader-title">
+    <div class="reader-bar">
+      <strong id="speaking-reader-title">题卡</strong>
+      <button type="button" data-reader-switch>切到卡片</button>
+      <button class="reader-close" type="button" data-reader-close aria-label="关闭题卡" autofocus>×</button>
+    </div>
+    <div class="reader-content" data-reader-content></div>
+  </dialog>
+</div>
+
+<script>
+  import { mountSpeakingView } from "../lib/speakingView";
+
+  const view = document.querySelector<HTMLElement>("[data-speaking-view]");
+  if (view) mountSpeakingView(view);
+</script>
+
+<style>
+  .view-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    display: flex;
+    min-height: 64px;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    background: var(--bg);
+  }
+
+  .view-toolbar[hidden],
+  [data-mode="map"] .card-actions {
+    display: none;
+  }
+
+  .view-selector {
+    display: inline-flex;
+    padding: 3px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface-soft);
+  }
+
+  button {
+    min-height: 44px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 0 12px;
+    color: var(--text);
+    background: var(--surface);
+    font-size: 0.875rem;
+    font-weight: 650;
+    cursor: pointer;
+  }
+
+  button:disabled {
+    opacity: 0.55;
+    cursor: default;
+  }
+
+  button:focus-visible,
+  .map-viewport :global(button:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .view-selector button {
+    min-width: 62px;
+    border-color: transparent;
+    color: var(--muted);
+    background: transparent;
+  }
+
+  .view-selector [aria-pressed="true"] {
+    color: var(--bg);
+    background: var(--text);
+  }
+
+  .map-panel {
+    margin-top: 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+  }
+
+  .map-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .zoom-controls {
+    display: inline-flex;
+    gap: 6px;
+    margin-inline-start: auto;
+  }
+
+  .zoom-controls button,
+  .reader-close {
+    min-width: 44px;
+    padding: 0;
+    font-size: 1.25rem;
+  }
+
+  .map-viewport {
+    --map-connector: color-mix(in srgb, var(--muted) 60%, var(--line));
+    position: relative;
+    height: clamp(300px, 57dvh, 590px);
+    overflow: clip;
+    background-color: var(--surface-soft);
+    background-image: radial-gradient(circle, var(--line) 1px, transparent 1px);
+    background-size: 20px 20px;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+  }
+
+  .map-viewport[data-dragging],
+  .map-viewport[data-dragging] :global(button) {
+    cursor: grabbing;
+  }
+
+  canvas,
+  .map-nodes {
+    position: absolute;
+    inset: 0;
+  }
+
+  canvas {
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .map-nodes {
+    transform-origin: 0 0;
+    pointer-events: none;
+  }
+
+  .map-viewport :global(.speaking-map-node) {
+    position: absolute;
+    display: flex;
+    width: var(--map-node-width);
+    height: 68px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid var(--map-connector);
+    border-radius: 8px;
+    color: var(--text);
+    background: var(--surface);
+    font-size: 0.9375rem;
+    font-weight: 650;
+    text-align: start;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+
+  .map-viewport :global(.speaking-map-node[data-kind="root"]) {
+    color: var(--bg);
+    background: var(--text);
+    font-weight: 800;
+  }
+
+  .map-viewport :global(.speaking-map-node[aria-current="true"]) {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-color: var(--accent);
+  }
+
+  .map-viewport :global(.speaking-map-label) {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-height: 1.13;
+    overflow-wrap: anywhere;
+  }
+
+  .map-viewport :global(.speaking-map-mark) {
+    flex: 0 0 1em;
+    font-size: 1.125rem;
+    text-align: center;
+  }
+
+  .map-status {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    pointer-events: none;
+  }
+
+  .map-status p {
+    margin-bottom: 8px;
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+
+  .map-status button {
+    pointer-events: auto;
+  }
+
+  .map-hint {
+    margin: 0;
+    padding: 10px 12px;
+    color: var(--muted);
+    font-size: 0.8125rem;
+  }
+
+  .map-hint-touch {
+    display: none;
+  }
+
+  .map-reader {
+    width: min(720px, calc(100% - 28px));
+    max-width: none;
+    max-height: min(82dvh, 780px);
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    color: var(--text);
+    background: var(--surface);
+  }
+
+  .map-reader[open] {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .map-reader::backdrop {
+    background: rgb(0 0 0 / 45%);
+  }
+
+  :global(html:has([data-map-reader][open])) {
+    overflow: hidden;
+  }
+
+  .reader-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .reader-bar strong {
+    margin-inline-end: auto;
+  }
+
+  .reader-content {
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 12px;
+  }
+
+  .reader-content > :global(a) {
+    text-decoration: underline;
+  }
+
+  @media (pointer: coarse) {
+    .map-hint-mouse {
+      display: none;
+    }
+
+    .map-hint-touch {
+      display: inline;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .map-viewport {
+      height: clamp(300px, 48dvh, 470px);
+    }
+
+    .map-reader {
+      inset: auto 0 0;
+      width: 100%;
+      margin: 0;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .reader-content {
+      padding-bottom: max(12px, env(safe-area-inset-bottom));
+    }
+  }
+</style>

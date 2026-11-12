@@ -1,0 +1,83 @@
+{
+  "id": "celebrity-interview",
+  "title": "看过的名人采访",
+  "part": "2-3",
+  "category": "new",
+  "order": 4,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-celebrity-interview",
+          "prompt": "Describe a time you watched a famous person being interviewed",
+          "cuePoints": [
+            "Who the famous person was",
+            "What the interview was about",
+            "When and where you watched the interview",
+            "And explain how you felt about the interview"
+          ],
+          "answers": {
+            "basic": "I remember watching an interview with Lin Dan, the badminton player. I'd come home from playing one evening and was looking at badminton clips on my phone. I came across a longer interview and stayed to watch because I wanted to hear him talk about playing under pressure.\n\nI'd watched plenty of match highlights before, so I expected to skip to the parts about famous games. Instead, I found myself listening for the smaller things that go into being ready for one match. I thought about my own reaction to a bad session, when I often want to change everything at once. Watching him made me think about how useful it might be to work on one thing long enough to see a difference. I went back to a bit I'd half heard the first time, because I wanted to follow the whole conversation at my own pace.\n\nThe part I found interesting was hearing him discuss preparation. When you watch a match, the camera follows the shuttle and you mainly see who won the point. An interview gives you a chance to think about what the player has been doing for weeks before that point. I remember putting my racket bag down halfway through so I could pay proper attention. I came away feeling a bit less impatient about my own training. Some improvements take a lot of quiet practice before anyone watching would be able to notice them.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-celebrity-interview-01",
+          "prompt": "What should people wear to a job interview?",
+          "answers": {
+            "basic": "I'd wear something clean and fairly simple, like a neat shirt and trousers. For a more formal workplace, I'd go a step further and wear a jacket. I'd check how people usually dress in that field and aim to look like I've made an effort. For a software interview, for instance, I'd choose something comfortable enough to sit and talk in for an hour, so I can put my attention on the questions when the interview starts.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-celebrity-interview-02",
+          "prompt": "Why do we need to attend interviews when applying for jobs?",
+          "answers": {
+            "basic": "An interview lets both sides ask questions. The employer can hear how you handled real situations, and you can find out what the job is actually like. For example, I could ask a software team how they handle a problem that comes up outside working hours. Their answer would tell me something about what the job feels like on a difficult day, and my explanation of a past problem would give them something concrete to ask me about.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-celebrity-interview-03",
+          "prompt": "What should people do to prepare for a job interview?",
+          "answers": {
+            "basic": "I'd read about the company and prepare two or three examples from my own experience. It's also worth practising how to describe each example out loud. I usually find that a story is easier to remember if I know what the problem was, what I did and how it turned out. I'd also think of one genuine question about the job, because it's much easier to ask something useful when you've looked into the role beforehand.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-celebrity-interview-04",
+          "prompt": "Why do some people think interviews are a waste of time?",
+          "answers": {
+            "basic": "Some interviews feel pointless when the questions have little to do with the work. A long process is especially frustrating if the company never tells you how it went. Someone might take time off work for several rounds and still get asked the same questions each time. I can see why they'd prefer a shorter interview where they get to talk through something that actually happens in the role and know when to expect an answer.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-celebrity-interview-05",
+          "prompt": "Why do some people dislike being interviewed?",
+          "answers": {
+            "basic": "Some people get nervous when they know they're being judged. Others simply need time to think and find it hard to give a good answer on the spot. The format can make that worse when several people are looking at you and the next question comes before you've finished thinking. I find it easier when an interviewer gives me a moment to choose an example, because then I can talk about something I've actually done and explain it clearly.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-celebrity-interview-06",
+          "prompt": "What kinds of people are usually interviewed?",
+          "answers": {
+            "basic": "Job applicants are the most obvious example. Journalists also interview public figures, experts and ordinary people who have seen or done something interesting. A sports reporter might interview a player after a match to find out what changed during the game. If there's news about a neighbourhood, it can be useful to hear from someone who lives there, since they'll know what the change means for people who use the area every day.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

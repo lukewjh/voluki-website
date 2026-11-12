@@ -1,0 +1,62 @@
+{
+  "id": "teachers",
+  "title": "Teachers",
+  "part": "1",
+  "category": "retained",
+  "order": 12,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-teachers-01",
+          "prompt": "Do you have a favorite teacher?",
+          "answers": {
+            "basic": "One of my favourite teachers was my secondary school maths teacher. They were good at showing how to get started when a problem looked too hard. I remember them starting with a smaller example, which often made it clear why the same idea worked in the bigger question.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-teachers-02",
+          "prompt": "Do you want to be a teacher in the future?",
+          "answers": {
+            "basic": "I already teach badminton part-time, and I enjoy it. I'd like to keep coaching alongside my work as a software engineer. I get a lot out of seeing someone understand a movement, like when a student suddenly finds a more comfortable grip.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-teachers-03",
+          "prompt": "Do you have a teacher from your past that you still remember?",
+          "answers": {
+            "basic": "Yes, I still remember my maths teacher. They used to ask how I got an answer, which made me pay more attention to the steps. One thing that stuck with me was having to explain a shortcut to the class, because it made me see what I'd missed.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-teachers-04",
+          "prompt": "Are you still in touch with your primary school teachers?",
+          "answers": {
+            "basic": "No, I've lost touch with them over the years. I still remember a few things they used to say in class. We moved on to different schools, so there wasn't much chance to see them again except when I happened to pass the old building.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-teachers-05",
+          "prompt": "In what way has your favourite teacher helped you?",
+          "answers": {
+            "basic": "My maths teacher showed me how to break a big question into smaller ones. I use that habit when I'm stuck on a problem at work now. If a service is slow, for instance, I'll check one request step by step instead of trying to fix everything at once.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-teachers-06",
+          "prompt": "Do you like your primary school teachers more than your high school teachers?",
+          "answers": {
+            "basic": "I remember my high school teachers more clearly because I was old enough to ask them questions about what to do next. I have good memories of primary school too. A high school teacher might talk through a choice of subjects with me, which felt useful because it affected what I could study later.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

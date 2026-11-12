@@ -1,0 +1,67 @@
+{
+  "id": "changed-opinion",
+  "title": "改变重要想法",
+  "part": "2-3",
+  "category": "retained",
+  "order": 51,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-changed-opinion",
+          "prompt": "Describe a time when you changed an important opinion of yours",
+          "cuePoints": [
+            "When you changed your opinion",
+            "What the original opinion was",
+            "Why you changed it",
+            "And explain how you felt about the experience"
+          ],
+          "answers": {
+            "basic": "I changed my mind about when you're ready to teach someone. When I was learning badminton, I used to think I had to be very good at a movement before I could show it to anybody else. I worried that if I still had questions, I wouldn't have anything useful to say.\n\nAt the time I was happy to watch a lesson and try the movement myself. When somebody asked me how I did it, though, I could suddenly see which parts had made sense only while I was watching. One question that often came up was what to do first, and my answer wasn't always very clear. I began to think that if I could talk through one small part honestly, there was still something useful I could share. I could also learn from where the other person got stuck, because it made me look at the movement differently.\n\nThat changed when I started trying to explain what I'd learned to other players. Sometimes I'd get halfway through an explanation and realise I couldn't say why a step mattered. I'd go back, watch the movement again and try to explain it more simply. That's what made the Feynman technique click for me. I was a little embarrassed the first time I got stuck, but it was also useful. Now I see teaching as part of how I learn, and I get a real sense of achievement when a student understands the idea too.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-changed-opinion-01",
+          "prompt": "When do most children begin to have their own opinions?",
+          "answers": {
+            "basic": "Children start showing preferences very early, like choosing a game or a meal. As they get older, they get better at giving reasons and hearing other views. A young child might say they prefer one game because it lets them play with a friend, even if they can't explain much beyond that. With time and practice, they can start comparing choices and understanding why another person might choose differently, which makes their opinions more considered.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-changed-opinion-02",
+          "prompt": "Whose opinions are more important to children, their parents' or teachers'?",
+          "answers": {
+            "basic": "For a family decision, children may listen more to their parents. A teacher's opinion may carry more weight on a subject the child enjoys or finds difficult. For instance, a teacher might help a child see that they're capable of a subject they used to avoid, because the teacher sees their work develop over time. Parents know a different side of the child, so they may have more influence when the choice affects everyday life at home.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-changed-opinion-03",
+          "prompt": "Do children communicate more with teachers or with parents?",
+          "answers": {
+            "basic": "They probably talk more with parents about daily life at home. Some children find it easier to ask a teacher about schoolwork or something happening in class. Time and comfort matter as well, because a child may see both adults regularly and still tell them different things. They might ask a teacher about a difficult assignment and only tell a parent how upset they were about it once they've had a chance to relax at home.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-changed-opinion-04",
+          "prompt": "Who do young people like to share opinions with?",
+          "answers": {
+            "basic": "Many turn to friends first because they're likely to understand the situation. They may also ask a parent, a teacher or a colleague when they need a different perspective. A friend who is going through the same thing can be a good first person to talk to. For a decision like changing jobs, an older colleague might be more useful later, because they've already had to think about what happens after the first few months in a new role.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "id": "mirrors",
+  "title": "Mirrors",
+  "part": "1",
+  "category": "retained",
+  "order": 21,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-mirrors-01",
+          "prompt": "Have you ever bought mirrors?",
+          "answers": {
+            "basic": "Yes, I've bought a small mirror for checking how I look before I leave. I wanted something simple that would fit in the space. I put it near the door because that's where I usually notice that my collar is folded or my hair needs fixing.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-mirrors-02",
+          "prompt": "Do you usually take a mirror with you?",
+          "answers": {
+            "basic": "No, I don't usually carry one. If I'm out and need to check something, I'll find a mirror in a bathroom. I try to keep what I carry fairly light, especially if I already have a racket bag with me.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-mirrors-03",
+          "prompt": "Would you use mirrors to decorate your room?",
+          "answers": {
+            "basic": "I'd use one if it made a small room feel brighter or gave me somewhere to check my clothes. I'd probably stick with a simple frame. I'd hang it somewhere it catches daylight, because that would make more of a difference to me than a fancy design.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-mirrors-04",
+          "prompt": "Do you like looking at yourself in the mirror? How often?",
+          "answers": {
+            "basic": "I check the mirror when I get ready and again before I go out. Most days it's just a quick look at my hair or clothes. I wouldn't say I enjoy it much, but it saves me from getting to work and finding out I've missed a button.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

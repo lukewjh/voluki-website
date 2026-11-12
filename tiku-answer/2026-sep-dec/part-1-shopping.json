@@ -1,0 +1,46 @@
+{
+  "id": "shopping",
+  "title": "Shopping",
+  "part": "1",
+  "category": "retained",
+  "order": 17,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-shopping-01",
+          "prompt": "Do you like shopping?",
+          "answers": {
+            "basic": "I enjoy shopping when I know what I'm looking for, especially if it's for badminton. I get tired of walking around shops without a clear idea. I can happily spend time comparing two rackets because the choice matters to me and I know what I want to feel in my hand.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-shopping-02",
+          "prompt": "How often do you go shopping?",
+          "answers": {
+            "basic": "I buy groceries most weeks. For clothes or sports gear, I shop when I actually need to replace something. That usually means a quick supermarket trip for a few meals and a separate trip if my shoes start to wear out.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-shopping-03",
+          "prompt": "Do you prefer online shopping or in-store shopping?",
+          "answers": {
+            "basic": "For things I already know, online shopping is easier. I prefer a physical shop when I want to try on shoes or feel the weight of a racket. I might reorder shuttlecocks online, but I'd want to feel how a new racket swings before I commit to it.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-shopping-04",
+          "prompt": "Have you ever returned anything you bought online?",
+          "answers": {
+            "basic": "Yes, I sent back a piece of clothing once because the size was off. I usually check the measurements and reviews more carefully now. The sleeves were shorter than I'd expected, so I sent it back and compared the measurements with a shirt I already liked.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

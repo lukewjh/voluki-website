@@ -2,6 +2,7 @@ import { getEnv } from "./env";
 import { createBlogCache } from "./blogCache";
 import { parseBlogPost, publicBlogPosts, type BlogPost } from "./blogMarkdown";
 import { blogSchema } from "./blogSchema";
+import { limitedBody, requestGithubContent, type GithubContentConfig } from "./githubContent";
 
 export const blogContentPrefix = "src/content/blog/";
 export const blogMediaPrefix = "public/content_imgs/";
@@ -10,7 +11,7 @@ const imageTypes: Record<string, string> = {
   webp: "image/webp", avif: "image/avif"
 };
 
-export type GithubBlogConfig = { repo: string; branch: string; token?: string };
+export type GithubBlogConfig = GithubContentConfig;
 export type BlogSnapshot = { revision: string; posts: BlogPost[]; media: Record<string, string> };
 type TreeEntry = { path: string; sha: string; type: string; mode: string };
 
@@ -29,27 +30,6 @@ export function isBlogMediaPath(path: string) {
     && Object.hasOwn(imageTypes, path.split(".").pop()!.toLowerCase());
 }
 
-async function limitedBody(response: Response, maxBytes: number) {
-  if (Number(response.headers.get("Content-Length")) > maxBytes) throw new Error("GitHub content is too large.");
-  const reader = response.body?.getReader();
-  if (!reader) throw new Error("Empty GitHub response.");
-  const chunks: Uint8Array[] = [];
-  let total = 0;
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      total += value.byteLength;
-      if (total > maxBytes) throw new Error("GitHub content is too large.");
-      chunks.push(value);
-    }
-  } finally { await reader.cancel().catch(() => {}); }
-  const result = new Uint8Array(total);
-  let offset = 0;
-  for (const chunk of chunks) { result.set(chunk, offset); offset += chunk.byteLength; }
-  return result;
-}
-
 function decodeSnapshot(value: BlogSnapshot): BlogSnapshot {
   return { ...value, posts: value.posts.map((post) => ({ ...post, data: blogSchema.parse(post.data) })) };
 }
@@ -58,20 +38,8 @@ export function createGithubBlogClient(fetcher: typeof fetch = fetch, cache = cr
   const cacheKey = (origin: string, config: GithubBlogConfig, resource: string) =>
     new URL(`/__voluki-blog-cache/v1/${encodeURIComponent(config.repo)}/${encodeURIComponent(config.branch)}/${resource}`, origin).href;
 
-  const upstream = async (config: GithubBlogConfig, path: string, signal: AbortSignal, raw = false) => {
-    const response = await fetcher(`https://api.github.com/repos/${config.repo}/${path}`, {
-      headers: {
-        Accept: raw ? "application/vnd.github.raw+json" : "application/vnd.github+json",
-        "User-Agent": "Voluki-Blog",
-        "X-GitHub-Api-Version": "2022-11-28",
-        ...(config.token ? { Authorization: `Bearer ${config.token}` } : {})
-      },
-      // Workers supports manual redirects; non-2xx responses are rejected below.
-      redirect: "manual", signal, cache: "no-store"
-    });
-    if (!response.ok) throw new Error(`GitHub content request failed (${response.status}).`);
-    return response;
-  };
+  const upstream = (config: GithubBlogConfig, path: string, signal: AbortSignal, raw = false) =>
+    requestGithubContent(fetcher, config, path, signal, { raw, userAgent: "Voluki-Blog" });
 
   return {
     async snapshot(config: GithubBlogConfig, origin: string, edge?: Cache) {

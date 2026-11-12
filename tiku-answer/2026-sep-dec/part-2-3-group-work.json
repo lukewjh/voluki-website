@@ -1,0 +1,83 @@
+{
+  "id": "group-work",
+  "title": "在团队中工作",
+  "part": "2-3",
+  "category": "retained",
+  "order": 37,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-group-work",
+          "prompt": "Describe a time when you worked in a group",
+          "cuePoints": [
+            "What you did",
+            "Who you worked with",
+            "What problems you faced",
+            "And explain why you worked in the group"
+          ],
+          "answers": {
+            "basic": "At work I helped build a feature that needed changes on both the server and the screen people use. I handled part of the backend and worked with a frontend engineer and someone who tested the feature. We had to do it together because each person's work depended on what the others expected to happen.\n\nBefore writing much code, we walked through what somebody would do from the moment they opened the page. That helped us notice that we were making different assumptions about when a choice would be saved. I was thinking about what the server needed in order to store the information. The frontend engineer was thinking about what the person on the page would see if something was missing. The person testing it started asking what should happen if somebody went back and tried again. Having all three questions on the table gave us a better way to test the feature.\n\nOne problem came up when we tested what would happen if a user left a field empty. My part returned a general error, and the person working on the screen needed to know exactly what to show. We made a short list of cases and agreed on what the service would return for each one. Then we went through them together. I liked how quickly things moved once we were looking at the same example. A short conversation saved us from going back and forth all afternoon.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-group-work-01",
+          "prompt": "Why do some people prefer to work by themselves?",
+          "answers": {
+            "basic": "Some tasks take concentration, and it can be easier to stay focused alone. People also like being able to decide their own pace and order of work. If I'm looking for the cause of a bug, for example, I often need half an hour without anyone asking me to switch to another task. Once I've made some progress, it can be useful to talk to the team, especially if someone else has dealt with a similar problem.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-group-work-02",
+          "prompt": "What should a leader do to make team members want to follow him or her?",
+          "answers": {
+            "basic": "A leader should explain why the work matters and give people a chance to raise concerns. Following through on small promises also makes it easier to earn trust. A good example is telling the team which parts of a project can wait when the deadline is close. People are more likely to follow that decision if they understand the reason and have been able to point out anything important the leader might have missed.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-group-work-03",
+          "prompt": "Should students learn to do group work?",
+          "answers": {
+            "basic": "Yes, because they'll probably have to work with other people later. Group work gives them a chance to practise sharing tasks and disagreeing politely. In a class project, somebody can have a good idea and still need to explain it in a way the group can actually use. It helps if the teacher gives everyone a role, so the same student doesn't end up doing all the work while the others watch.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-group-work-04",
+          "prompt": "What group tasks are there in schools?",
+          "answers": {
+            "basic": "There are science projects, presentations and team games. A group can also plan a small event where everyone has a clear job to do. For a presentation, one student might find examples, another might organise the main ideas and a third might practise explaining them to the class. They still need to look at it together before they present, because the different pieces have to tell a story people can follow.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-group-work-05",
+          "prompt": "What advantages are there for students experiencing teamwork at school?",
+          "answers": {
+            "basic": "They learn to explain their ideas and listen when another person suggests a different approach. They also see how their own work affects the rest of the group. For example, if one student is gathering information and another is making slides, they have to agree on what is worth including. That is a useful early lesson in doing work somebody else can pick up, which applies in many jobs even when each person has a separate task.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-group-work-06",
+          "prompt": "How can you tell if a person is a good leader?",
+          "answers": {
+            "basic": "I'd look at how the team works when there's a problem. A good leader listens, makes a clear decision and takes responsibility for how it turns out. I'd notice whether people feel able to say something has gone wrong before it turns into a bigger problem. For instance, if a deadline is at risk, a good leader can help the team decide what can still be done instead of letting everybody spend the meeting guessing who is to blame.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

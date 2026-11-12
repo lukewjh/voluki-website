@@ -1,0 +1,54 @@
+{
+  "id": "jokes-and-comedies",
+  "title": "Jokes & Comedies",
+  "part": "1",
+  "category": "retained",
+  "order": 25,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-jokes-and-comedies-01",
+          "prompt": "Are you good at telling jokes?",
+          "answers": {
+            "basic": "I'm better at making a quick comment in a conversation than telling a full joke. I sometimes forget the good part if I try to tell a long one. I can usually get a laugh if something funny has just happened and everyone already knows what I'm talking about.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-jokes-and-comedies-02",
+          "prompt": "Do your friends like to tell jokes?",
+          "answers": {
+            "basic": "Yes, especially when we're relaxing after a game. We usually joke about a missed shot or something funny that happened that day. If someone completely misses an easy return, we might bring it up over noodles and end up laughing all over again.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-jokes-and-comedies-03",
+          "prompt": "Do you like to watch comedies?",
+          "answers": {
+            "basic": "Yes, a good comedy is an easy way to relax. I like humour that comes from an ordinary situation going a little wrong. A scene where someone tries to get out of an awkward conversation can make me laugh because it feels so familiar.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-jokes-and-comedies-04",
+          "prompt": "Have you ever watched a live show?",
+          "answers": {
+            "basic": "Yes, I've been to a small live comedy show. I liked hearing the audience react together because it made the performance feel different from a clip. When somebody at the front laughed early, it made everyone else laugh too, and I could see the performer adjusting to the room.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-jokes-and-comedies-05",
+          "prompt": "Are comedy shows popular in your country?",
+          "answers": {
+            "basic": "Yes, comedy shows and short comedy clips get shared a lot. I usually hear about a good one because a friend has sent me a bit of it. Friends sometimes send a clip during lunch because they know I'll recognise the situation, even if I've never watched the full show.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

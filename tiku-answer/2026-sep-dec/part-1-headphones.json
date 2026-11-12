@@ -1,0 +1,54 @@
+{
+  "id": "headphones",
+  "title": "Headphones",
+  "part": "1",
+  "category": "retained",
+  "order": 26,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-headphones-01",
+          "prompt": "Do you use headphones?",
+          "answers": {
+            "basic": "Yes, I use them on the subway and when I want to listen to something without disturbing anyone. They're also handy for work calls. On a noisy train, I can follow an English recording much more easily once I've put my earbuds in.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-headphones-02",
+          "prompt": "What type of headphones do you use?",
+          "answers": {
+            "basic": "I mostly use wireless earbuds because they're easy to carry. For a longer call at home, I sometimes use a headset with a microphone. The earbuds fit in a small pocket in my bag, so I usually have them even when I've left the bigger headset at home.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-headphones-03",
+          "prompt": "When would you use headphones?",
+          "answers": {
+            "basic": "I use them to listen to music on my way to work or to take a call. Sometimes I put on an English recording during a walk. A walk is a good time to play the same short clip a couple of times and listen for phrases I've missed.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-headphones-04",
+          "prompt": "In what conditions would you not use headphones?",
+          "answers": {
+            "basic": "I take them out when I'm cycling or crossing a busy road. I also leave them off when I'm coaching so I can hear the players. On court I often need to hear a question from the other side of the net, even while people are playing nearby.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-headphones-05",
+          "prompt": "Is wearing headphones comfortable?",
+          "answers": {
+            "basic": "They're comfortable for a short trip. If I wear earbuds for too long, my ears start to feel tired, so I take them out for a while. I notice it most after a long call, when taking them out for five minutes feels like a proper break.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "id": "tall-building",
+  "title": "喜欢或不喜欢的高建筑",
+  "part": "2-3",
+  "category": "retained",
+  "order": 27,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-tall-building",
+          "prompt": "Describe a tall building you like or dislike",
+          "cuePoints": [
+            "What it is used for",
+            "Where it is",
+            "What it looks like",
+            "And explain why you like/dislike it"
+          ],
+          "answers": {
+            "basic": "A tall building I like is Shanghai Tower in Lujiazui. It houses offices and has an observation area for visitors. I usually see it from across the Huangpu River, where it's easy to pick out among the other tall buildings. The outside is covered in glass and the shape seems to twist gently as it goes up.\n\nI remember first paying attention to it when I was walking with someone by the river. We stopped because the top was just coming out of low cloud, and it looked quite different a few minutes later when more of the building came into view. I hadn't noticed how slowly the outline seems to turn when you follow it with your eyes. The buildings beside it look much straighter, which makes that shape stand out even more. I sometimes use it as a point to look for when I'm trying to work out which direction I'm facing by the water.\n\nI like it best when I can see it from a distance on a clear day. Up close, a very tall building can look like a wall of glass. From the river you can see the whole shape and how it fits into the skyline. It also looks different depending on the light. Sometimes I'm just out for a walk and catch myself looking up at it again. It's one of the things that makes that part of Shanghai easy to recognise.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-tall-building-01",
+          "prompt": "Are there many tall buildings in your country?",
+          "answers": {
+            "basic": "Yes, especially in large cities like Shanghai. There are tall apartment blocks in residential areas and much higher office towers in some business districts. A tall residential building can put a lot of homes within a short walk of the subway, which is useful in a busy city. In smaller towns there's often more room to build outwards, so the height of the buildings can change quite a lot as you travel between places.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-tall-building-02",
+          "prompt": "What are the differences between those tall buildings in your country?",
+          "answers": {
+            "basic": "Some are designed for offices and have large open floors. Others are apartment blocks, where good light, lifts and shared spaces matter more to the people using them. An office tower might have a large entrance for people arriving around the same time in the morning. In a residential building, I'd notice different details, like how far I have to carry groceries from the lift and whether there is somewhere quiet to sit near the entrance.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-tall-building-03",
+          "prompt": "Why are different places laid out and designed differently?",
+          "answers": {
+            "basic": "Places have different needs and different amounts of space. A busy district near a subway station can fit more offices and flats, while an older street may keep its small shops. A street with lots of small shops needs room for people to stop and look around, which is different from an area designed for people changing trains quickly. The way each place is laid out can make those everyday activities easy or quite awkward, even if the buildings look good individually.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-tall-building-04",
+          "prompt": "What are the advantages of living in tall buildings?",
+          "answers": {
+            "basic": "On a higher floor, you might get more light and a better view. A large building can also put many homes near the same shops and transport. It can be convenient if there are enough lifts and the things you need are close by. For me, a good example would be getting home with a racket bag after a late lesson and being able to pick up dinner on the short walk from the station.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-tall-building-05",
+          "prompt": "Why do some people like to remodel and decorate their homes themselves?",
+          "answers": {
+            "basic": "They can choose details that match how they live. For example, they might set up a corner for working from home or add shelves exactly where they want them. If they use a room for work during the day and dinner at night, they might want furniture they can move easily. Doing some of the work themselves also lets them try a small change first and see what it feels like before they spend money on the whole room.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-tall-building-06",
+          "prompt": "What kind of interior design style do most people like?",
+          "answers": {
+            "basic": "I think many people like light colours and simple furniture because they make a room feel open. Personal touches, like photos or a lamp, can make it feel less plain. People living in a small flat may also choose furniture that can do more than one job, because it leaves more of the room free. I'd keep my own desk area fairly plain and let things like books or a favourite picture give it some character over time.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

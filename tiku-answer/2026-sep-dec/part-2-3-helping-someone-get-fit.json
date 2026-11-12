@@ -1,0 +1,51 @@
+{
+  "id": "helping-someone-get-fit",
+  "title": "帮别人提升健康",
+  "part": "2-3",
+  "category": "new",
+  "order": 26,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-helping-someone-get-fit",
+          "prompt": "Describe a person whose health and fitness you have helped to improve",
+          "cuePoints": [
+            "Who this person was",
+            "Why you helped him/her",
+            "How you helped him/her",
+            "And explain whether it was easy or difficult"
+          ],
+          "answers": {
+            "basic": "I'd talk about a beginner who wanted to get more active and came to me for badminton coaching. They spent a lot of the day sitting and wanted an activity they could look forward to. They got out of breath quite quickly at first, and trying to cover the whole court made it hard to enjoy the game.\n\nThey told me they liked the idea of playing a real game, but they didn't want to spend the whole lesson feeling like they were behind. I asked what felt hardest in the first few minutes, and they said it was trying to move and think about the racket at the same time. That gave me something clear to work with. I could make the area smaller and keep the shots predictable, so there was time to get back into position. We could then make one small change as soon as they felt ready for it.\n\nWe started with short rallies near the net and took breaks between them. I showed them one movement at a time and tried to keep the first sessions easy enough that they'd want to come back. After a few sessions they could keep a rally going for longer and were happy to practise between lessons. The hardest part for me was judging when to make things a little harder. It felt good when they asked if we could try another round. That was a better sign than anything I could have said.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-helping-someone-get-fit-01",
+          "prompt": "What effect does stress have on health?",
+          "answers": {
+            "basic": "When stress lasts a long time, it can affect sleep and make it harder to keep good habits. A stressful week can leave people with less energy to cook or exercise. For example, someone may stay up worrying about work, then wake up too tired for the walk they usually take before breakfast. If that happens repeatedly, they can lose some of the activities that would normally help them feel better, so the effect goes beyond how they feel at their desk.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-helping-someone-get-fit-02",
+          "prompt": "Which group pays more attention to health, young people or old people?",
+          "answers": {
+            "basic": "Older people may think more about regular check-ups and staying mobile. Younger people may focus on fitness or appearance, although a lot depends on what each person needs. At a badminton hall, I see some younger players check how much exercise they've done, while older players may pay more attention to how their knees feel after a game. Both are looking after their health in a practical way, because they're thinking about what will let them keep playing.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

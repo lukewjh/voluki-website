@@ -1,0 +1,83 @@
+{
+  "id": "photography-enthusiast",
+  "title": "喜欢拍照的人",
+  "part": "2-3",
+  "category": "new",
+  "order": 10,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-photography-enthusiast",
+          "prompt": "Describe a person you know who really likes taking photos",
+          "cuePoints": [
+            "Who the person is",
+            "When and how you got to know him/her",
+            "Where he/she takes photos",
+            "And explain how you feel about him/her"
+          ],
+          "answers": {
+            "basic": "A friend I met through badminton loves taking photos. We got to know each other after joining the same group session in Shanghai. Most of us packed up as soon as the last game finished, but he asked if we could stay for a quick group photo. By the next morning he'd sent everyone a copy.\n\nAfter that I began to notice how he did it. He'd spend a few minutes looking around when he arrived and sometimes move a couple of steps before taking a photo. On a walk in Shanghai, for example, he waited until the light reached one side of a shop window. I would have taken a quick picture and gone on, but he wanted to see what changed if he stayed there. When he showed me the result, I could understand what he'd been looking at, even though we'd been standing in almost the same spot.\n\nHe takes photos at sports halls, on walks and whenever he visits a new part of the city. I like the ones he takes while people are getting ready to play. Someone might be tying a shoe or looking for a shuttle, and somehow he catches the moment in a way that makes me remember the whole evening. I like that he notices things the rest of us walk past. I don't take many photos myself, so I'm always glad when he brings his camera.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-photography-enthusiast-01",
+          "prompt": "Some people don't mind others walking into their shot when they're taking photos.",
+          "answers": {
+            "basic": "I can see why. A few people in the background can make a street photo feel more alive. If I were taking a portrait, though, I'd probably wait for a clear shot. A market photo can feel a little empty if everyone steps aside and leaves the stalls looking deserted. At the same time, I'd pay attention to whether the person is just passing in the distance or has become the main subject, because I'd ask permission in the second case.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-photography-enthusiast-02",
+          "prompt": "Why do tourists like taking photos while they are travelling?",
+          "answers": {
+            "basic": "Photos help people remember little details from a trip. They also give travellers an easy way to show friends what a place looked like and what they did there. A small photo often brings back something that isn't in the picture itself, like how warm it was or who suggested stopping there. I notice that when I scroll through pictures later, because an ordinary meal can make me remember a trip just as clearly as the main attraction.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-photography-enthusiast-03",
+          "prompt": "Do you think it’s ok to take photos everywhere?",
+          "answers": {
+            "basic": "I'd check the rules first. Some museums and private spaces have limits, and I'd ask before taking a close-up photo of a person I don't know. Even where photos are allowed, I'd think about what's happening around me. Taking a quick picture of a street is usually quite different from pointing a camera at someone who is having a private moment, and it's easy to wait or choose another angle if they look uncomfortable.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-photography-enthusiast-04",
+          "prompt": "What kind of photos do people often take?",
+          "answers": {
+            "basic": "People often take pictures of meals, pets, family events and places they visit. They also photograph useful things, like a shop's opening hours, so they can look them up later. A lot of phone photos are little records that nobody else will ever see. I might take a picture of a notice at a badminton hall so I remember when it closes, then use the same camera to take a group photo after the last game of the evening.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-photography-enthusiast-05",
+          "prompt": "Why are some people keen on taking photos?",
+          "answers": {
+            "basic": "Some people enjoy looking for interesting light or a different angle. Others like having a record of daily life and seeing how things have changed over the years. For someone who enjoys the creative side, finding a good angle can turn a street they know well into something new. Someone else might take the same walk for years and enjoy having a record of a favourite shop or tree changing without paying much attention to how the picture is framed.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-photography-enthusiast-06",
+          "prompt": "When do people like taking photos?",
+          "answers": {
+            "basic": "People often take photos on holidays or at birthdays and family dinners. An ordinary day can be worth a picture too, especially when the light is good. I also see people take photos just before they go home, when it occurs to them that everyone is together in one place. At a regular badminton session we might forget completely, but if someone is visiting from another city, we're more likely to get everybody into the shot.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

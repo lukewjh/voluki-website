@@ -1,0 +1,83 @@
+{
+  "id": "important-decision",
+  "title": "重要决定",
+  "part": "2-3",
+  "category": "retained",
+  "order": 38,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-important-decision",
+          "prompt": "Describe an important decision that you made",
+          "cuePoints": [
+            "What the decision was",
+            "How you made your decision",
+            "What the results of the decision were",
+            "And explain why it was important"
+          ],
+          "answers": {
+            "basic": "One important decision I made was to start a personal website. I'd been learning things through work and badminton and wanted somewhere to share them. I also wanted to build a personal brand around the things I actually do. I thought about posting everything on social media, but I liked the idea of having my own place to keep longer notes and improve them over time.\n\nWhat made me take the idea seriously was looking back at how I kept notes. Some were saved in chats and others were in files I hardly opened again. I wanted to see whether I could turn one of them into something that would still make sense to me a few months later. I tried writing about a small thing I'd learned and realised how much I enjoyed choosing the example and explaining it in my own words. The idea of keeping several of those pieces together made the website feel like something I would actually use.\n\nI decided to start with a simple blog and see what I wanted to add once I'd used it for a while. Now I have a place to publish posts and build tools for my own practice. It also gives me a reason to explain what I've learned in a way someone else could follow. That matters to me because it's the same habit I value as a coach. Writing things down shows me which parts I still need to think about.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-important-decision-01",
+          "prompt": "Do you think children sometimes have to make important decisions?",
+          "answers": {
+            "basic": "Yes. Choosing whether to leave an activity or tell an adult about a problem can feel important to a child. They can make some decisions with a bit of support. Leaving a sports club, for example, can mean giving up a routine and seeing some friends less often. An adult can help a child think about those consequences, and the child can still say whether they want to try a different group or take a break.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-important-decision-02",
+          "prompt": "What important decisions do teenagers need to make after graduation?",
+          "answers": {
+            "basic": "They may need to choose between more study and work, or decide which subject to focus on. Some also have to consider whether they're ready to move away from home. For example, a course that looks interesting might be in another city, so they have to think about living costs and being away from people they know. These choices can feel hard because a teenager is often deciding what kind of day-to-day life they want without having tried it yet.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-important-decision-03",
+          "prompt": "Who can children turn to for help when making a decision?",
+          "answers": {
+            "basic": "Parents, teachers or another adult they trust can help. A good person to ask will listen first and help the child think through what might happen. A parent might know more about practical things like costs, while a teacher may be able to explain what a new course involves. If a child can hear both views and say what worries them, they have a better chance of making a choice that feels like their own.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-important-decision-04",
+          "prompt": "Do you think advertisements can influence our decisions when shopping?",
+          "answers": {
+            "basic": "Yes. An ad can make a product feel familiar, so it comes to mind first when we're shopping. A limited-time offer can also make people rush. If I've seen the same pair of shoes several times before I walk into a shop, I'm more likely to recognise it and pick it up. Whether I actually buy it will depend on things like fit and price, so advertising can influence which choices I consider without deciding everything for me.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-important-decision-05",
+          "prompt": "Do you think the influence of advertising is good?",
+          "answers": {
+            "basic": "It can be helpful if the ad explains a feature or lets you know about a real offer. It becomes less useful when it creates pressure or leaves out important details. For example, a video that shows how a product works can help me decide whether it's worth trying. I get more cautious if the advert keeps telling me to buy immediately, because a little time to check the details can change how good the offer seems.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-important-decision-06",
+          "prompt": "How do people usually make important decisions?",
+          "answers": {
+            "basic": "People often talk to someone they trust and compare a few options. I find it helpful to think about what each choice would look like on an ordinary day. When I was thinking about coaching alongside my job, I had to picture what an evening lesson would feel like after a full day at work. Talking it through and starting on a small scale made the decision easier, because I had a better idea of how it would fit.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

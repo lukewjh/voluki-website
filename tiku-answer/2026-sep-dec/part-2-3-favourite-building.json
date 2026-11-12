@@ -1,0 +1,51 @@
+{
+  "id": "favourite-building",
+  "title": "喜欢的建筑",
+  "part": "2-3",
+  "category": "new",
+  "order": 24,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-favourite-building",
+          "prompt": "Describe a building you enjoy visiting (e.g. a library, a shopping mall, etc.)",
+          "cuePoints": [
+            "Where it is",
+            "How you knew it",
+            "What it looks like",
+            "And explain why you enjoy visiting it"
+          ],
+          "answers": {
+            "basic": "I enjoy visiting a public library in Shanghai that I found while looking for somewhere quiet to read. It's a short walk from a subway station. From outside it looks quite plain, but inside there are high ceilings and long tables by the windows. The light is good enough that I can sit there for an hour without getting tired of looking down at a page.\n\nI first went inside on an afternoon when I only meant to stay for a short while. There was space to walk around without having to squeeze past people, and I found a table where I could see the trees outside. I remember opening my notebook and being surprised at how quickly I stopped thinking about the trip there. There wasn't much to distract me once I sat down. Now I know which part of the room I like best, so I can get on with reading instead of spending the first twenty minutes trying to settle in.\n\nI usually take a book or a few English notes and find a spot away from the entrance. At home it's easy to open my laptop and get distracted by something I meant to fix on my website. In the library I can get through what I came to read. I also like the quiet sound of other people working around me. It feels good to leave with a page of notes and the rest of the afternoon free.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-favourite-building-01",
+          "prompt": "Do you think all old buildings should be demolished?",
+          "answers": {
+            "basic": "I'd look at each building separately. If it's safe enough to repair and people still use it, keeping it can give an area a sense of history. An old building near a main street can still be useful if the inside is adapted for something people need, like a library. If repairs would cost a lot and the place can no longer be made safe, I'd want people to be clear about the reasons before deciding what to do with it.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-favourite-building-02",
+          "prompt": "Do you think old buildings are valuable?",
+          "answers": {
+            "basic": "Yes, old buildings can show what a place used to be like. They can also become useful spaces, like a library or a small museum, if they're looked after. For example, walking into an old public hall can give you a better idea of how people used to gather than seeing its picture in a book. A building becomes more valuable to the people around it when they can actually use it and form their own memories there.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

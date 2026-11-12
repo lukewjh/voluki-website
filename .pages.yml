@@ -66,3 +66,91 @@ content:
         required: true
         options:
           format: markdown
+
+  - name: ielts-speaking
+    label: IELTS-Speaking 口语答案
+    type: collection
+    path: tiku-answer/2026-sep-dec
+    format: json
+    subfolders: false
+    operations:
+      create: false
+      rename: false
+      delete: false
+    view:
+      primary: title
+      fields: [title, part, category]
+      search: [title]
+      sort: [title, part, order]
+      default:
+        sort: title
+        order: asc
+    fields:
+      - name: id
+        type: string
+        hidden: true
+      - name: title
+        label: 话题
+        type: string
+        readonly: true
+      - name: part
+        label: Part
+        type: string
+        readonly: true
+      - name: category
+        label: 分类
+        type: string
+        readonly: true
+      - name: order
+        type: number
+        hidden: true
+      - name: sections
+        label: 分组
+        type: object
+        list:
+          collapsible:
+            collapsed: false
+            summary: "{fields.id}"
+        fields:
+          - name: id
+            type: string
+            hidden: true
+          - name: label
+            label: 分组名称
+            type: string
+            readonly: true
+          - name: questions
+            label: 题目
+            type: object
+            list:
+              collapsible:
+                collapsed: true
+                summary: "{fields.prompt}"
+            fields:
+              - name: id
+                type: string
+                hidden: true
+              - name: prompt
+                label: 原题
+                type: text
+                readonly: true
+              - name: variant
+                type: string
+                hidden: true
+              - name: cuePoints
+                label: 题卡提示
+                type: string
+                list: true
+                readonly: true
+              - name: answers
+                label: 英文答案
+                type: object
+                required: true
+                fields:
+                  - name: basic
+                    label: 基础版
+                    type: text
+                    required: true
+                  - name: upgraded
+                    label: 升级版
+                    type: text

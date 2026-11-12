@@ -1,0 +1,46 @@
+{
+  "id": "music",
+  "title": "Music",
+  "part": "1",
+  "category": "retained",
+  "order": 11,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-music-01",
+          "prompt": "Do you prefer to sad or happy music?",
+          "answers": {
+            "basic": "I usually prefer cheerful music. I like having something upbeat on the way to a badminton session, especially after a long day. A lively song on the subway can wake me up enough to look forward to the game again.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-music-02",
+          "prompt": "Does happy music make you feel more excited?",
+          "answers": {
+            "basic": "Yes, a fast song can put me in a better mood quite quickly. I notice it most when I'm walking somewhere and start matching my steps to the beat. If I've been sitting at my desk all day, that change of pace makes the walk feel much shorter.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-music-03",
+          "prompt": "Have you taken any music classes?",
+          "answers": {
+            "basic": "I had music classes at school, but I haven't taken private lessons. Most of what I listen to now comes from playlists or recommendations from friends. At school we mostly learned songs as a group, and I enjoyed hearing everyone get the rhythm right together.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-music-04",
+          "prompt": "Do you listen to music while doing other things?",
+          "answers": {
+            "basic": "Yes, I play music when I walk or do chores. I usually turn it off when I'm debugging because I want to hear myself think. I'll happily put a playlist on while I wash the dishes, when having something in the background makes the job feel quicker.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

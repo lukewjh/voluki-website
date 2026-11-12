@@ -1,0 +1,46 @@
+{
+  "id": "name",
+  "title": "Name",
+  "part": "1",
+  "category": "new",
+  "order": 10,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-name-01",
+          "prompt": "Do you often forget people's names?",
+          "answers": {
+            "basic": "Sometimes, especially when several people introduce themselves at once. I usually remember a face or a conversation before the name comes back to me. That happens most at a new badminton session, where I'm trying to learn names and work out who's playing on which court.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-name-02",
+          "prompt": "How do you remember people's names?",
+          "answers": {
+            "basic": "I try to use the name once when I say goodbye. If we met at badminton, I also link it to the session or the court we played on. By the next session, thinking about a rally we played together usually helps me bring the name back.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-name-03",
+          "prompt": "Is it easy for you to remember people's names?",
+          "answers": {
+            "basic": "It's easier if I have a proper conversation with someone. If I just hear their name in passing, I might need to ask again next time. A short chat gives me something to connect with the name, like the place they work or a sport they enjoy.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-name-04",
+          "prompt": "How do you feel when people can't remember your name?",
+          "answers": {
+            "basic": "It doesn't really bother me. I just say my name again, because I know how easy it is to forget when you're meeting a lot of people. At a busy court I sometimes introduce myself again first, which takes the pressure off both of us.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

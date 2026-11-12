@@ -1,0 +1,62 @@
+{
+  "id": "science",
+  "title": "Science",
+  "part": "1",
+  "category": "retained",
+  "order": 20,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-science-01",
+          "prompt": "Do you like science?",
+          "answers": {
+            "basic": "Yes, especially when it explains something I can see. In badminton, for example, it's interesting to think about how the angle of the racket changes the shot. It's quite satisfying to change something small on the court and see straight away what it does to the flight of the shuttle.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-science-02",
+          "prompt": "When did you start to learn about science?",
+          "answers": {
+            "basic": "I started at primary school, with simple things like plants, water and magnets. I remember liking the lessons where we got to try something. I remember using a magnet to see which things on my desk it would pick up, which made the lesson feel like a game.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-science-03",
+          "prompt": "Which science subject is interesting to you?",
+          "answers": {
+            "basic": "I find physics interesting because it explains ordinary movements. Even a shuttlecock slowing down in the air can give me something to think about. When I'm coaching, I sometimes think about that because the same swing can produce different results depending on when you hit the shuttle.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-science-04",
+          "prompt": "What kinds of interesting things have you done with science?",
+          "answers": {
+            "basic": "I've used slow-motion video to look at how a shuttle leaves the racket. Comparing two clips helped me see a difference I couldn't catch in real time. I could see where my racket was pointing when I made contact, which gave me a better idea of what to change.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-science-05",
+          "prompt": "Do you like watching science TV programs?",
+          "answers": {
+            "basic": "I watch the occasional documentary or short science video. I like the ones that show a real experiment and explain what happened in simple terms. I remember watching someone show how a small change in shape affects the way an object moves through the air.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-science-06",
+          "prompt": "Do Chinese people often visit science museums?",
+          "answers": {
+            "basic": "I think they're a popular choice for families on weekends or school holidays. An exhibition is more fun when children can touch things and try them. Something like a hands-on display about light can keep a child busy for longer than a row of objects behind glass.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

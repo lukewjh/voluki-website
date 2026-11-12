@@ -1,0 +1,83 @@
+{
+  "id": "long-term-goal",
+  "title": "长久目标 / 抱负",
+  "part": "2-3",
+  "category": "retained",
+  "order": 50,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-long-term-goal",
+          "prompt": "Describe a long-term goal/ambition you would like to achieve",
+          "cuePoints": [
+            "How long you have had this goal/ambition",
+            "What it is",
+            "How you will achieve it",
+            "And explain why you set it"
+          ],
+          "answers": {
+            "basic": "A long-term goal of mine is to build a personal brand through my website. I've been thinking about it for a while, and it became more concrete once I started my own blog. I'd like someone who comes across the site to get a clear idea of what I do, from backend engineering to coaching badminton and learning new skills.\n\nI think it will take time because I want the site to show how I actually work and learn. If I write about a badminton movement, for instance, I'd like to explain the bit I struggled with and show the small change that helped. That's the kind of thing I'd look for when I'm reading somebody else's blog. I can also go back and add a better explanation once I've tried it with more people. Over time, I hope the posts feel connected because they're about questions I keep coming back to in my own life.\n\nMy plan is to write about specific things I've tried and explain what helped me. I can start with a short post about a problem I solved or one coaching idea that made a difference. If I do that regularly, I'll have something useful to look back on and something other people can learn from. I set the goal because a lot of what I learn would otherwise stay in my head. Sharing it gives me a reason to put the ideas in order.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-long-term-goal-01",
+          "prompt": "Why should children have ambitions?",
+          "answers": {
+            "basic": "An ambition can give children a reason to practise and find out what they're interested in. It's fine for the goal to change as they learn more. A child who wants to play in a match, for instance, has a reason to keep working on an ordinary skill like serving. If they try it for a while and discover they enjoy something else more, the effort still helps them understand what kind of practice suits them.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-long-term-goal-02",
+          "prompt": "What do you think of people going after high positions?",
+          "answers": {
+            "basic": "I respect it when they want to do useful work and take more responsibility. The title matters less to me than how they handle the people and decisions that come with it. Someone who wants to lead a team may have ideas about how to make the work easier for everyone. I'd judge the ambition by what they do once they get the role, because being able to make more decisions also means being willing to explain and stand by those decisions.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-long-term-goal-03",
+          "prompt": "Why are some young people keen on being fans of superstars?",
+          "answers": {
+            "basic": "A superstar can give them someone to look up to or something to share with friends. Following an athlete can also make a sport more exciting to watch. For example, watching a player get better over several seasons can make a young fan curious about how people train. The same interest can give them a way to start talking to other fans, so it can become as much about the people they meet as about the star.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-long-term-goal-04",
+          "prompt": "Is it good for a person to be ambitious?",
+          "answers": {
+            "basic": "Yes, when ambition gives someone a direction they care about. It helps to choose goals that fit the rest of their life and leave room to rest. For me, the ambition to get better at coaching is useful because it leads to things I can do, like changing how I explain a movement. A goal that is only about keeping up with somebody else can feel quite different, especially if there's no point at which the person feels satisfied.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-long-term-goal-05",
+          "prompt": "Do you think it is necessary to be ambitious when working in a team in a company?",
+          "answers": {
+            "basic": "I don't think everyone on a team needs the same kind of ambition. A team needs people who care about doing the work well. Wanting a promotion is one way to be ambitious, and wanting to become very good at your role is another. A software team can benefit from someone who wants to understand a difficult part of the system and make it easier for others to work on. I'd call that a useful kind of ambition, and it's just as valuable to the team as someone wanting to move into a formal leadership role.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-long-term-goal-06",
+          "prompt": "Should parents support their children in pursuing their ambitions?",
+          "answers": {
+            "basic": "Yes, they can help children find a way to try the goal in practice. They can also give them space to change their mind once they understand what it involves. If a child wants to play a sport seriously, a parent can help them get to regular practice and ask how they feel about it afterwards. A trial gives the child more information about the goal, and support can continue even if their idea of what they want changes.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

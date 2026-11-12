@@ -1,0 +1,83 @@
+{
+  "id": "saving-for-something-special",
+  "title": "攒钱买特别物品",
+  "part": "2-3",
+  "category": "new",
+  "order": 8,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-saving-for-something-special",
+          "prompt": "Describe a time when you saved money to buy something special",
+          "cuePoints": [
+            "What the special thing was",
+            "Why you wanted to buy it",
+            "How you saved money for it",
+            "And explain how you felt after buying it"
+          ],
+          "answers": {
+            "basic": "I once saved up for a badminton racket I really wanted. I'd been using the same one for a while, and it was fine, but I'd tried a friend's racket and liked how quickly I could get it into position. I wanted to buy something I'd actually enjoy playing with for a few years.\n\nI didn't want to buy it just because it felt good for a few minutes, so I tried it again during a normal game. What I noticed was that I could get it up in time for the next shot without gripping it so tightly. I also checked what it would cost to get it restrung, because that was something I'd need to pay for eventually. Once I had a realistic price in mind, I could work out roughly how long I'd need to wait. It felt easier to be patient when I had a clear amount to aim for.\n\nI put a little money aside each month and waited until I could afford it comfortably. I kept playing with my old racket while I saved, which gave me time to see if I still wanted the new one. I did, so I went back to the shop and bought it. I was looking forward to the next session as soon as I left. I also felt pleased that I'd taken my time, because I could explain exactly why I'd chosen it.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-saving-for-something-special-01",
+          "prompt": "Should people spend time on charity, or just money?",
+          "answers": {
+            "basic": "It depends on what the charity needs. Money can pay for supplies, and time can be more useful when a local group needs volunteers to help with an event. If I'm free on a Saturday, I could help set up tables at a community event, where an extra pair of hands makes an immediate difference. If my work schedule makes it hard to turn up regularly, a small donation I can manage each month may be more dependable.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-saving-for-something-special-02",
+          "prompt": "What kind of things do people usually save money for?",
+          "answers": {
+            "basic": "Big goals include a home, education and travel. People also save for smaller things they really want, like a laptop or a gift for someone. Putting money aside can also give people some room when something unexpected happens. For instance, I'd rather have a small amount ready if my computer needs replacing, because then I can choose what suits my work instead of having to take whatever I can afford that particular week.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-saving-for-something-special-03",
+          "prompt": "Is it easier to spend money or save money?",
+          "answers": {
+            "basic": "Spending is easier because you get something straight away. Saving gets easier if you set aside a fixed amount as soon as you get paid. With online shopping, it's easy to tap a button without stopping to think about the total. Saving for a racket felt easier once I had an actual item in mind, because I could see how much closer I was getting each month and knew what I was waiting for.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-saving-for-something-special-04",
+          "prompt": "Do you think it is easier to teach teenagers how to manage money when they are around 16 or 17 years old?",
+          "answers": {
+            "basic": "Yes, because at that age many teenagers already decide what to buy with their own money. They can practise making a budget while a parent is still around to help. A teenager could start by deciding how much of their money to use for transport, food and going out with friends. If they spend too much one week, they can see what needs to change the next, while the consequences are still fairly small and someone can help them think it through.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-saving-for-something-special-05",
+          "prompt": "Should parents teach their children to spend money freely or to save money?",
+          "answers": {
+            "basic": "I'd teach both. Give children a little money they can spend as they like, and help them put some aside when they're saving for something bigger. If a child is saving for a game or a new racket, it helps to let them see the amount grow each week. They can still choose a small treat now and then, and they learn from experience how that choice affects when they'll be able to buy the bigger thing.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-saving-for-something-special-06",
+          "prompt": "Should schools teach children how to manage money from a young age?",
+          "answers": {
+            "basic": "Yes. Schools can start with simple examples, like planning what to buy with a fixed amount. It's a practical skill children can use outside the classroom. One lesson could ask students to plan an afternoon out with friends and work out what they can afford after paying for transport. Comparing two possible plans would give them something useful to discuss, because they'll face that kind of choice themselves well before they earn a full-time wage.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

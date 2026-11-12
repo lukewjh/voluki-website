@@ -1,0 +1,67 @@
+{
+  "id": "new-environmental-law",
+  "title": "想要颁布的环保法律",
+  "part": "2-3",
+  "category": "retained",
+  "order": 52,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-new-environmental-law",
+          "prompt": "Describe an environmental law you would like your country to introduce",
+          "cuePoints": [
+            "What law it should be",
+            "Why people should follow the law",
+            "Whether the law will be popular",
+            "And explain how you feel about this law"
+          ],
+          "answers": {
+            "basic": "I'd like a rule that makes large delivery companies offer a convenient way to return packaging. For example, someone could leave a clean reusable bag or box at a collection point they already pass on the way home. The company could then use it again for another delivery.\n\nThe idea came to me when I looked at how quickly boxes can build up at home during a busy week. Most of them have only been used for one short trip, and a few are still in good enough shape for something else. I'd ask companies to start with packaging they know can stand up to being used several times. They could collect it in places that already handle deliveries, so people would know where to take it. Clear instructions would help, especially if someone needed to know whether a damaged box could go back.\n\nI think it's worth following because a lot of us order things often. Even if each order only comes with one box, it adds up quickly in an apartment building. I can see people using a return system if it takes less than a minute and the collection point is easy to find. If they have to make a separate trip, it may be less popular. I'd be happy to use it myself. I already flatten boxes before I take them downstairs, so returning one would feel like a small change.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-new-environmental-law-01",
+          "prompt": "How does technology affect the law?",
+          "answers": {
+            "basic": "New technology can create situations older rules didn't cover, such as how personal data is shared. It can also make it easier to collect evidence and enforce existing rules. For example, a camera can show what happened at a crossing, which can make it easier to check a complaint. The same tool raises questions about who can see the recording and how long it is kept, so technology can help put a rule into practice and also create a reason to update it.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-new-environmental-law-02",
+          "prompt": "What kinds of rules do schools in China have?",
+          "answers": {
+            "basic": "There are usually rules about being on time, treating classmates respectfully and using equipment safely. Some schools also limit when students can use their phones. Some rules apply across most of the day, while others depend on what the students are doing. For example, putting away a phone during a lesson helps everyone concentrate, and wearing the right equipment in a lab matters for a different reason, because an accident there could affect other people.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-new-environmental-law-03",
+          "prompt": "Will there be a law that is universally accepted?",
+          "answers": {
+            "basic": "Probably not in every detail. Many people can agree on a goal like safer roads, while still disagreeing about how strict a particular rule should be. One person might support a rule that makes a street safer for children, while another worries about what it does to the deliveries their shop depends on. Hearing both views can help people agree on a workable rule, even if they still give different reasons for accepting it.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-new-environmental-law-04",
+          "prompt": "What environmental laws does your country already have?",
+          "answers": {
+            "basic": "China has laws covering areas like water pollution, air pollution and the handling of solid waste. The effects people notice most are often the practical rules they follow locally. In Shanghai, for instance, I see separate bins for different kinds of household waste, which makes that area of environmental policy part of an ordinary day. A person living somewhere else might notice rules about water or air more directly, depending on what kinds of problems their area has to deal with.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

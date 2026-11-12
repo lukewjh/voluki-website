@@ -1,0 +1,75 @@
+{
+  "id": "recent-change",
+  "title": "近期改变",
+  "part": "2-3",
+  "category": "retained",
+  "order": 54,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-recent-change",
+          "prompt": "Describe a change that you made recently",
+          "cuePoints": [
+            "What the change was",
+            "What caused the change",
+            "What you did for the change",
+            "And explain how you feel about the change"
+          ],
+          "answers": {
+            "basic": "I recently changed how I get ready for a badminton lesson. I used to go in with quite a few things I wanted to cover. When a student found one part harder than I'd expected, I'd sometimes try to fit the rest in anyway and end up giving them too much to think about.\n\nI noticed the problem most when someone had understood my first instruction but still needed time to get used to it. I'd be looking at the clock and thinking about the next thing I wanted to show them. In practice, the extra instructions made it harder for me to see which part they were still working on. I started asking myself what the smallest useful change would be for that person. If they could do it a few times with less help by the end of the lesson, that gave us both a clearer idea of what had improved.\n\nWatching my online coach break a movement down so clearly made me rethink that. Now I pick one main thing for the lesson and write down a simple way to show it. After the student tries it, I can see if they're ready for another step. I feel more relaxed teaching that way, and I get more out of the lesson myself. I know what I was trying to explain, so when the student gets it I have a better idea of what helped.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-recent-change-01",
+          "prompt": "Do you think it is good to change one’s daily routine?",
+          "answers": {
+            "basic": "Yes, if it solves a problem you've been having. A small change, like setting a time to put your phone away, is easier to try than changing the whole day. For example, I could decide to finish work at a clear time on the days when I've booked a court. I'd try it for a week and see whether it helps me leave with enough energy to enjoy the evening, because that's the change I'd actually want to keep.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-recent-change-02",
+          "prompt": "Do you think it is good to change jobs?",
+          "answers": {
+            "basic": "It can be good when the new job fits your goals or gives you more room to learn. I'd think about the daily work as well as the job title and salary. For instance, a move that gives an engineer more say over how a system is built might be a good step if that's what they want to learn. It makes sense to ask what a typical week looks like, because the actual work can feel quite different from the way a role is described.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-recent-change-03",
+          "prompt": "Is it good for people to get a job promotion?",
+          "answers": {
+            "basic": "A promotion can bring better pay and a chance to make more decisions. It's worth knowing what responsibilities come with it and whether you'd enjoy that kind of work. An engineer might enjoy helping a team make decisions and want more of that responsibility. Somebody who prefers spending most of the day solving technical problems might feel differently about a role full of meetings, so the benefit depends on what kind of work gives that person energy.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-recent-change-04",
+          "prompt": "Do people often make plans around their regular routines?",
+          "answers": {
+            "basic": "Yes, people fit plans around things like work, meals and family responsibilities. I usually look at my work schedule before arranging a badminton session. A friend who finishes work late might suggest playing on a weekend instead, and I'd check when we can both get to the hall. Regular routines give people a starting point for making plans, which saves them from having to work out what's possible again every time.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-recent-change-05",
+          "prompt": "Who tend to change their daily routine more, young people or old people?",
+          "answers": {
+            "basic": "Younger people may change routines more often because they're moving, studying or starting new jobs. Older people can also change a routine when their health, family or interests change. Someone starting a job might need a new commute and have to find another time to exercise. An older person who's recently stopped working can face just as much change, so I think it comes down to how often something happens that makes the old routine impractical.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

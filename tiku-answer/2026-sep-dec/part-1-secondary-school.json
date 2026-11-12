@@ -1,0 +1,46 @@
+{
+  "id": "secondary-school",
+  "title": "Secondary school",
+  "part": "1",
+  "category": "new",
+  "order": 9,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-secondary-school-01",
+          "prompt": "Is there anything you miss about your secondary school?",
+          "answers": {
+            "basic": "I miss the time after class when it was easy to see my friends. Now that everyone is working, even finding one evening that suits us can take a while. Back then we could decide to play badminton after school without checking anyone's calendar, which made getting together feel easy.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-secondary-school-02",
+          "prompt": "What was your favourite subject at secondary school?",
+          "answers": {
+            "basic": "I liked maths because I enjoyed working out how to get from the question to the answer. I still get a similar feeling when I solve a problem at work. I liked questions where the first step wasn't obvious and a small clue suddenly made the rest of the problem fit together.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-secondary-school-03",
+          "prompt": "Were there any subjects that you found difficult at secondary school?",
+          "answers": {
+            "basic": "English speaking was hard for me. I could work through a written question at my own speed, but it took me much longer to put an answer together out loud. I especially remember knowing the words I wanted on paper and then forgetting half of them when someone asked me a question.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-secondary-school-04",
+          "prompt": "Do you remember your first day at secondary school?",
+          "answers": {
+            "basic": "I remember being a little nervous because I knew very few people. Once I found my classroom and talked to the person next to me, I felt more at ease. I don't remember what the first lesson was about, but I remember how relieved I was to have someone to talk to.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "id": "language-learner",
+  "title": "擅长学习和说语言的人",
+  "part": "2-3",
+  "category": "retained",
+  "order": 41,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-language-learner",
+          "prompt": "Describe a person who is good at learning and speaking new languages",
+          "cuePoints": [
+            "How you got to know him/her",
+            "How he/she learns a new language",
+            "What languages he/she can speak",
+            "And explain how you feel about him/her"
+          ],
+          "answers": {
+            "basic": "One colleague of mine is good at picking up languages. I got to know her through work, and I first noticed it when she could move between Mandarin and English in the same conversation without losing her train of thought. She also speaks some Japanese, which she started learning because she wanted to understand shows without reading every subtitle.\n\nI asked her about it after hearing her explain a problem to someone in English during a call. I would have tried to prepare every sentence, but she seemed comfortable getting the main idea across first and adding details when the other person asked. She said she pays attention to short exchanges and tries to remember the kind of reply a real person would give. She also listens to the same bit several times until she can hear where one word ends and the next begins. That made the work behind her confidence feel much more ordinary and achievable.\n\nHer way of studying is quite practical. She takes a short piece of audio, picks out a few lines she'd actually say, and tries using them with someone. She told me she keeps returning to the same lines until she can say them at a normal speed. I admire how patient she is with that process. She doesn't seem embarrassed about getting something wrong the first time. Seeing how she learns has made me more comfortable practising a few useful lines of English at a time.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-language-learner-01",
+          "prompt": "Are there many people who can speak foreign languages in your country?",
+          "answers": {
+            "basic": "Many people learn English in school, and some use it regularly for work or study. Being able to hold a conversation depends a lot on how often they get to speak. For instance, somebody may understand a page of technical English and still need time to get used to a real conversation. In a city with plenty of chances to speak with other people, they may develop that part faster simply because it comes up more often in their day.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-language-learner-02",
+          "prompt": "Does speaking other languages help at work?",
+          "answers": {
+            "basic": "Yes. In software, I often read documentation in English, and another language can also help when you work with a team or a customer overseas. Being able to ask a follow-up question directly can also save time, especially when a written message could mean two different things. In a meeting with people in different places, I'd rather hear someone explain the problem in their own words and be able to check what they mean immediately.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-language-learner-03",
+          "prompt": "Do people learn any languages other than English?",
+          "answers": {
+            "basic": "Yes, people learn languages like Japanese, Korean, French or Spanish for work, travel or an interest in the culture. English is just the one I see most often. For instance, someone who watches Japanese shows might start by wanting to understand a few lines without reading the subtitles. A colleague dealing with customers in another country could have a more practical reason, and both are more likely to keep learning if there is a clear way to use it.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-language-learner-04",
+          "prompt": "Why is it easier for children to learn new things than for adults?",
+          "answers": {
+            "basic": "Children often have more chances to repeat something through play and are willing to try even when they make mistakes. Adults can make up for that with a clear goal and regular practice. A child can hear the same expression dozens of times in a game without feeling like they're studying it. An adult may have fewer chances for that kind of repetition, but can use what they already know to pick an approach and practise the exact thing they need in a short session.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-language-learner-05",
+          "prompt": "How do people learn new things?",
+          "answers": {
+            "basic": "I usually start with a small example, try it myself and get feedback. A tutorial can get me started, and using the skill on a real task helps it stick. When I learn a new tool, for example, I try it on something small enough to finish and check what actually happens. Having a result to look at makes the next explanation more useful, because I can connect it to a question I already have instead of trying to remember every instruction.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-language-learner-06",
+          "prompt": "What is the most important thing for learning a language well?",
+          "answers": {
+            "basic": "I'd say using it regularly for something you care about. Reading helps me find new expressions, and using one in a conversation helps me remember it. For me, it helps to pick a subject I could talk about anyway, like explaining a movement in badminton. When I try to explain it in English, I find out which words are actually easy to reach, and the same expressions become easier to use again when a similar conversation comes up.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

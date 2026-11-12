@@ -1,0 +1,54 @@
+{
+  "id": "advertisement",
+  "title": "Advertisement",
+  "part": "1",
+  "category": "new",
+  "order": 7,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-advertisement-01",
+          "prompt": "Do you often see advertisements when you are on your phone or computer?",
+          "answers": {
+            "basic": "Yes, I notice them more on my phone, especially between short videos. On my computer I'm usually reading documentation, so I see fewer of them. A typical example is opening a video for one quick tip and having to wait through an ad before it starts.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-advertisement-02",
+          "prompt": "What kind of advertising do you like?",
+          "answers": {
+            "basic": "I like ads that show the product being used. If it's a badminton racket, for example, I'd rather see someone play with it and explain how it feels. Seeing how the racket moves gives me something concrete to think about, especially if the person explains what they noticed.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-advertisement-03",
+          "prompt": "Do you like advertisements?",
+          "answers": {
+            "basic": "I like a useful ad once in a while. I get annoyed when the same one interrupts three videos in a row. An ad for a new badminton shop nearby might actually help me, but a repeated video ad usually makes me close the app.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-advertisement-04",
+          "prompt": "Do you see a lot of advertising on trains or other transport?",
+          "answers": {
+            "basic": "Yes, there are ads in Shanghai subway stations and inside the trains. I notice the big posters more when I'm waiting for a train. If I'm standing on the platform for a few minutes, I'll sometimes read a whole poster without even meaning to.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-advertisement-05",
+          "prompt": "Is there an advertisement that made an impression on you when you were a child?",
+          "answers": {
+            "basic": "I remember a sports ad that showed a player practising the same movement over and over. I was more interested in the sound and the movement than in what it was selling. I think it stayed with me because I'd just started playing badminton and already knew how much practice one movement could take.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

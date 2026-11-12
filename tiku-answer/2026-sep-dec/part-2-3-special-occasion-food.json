@@ -1,0 +1,67 @@
+{
+  "id": "special-occasion-food",
+  "title": "特别场合的食物",
+  "part": "2-3",
+  "category": "retained",
+  "order": 40,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-special-occasion-food",
+          "prompt": "Describe a food that people eat on special occasions/events",
+          "cuePoints": [
+            "What it is",
+            "What the special event/occasion is",
+            "How it is cooked/made",
+            "And explain why people eat it on that special occasion/event"
+          ],
+          "answers": {
+            "basic": "A dish I'd talk about is a whole steamed fish at a Lunar New Year meal. The word for fish sounds like the word for having something left over in Chinese, so people serve it as a wish for plenty in the coming year. It also looks good in the middle of a table where everyone is sharing the food.\n\nI remember being more interested in the way it looked when I was younger. Somebody would carry the plate to the table, and the first thing I'd notice was that the fish still had its head and tail. When I got a bit older, I asked why people made an effort to serve it that way. The explanation about wishing for plenty made sense once I saw how much of the meal was about being together and hoping the next year would go well. It's the sort of detail I remember even if the other dishes change.\n\nThe fish is usually cleaned and steamed whole. You can add ginger and spring onions, and some people pour a little soy sauce over it at the end. In Hunan, I enjoy a version with chopped chillies because it has the kind of heat I grew up with. For me, the best part is when someone brings the plate out and everyone makes room for it. That moment feels like the start of a proper family meal.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-special-occasion-food-01",
+          "prompt": "Why are there special foods on special occasions or events?",
+          "answers": {
+            "basic": "Food gives people a familiar way to mark the occasion. When the same dish turns up every year, its smell or taste can bring back memories of earlier celebrations. Sharing a particular dish also gives people something familiar to do together, even when the group at the table changes over time. At Lunar New Year, for instance, seeing a whole fish brought out can make dinner feel like a celebration before anybody says a word about the occasion itself.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-special-occasion-food-02",
+          "prompt": "What are the differences between everyday food and festival food?",
+          "answers": {
+            "basic": "Everyday food is often quick and practical. Festival food may take longer to make, and preparing it together can be part of the occasion. On a workday I might cook one simple thing and eat as soon as it's ready. For a festival meal, people may come early to help prepare several dishes, so the time spent cooking and waiting for everyone to sit down is part of what makes it feel different.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-special-occasion-food-03",
+          "prompt": "Are there any differences between the food people eat today and the food people ate in the past?",
+          "answers": {
+            "basic": "People have easier access to food from other places now. Some families still cook the dishes they grew up with, but they may buy ingredients or ready-made versions more often. For example, a family might still prepare a familiar dish for a holiday but buy a sauce or ingredient that used to take longer to make at home. That can make it easier to keep the tradition going, and it also changes which cooking skills get passed from one person to another.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-special-occasion-food-04",
+          "prompt": "Do people today prefer eating at home or in a restaurant?",
+          "answers": {
+            "basic": "For ordinary days, home can be cheaper and more relaxed. A restaurant is often convenient when a large group wants to celebrate and nobody has time to cook. After work I like being able to make a simple meal whenever I get home. If I'm meeting friends who live in different parts of Shanghai, a restaurant near a station is often easier for everybody, and it means one person doesn't have to spend the evening cooking and clearing up.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

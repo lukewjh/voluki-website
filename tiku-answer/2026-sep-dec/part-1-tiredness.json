@@ -1,0 +1,38 @@
+{
+  "id": "tiredness",
+  "title": "Tiredness",
+  "part": "1",
+  "category": "new",
+  "order": 3,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-tiredness-01",
+          "prompt": "What do you do when you feel tired?",
+          "answers": {
+            "basic": "I step away from the computer and get some water. If I've been sitting for hours, a short walk usually helps more than another coffee. Even walking around the block gives my eyes a break and makes it easier to concentrate when I sit down again.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-tiredness-02",
+          "prompt": "When would you feel tired?",
+          "answers": {
+            "basic": "I get tired after a long day of debugging, especially if I have a badminton lesson to teach in the evening. By the time I get home, I'm ready to sleep. On those days, I can feel the difference when I'm packing up my racket bag and realise I've barely sat down all evening.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-tiredness-03",
+          "prompt": "Do you often feel tired?",
+          "answers": {
+            "basic": "Some days, yes. It mainly happens when work and coaching fall on the same day, so I try to leave one or two evenings free each week. A quiet evening at home usually gives me enough energy to enjoy the next lesson instead of rushing through it.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

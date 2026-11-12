@@ -1,0 +1,67 @@
+{
+  "id": "older-person-you-admire",
+  "title": "尊敬的比你年长的人",
+  "part": "2-3",
+  "category": "new",
+  "order": 11,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-older-person-you-admire",
+          "prompt": "Describe someone who is older than you that you admire",
+          "cuePoints": [
+            "Who this person is",
+            "How you knew this person",
+            "What kinds of things you like to do together",
+            "And explain how you feel about this person"
+          ],
+          "answers": {
+            "basic": "There's an older player I've met through badminton in Shanghai who I really respect. We got to know each other by turning up to the same regular session. The first time we played doubles together, I kept trying to hit hard. He just told me to leave a bit more room between us and watch where the other pair was standing.\n\nIt was a small suggestion, but it changed the way the next few points went. When I left him enough space, he could see the same opening I saw and take the shot without us getting in each other's way. Between games he explained that he watches where people move after they hit, because it gives him a clue about what might come next. I've tried to do the same since then. It gives me something useful to pay attention to, especially against players who can hit harder or move faster than I can.\n\nWe still enjoy playing doubles together when our schedules line up. I like talking about one or two rallies afterwards because he usually remembers a detail I've missed. What I admire is how calm he stays. If someone makes the same mistake three times, he can point it out in a way that makes them want to try again. As a coach myself, I know that takes patience. I always come away from a game with him with something useful to think about.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-older-person-you-admire-01",
+          "prompt": "What do old people usually do in their daily life?",
+          "answers": {
+            "basic": "It depends on their health and interests. Some older people go for walks or meet friends in the park. Others spend time cooking, reading or looking after grandchildren. In a neighbourhood park, for example, I often see people exercising together in the morning and stopping for a chat afterwards. Having somewhere nearby to go can make a big difference to the routine, especially for someone who enjoys meeting people but doesn't want to make a long trip.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-older-person-you-admire-02",
+          "prompt": "Why is there a generation gap between the young and the old?",
+          "answers": {
+            "basic": "They grew up with different technology and expectations. For example, younger people may text someone about a problem, while their parents would rather pick up the phone. The gap can also come from what was normal at work or at home when each generation was younger. If someone remembers how hard it was to change jobs, for example, they may give quite different advice to a younger person who sees changing jobs as a normal step.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-older-person-you-admire-03",
+          "prompt": "Has old people's life quality improved when compared to the past?",
+          "answers": {
+            "basic": "In many ways, yes. It's easier to find medical care and stay in touch with family now. Some older people still feel lonely, especially when their children live far away. A video call can be a real improvement for someone whose children live in another city, because they can see each other without arranging a trip. It still helps to have a neighbour to talk to in person, especially on a day when they need practical help with something nearby.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-older-person-you-admire-04",
+          "prompt": "What can young and old people learn from each other?",
+          "answers": {
+            "basic": "Older people can pass on practical skills and share what they've learned from setbacks. Younger people can help them use new technology and show them how daily life is changing. An older relative might show a younger person how they cook a family dish without measuring everything. The younger person could help them keep a video of the recipe so other relatives can use it, and both get something useful out of spending the time together.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

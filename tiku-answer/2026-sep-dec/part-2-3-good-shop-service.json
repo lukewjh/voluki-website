@@ -1,0 +1,83 @@
+{
+  "id": "good-shop-service",
+  "title": "好的购物服务",
+  "part": "2-3",
+  "category": "new",
+  "order": 13,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-good-shop-service",
+          "prompt": "Describe a time when you received good service in a shop/store",
+          "cuePoints": [
+            "Where the shop is",
+            "When you went to the shop",
+            "What service you received from the staff",
+            "And explain how you felt about the service"
+          ],
+          "answers": {
+            "basic": "I had a good experience at a badminton shop in Shanghai when I was looking for new shoes. I went in on a weekend because my old pair was wearing out, and I wanted to try a couple of sizes. I told the person helping me that I could feel my foot slide sideways when I changed direction.\n\nBefore suggesting anything, he asked how often I played and what I noticed towards the end of a long session. I hadn't thought to mention that my toes felt squeezed after I'd been moving for an hour, so that question helped narrow things down. He showed me how to lace one pair and asked me to stand up before deciding on the size. He gave me a bit of time to walk around by myself as well. I liked being able to notice how the shoes felt before hearing what he thought of each one.\n\nHe gave me enough room to take a few side steps in each of the two pairs. He also asked me to check whether my heel was lifting. One pair was more expensive, but the other felt better, and he said that was the one he'd choose for my feet. I was relieved because I'd been expecting the usual sales pitch. I left with shoes I felt comfortable moving in, and I remember thinking I'd go back there the next time I needed help.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-good-shop-service-01",
+          "prompt": "Can consumption drive economic growth?",
+          "answers": {
+            "basic": "Yes. When people buy more goods and services, businesses can get more orders and hire more staff. That works best when households can afford what they're spending. A small restaurant is a good example, because a steady increase in customers can justify adding another shift or buying more from a local supplier. If people are buying on credit they can't comfortably repay, though, that extra spending may be followed by a period when they have to cut back.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-good-shop-service-02",
+          "prompt": "What are the advantages and disadvantages of shopping online?",
+          "answers": {
+            "basic": "Online shopping is convenient, and it's easy to compare prices. The main drawback is that you can't try things first, so sometimes you end up sending them back. Reviews can help when lots of people mention the same thing, like whether a shoe runs small. They still can't tell me how the shoe feels on my own feet, so I might end up spending longer ordering and returning a pair than I would have spent trying it in a shop.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-good-shop-service-03",
+          "prompt": "What are the differences between online shopping and in-store shopping?",
+          "answers": {
+            "basic": "Online I can search quickly and read reviews. In a shop I can see how something fits or feels and take it home straight away. I often go online when I already know the model and want to see who can deliver it quickly. For a new racket, a good shop gives me a chance to ask how two options feel in use, which is more helpful to me than comparing a long list of measurements.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-good-shop-service-04",
+          "prompt": "Why do some people not like shopping in small shops?",
+          "answers": {
+            "basic": "Some small shops have a limited range or shorter opening hours. A few people also feel awkward browsing when the owner is standing right next to them. People who are short on time may also want to check several things in one trip, which is easier in a big store. A small shop can be excellent at one thing, but if you're picking up groceries, clothes and a charger at once, you might find that you need several stops.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-good-shop-service-05",
+          "prompt": "What are the advantages and disadvantages of shopping in small shops?",
+          "answers": {
+            "basic": "The service can feel more personal, and a local shop may stock things a chain doesn't carry. The trade-off is that prices and return policies can be less predictable. A badminton shop owner can remember what a regular player asked for last time, which saves a lot of explaining. I'd still check what happens if something turns out to be the wrong size, because that can be less straightforward when a shop has only one location or very little stock.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-good-shop-service-06",
+          "prompt": "Why are shopping malls so popular in China?",
+          "answers": {
+            "basic": "In cities like Shanghai, a mall can be a convenient place to eat, shop and meet friends in one trip. It's especially handy on a very hot or rainy day. A family can choose a restaurant while someone else looks for a particular shop, then everyone can meet without going back outside. Good subway access helps too, because it turns the mall into a useful meeting point even for people who just came to see friends.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

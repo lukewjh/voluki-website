@@ -1,0 +1,83 @@
+{
+  "id": "healthcare-career",
+  "title": "想从事医疗行业的人",
+  "part": "2-3",
+  "category": "retained",
+  "order": 34,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-healthcare-career",
+          "prompt": "Describe a person you know who would like to choose a career in the medical field (e.g. a doctor, a nurse)",
+          "cuePoints": [
+            "When you knew him/her",
+            "When he/she started to think about that",
+            "What he/she would like to do",
+            "And explain why he/she would like to choose this career"
+          ],
+          "answers": {
+            "basic": "A younger cousin I'd known since we were kids told me she was thinking about becoming a nurse. She started seriously considering it towards the end of secondary school. Someone in the family had spent time in hospital, and she noticed how much calmer they felt when a nurse explained what was about to happen.\n\nWhat struck me was that she remembered the small things people did for the family, like checking whether they understood an instruction before moving on. When she talked about it later, she was interested in how the nurses made people comfortable enough to ask questions. She also wanted to know what an ordinary shift was like, because she knew that one good experience could only show her a small part of the job. We talked about how she might find out more before deciding what to study. She seemed quite willing to take her time with the decision.\n\nShe told me she'd like to work in a hospital ward, where she'd get to see how people recover over several days. She's interested in the practical side of the job and in talking to people who are worried or in pain. I remember her saying she wanted to be useful when someone had no idea what to expect. I could see why the job appealed to her. She's the sort of person who'll wait while you ask the same question twice.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-healthcare-career-01",
+          "prompt": "Do you think being a doctor is easy or difficult?",
+          "answers": {
+            "basic": "I think it's difficult. Doctors need years of training, and they have to make careful decisions even when the day is busy or a patient is worried. They also have to explain complicated choices in a way that makes sense to someone who may be in pain or hearing the information for the first time. I think that combination of technical knowledge, good judgment and being patient with people is what makes the work particularly demanding.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-healthcare-career-02",
+          "prompt": "Do you think learning biology is interesting for children?",
+          "answers": {
+            "basic": "It can be very interesting for children. I'd start with things they can see for themselves, like how a plant grows or why their heart beats faster after running. For example, planting two seeds and watching what happens over a week gives children something to notice and talk about. Once they've seen a difference for themselves, learning the words for what happened can feel like a way to answer a real question instead of an exercise in remembering terms.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-healthcare-career-03",
+          "prompt": "Why do some children want to become doctors?",
+          "answers": {
+            "basic": "Some want to help people after seeing a doctor care for someone in their family. Others get interested in how the body works and want to learn more. Having a positive experience with a doctor can make that job seem like something a child could do one day. At the same time, once they get older and learn what's involved, their interest may change, so it helps to give them a chance to explore what the work is actually like.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-healthcare-career-04",
+          "prompt": "Do you think governments should put a large amount of money into medical research?",
+          "answers": {
+            "basic": "Yes, particularly for research that could improve care for many people. I'd want the funding to be shared across prevention and treatment and reviewed as results come in. Some projects take years to show results, and a private company may have less reason to pay for work that won't lead to a product quickly. Public funding can make room for those questions, as long as people can see how the money is being used and why the work matters.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-healthcare-career-05",
+          "prompt": "Why is some doctors’ pay high and others’ low?",
+          "answers": {
+            "basic": "Pay can vary with experience, specialty, location and the kind of hospital someone works in. Some roles also involve longer hours or harder-to-fill shifts. For instance, a post that requires years of extra training or a specialist who is difficult to recruit may come with higher pay. A difference in pay doesn't tell you how useful each doctor is to the people they see, because different roles solve different problems for the community.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-healthcare-career-06",
+          "prompt": "Do you think doctors should be paid more?",
+          "answers": {
+            "basic": "I'd support better pay where long hours and responsibility are poorly reflected. Workload and enough time to rest are worth improving alongside salary. If a hospital is struggling to keep people in a particularly demanding role, better pay may help experienced staff stay. I'd also ask why they're leaving, because if the main problem is that their shifts are constantly being changed, a pay rise alone may make very little difference to daily life.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "id": "environmental-law",
+  "title": "保护环境的法律",
+  "part": "2-3",
+  "category": "retained",
+  "order": 48,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-environmental-law",
+          "prompt": "Describe a law on environmental protection",
+          "cuePoints": [
+            "What it is",
+            "How you first learned about it",
+            "Who benefits from it",
+            "And explain how you feel about this law"
+          ],
+          "answers": {
+            "basic": "I'd talk about the household waste-sorting rules in Shanghai. They ask people to separate things like food waste and recyclables. I first paid attention to them after I moved to Shanghai and saw the different labels on the bins. I remember standing there with a cardboard box and taking a second to work out where it went.\n\nWhen I first saw the different bins, I could understand the idea before I knew how to deal with everything I threw away. A clean bottle was fairly easy, while a container that still had some food in it made me stop and look at the instructions. I realised that I was more likely to do it properly if I'd already separated things upstairs. So I started leaving dry packaging together somewhere I could see it and taking it down on my way out. That turned a job I had to think about into something fairly ordinary.\n\nThe rules help people who collect and process the waste because they don't have to start with everything mixed together. Residents can benefit too if the shared bin area is easier to keep clean. I was a bit slow at it at first, especially with packaging that had more than one material. Once I got into the habit of putting bottles and boxes aside at home, it became much easier. I feel good about having a simple thing I can do regularly.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-environmental-law-01",
+          "prompt": "What kinds of rules do schools in China have?",
+          "answers": {
+            "basic": "Schools often have rules about attendance, behaviour and how students use phones. There are also safety rules for labs, sports and shared spaces. For example, students may need to put phones away during a lesson so everybody can hear and take part. In a sports hall, a different rule might be about where equipment goes after class, because the next group needs the space to be clear before they can start.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-environmental-law-02",
+          "prompt": "Do you think school rules are important?",
+          "answers": {
+            "basic": "Yes, because students need to know what behaviour is expected and feel safe around each other. A rule is easier to accept if the reason is clear. If students know everyone is expected to take turns with shared equipment, they can get on with an activity without arguing about it each time. The reason should be clear enough to explain, because a rule that feels arbitrary can create more arguments than it solves.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-environmental-law-03",
+          "prompt": "Are children unhappy with the school rules?",
+          "answers": {
+            "basic": "Some are, especially if a rule feels unfair or is applied differently to different people. They may accept a rule more readily when it clearly protects someone. A phone rule can be frustrating if students see people get away with breaking it while others are punished. They might accept the same rule more easily if they can see how interruptions affect the lesson and know that everyone will be treated in the same way.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-environmental-law-04",
+          "prompt": "How can parents and teachers help children understand and follow rules?",
+          "answers": {
+            "basic": "They can explain what the rule is for and show how it works in daily life. It also helps to let children ask questions about situations they find confusing. For example, if a child has to wait before using a piece of equipment, an adult can point out who is still using it and what could happen if they go too early. Once the child understands the situation, they have a reason to wait the next time even without a reminder.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-environmental-law-05",
+          "prompt": "What are the rules people should obey at work?",
+          "answers": {
+            "basic": "People should follow safety rules, treat colleagues with respect and take care with private information. They should also tell the team early if something is likely to miss a deadline. In my line of work, that can mean being careful about who is allowed to see a file or piece of customer information. It also means communicating clearly when somebody else depends on your work, because a small delay on your side can affect several people before the end of the day.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-environmental-law-06",
+          "prompt": "What is the purpose of punishment?",
+          "answers": {
+            "basic": "It can show that an action has consequences and discourage people from repeating it. For children in particular, it should also help them understand what to do next time. For example, if a child damages something another person was using, helping them put it right can show them the effect of what they did. A consequence works better when the connection is clear, because the child has something specific to do differently the next time the same situation comes up.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

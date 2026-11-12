@@ -1,0 +1,54 @@
+{
+  "id": "fruit-and-vegetables",
+  "title": "Fruit and vegetables",
+  "part": "1",
+  "category": "new",
+  "order": 6,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-fruit-and-vegetables-01",
+          "prompt": "Do people in your country like planting vegetables?",
+          "answers": {
+            "basic": "Some people do, even if they only have a balcony. Back in Hunan, growing a few spring onions or chillies at home felt quite normal. A relative of mine grows them in pots because she likes being able to cut a few fresh ones when she's cooking.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-fruit-and-vegetables-02",
+          "prompt": "Were there any kind of fruits and vegetables you disliked as a child?",
+          "answers": {
+            "basic": "I didn't like bitter melon when I was little. I remember taking one bite and then trying to eat the rest of my rice around it. The bitter taste was much stronger than I expected, and even mixing it with other food didn't help much.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-fruit-and-vegetables-03",
+          "prompt": "What kind of fruits and vegetables do you dislike?",
+          "answers": {
+            "basic": "Bitter melon still isn't my favourite because the taste stays in my mouth for a long time. I'm happy with most other vegetables. I quite like vegetables with a little heat, though, so I'd happily have something like peppers with my dinner.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-fruit-and-vegetables-04",
+          "prompt": "Where do you usually buy fruit and vegetables?",
+          "answers": {
+            "basic": "I usually pick them up at a supermarket near home. If I get back late from coaching, I sometimes order a few things to be delivered. I like being able to choose the fruit myself when I have time, especially if I'm buying enough for several days.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-fruit-and-vegetables-05",
+          "prompt": "How often do you eat fruit and vegetables?",
+          "answers": {
+            "basic": "I try to have vegetables with lunch or dinner every day. Fruit is usually a snack, especially if I'm hungry between work and badminton. A banana is easy to carry in my bag, so I sometimes eat one on the way to a lesson.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

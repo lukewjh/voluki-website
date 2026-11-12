@@ -1,0 +1,83 @@
+{
+  "id": "person-who-grows-plants",
+  "title": "喜欢在家 / 花园种菜的人",
+  "part": "2-3",
+  "category": "retained",
+  "order": 31,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-person-who-grows-plants",
+          "prompt": "Describe a person who loves to grow plants (e.g. vegetables, flowers) at home or in the garden",
+          "cuePoints": [
+            "Who this person is",
+            "What plants he/she grows",
+            "How he/she grows the plants",
+            "And explain why he/she loves growing plants"
+          ],
+          "answers": {
+            "basic": "A relative of mine in Hunan likes growing plants at home. She has a few pots of spring onions and chillies in a sunny spot. Whenever I visit, I notice that the pots have been moved around a little, depending on which ones need more light.\n\nOn one visit I asked her how she knew which pots to move, and she took me outside to show me where the sun reached in the afternoon. I hadn't realised how much difference it made to move a pot even a short distance. She checks the plants when she's already out there doing something else, so it fits quite easily into her day. If one isn't doing well, she tries a different spot and waits a while to see what happens. It's quite an ordinary routine, but she enjoys knowing which little changes made a difference.\n\nShe saves the root ends from the spring onions she buys, puts them in soil and waters them when the surface feels dry. When she's cooking, she'll step outside, cut a handful and bring it straight back to the kitchen. She likes having something fresh right there, and I think she also enjoys seeing a bit of progress every day. She'll point out a new chilli before she tells me anything else about the week. It makes her happy in a way I can understand. It's a small thing she's looked after herself.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-person-who-grows-plants-01",
+          "prompt": "What are the advantages of growing vegetables or flowers at home?",
+          "answers": {
+            "basic": "You can pick a few fresh herbs whenever you need them, and flowers can make a small balcony feel more welcoming. Looking after plants can be relaxing too. A balcony with a few plants gives someone a reason to step outside and pay attention to something that changes slowly. It's practical as well, because if you only need a handful of spring onions for a meal, you can cut exactly that amount and leave the rest growing.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-person-who-grows-plants-02",
+          "prompt": "Is it easy to grow plants at home?",
+          "answers": {
+            "basic": "Some plants are easy if they get enough light and you water them properly. It takes a bit of trial and error to find what grows well in your space. A sunny balcony may be fine for one plant while a dark room suits something quite different. I'd try one or two small pots first and watch what happens, because it can take a while to learn how often the soil actually dries out where you live.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-person-who-grows-plants-03",
+          "prompt": "Do many people grow vegetables or flowers at home in your country?",
+          "answers": {
+            "basic": "Some families grow things like spring onions or flowers on a balcony. In a big city, I'd expect it to depend a lot on how much space and light people have. Back in Hunan I've seen people use a sunny corner for a few pots, even if they don't have a proper garden. In a Shanghai flat the setup may be smaller, but there can still be enough room for something like spring onions that you can cut when you're cooking.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-person-who-grows-plants-04",
+          "prompt": "Why do some people like to grow plants?",
+          "answers": {
+            "basic": "It gives people something to look after and a small sign of progress each week. It can also be a good way to spend a few quiet minutes after work. For someone who spends all day looking at a screen, watering a pot or noticing a new leaf is a different kind of activity. There isn't much to hurry along, and I can see how it would feel rewarding to come back a week later and find something has grown.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-person-who-grows-plants-05",
+          "prompt": "Why do some people prefer to grow their own fruits and vegetables instead of buying them from the market?",
+          "answers": {
+            "basic": "They enjoy eating something they've grown themselves, and they can pick it when they need it. For herbs, a small pot can be more convenient than buying a whole bunch. There's also the pleasure of deciding what to plant and watching it turn into something you can eat. Growing everything yourself would take quite a bit of time and space, but a couple of things you use often can make cooking feel a little more personal without much extra work.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-person-who-grows-plants-06",
+          "prompt": "Do you think students should learn to grow plant?",
+          "answers": {
+            "basic": "Yes, even a small classroom pot could work. Watching a seed grow can teach students patience and help them understand where their food comes from. If students grow the same plant in different places, they can compare what happens when one gets more light. That gives them a small experiment they can keep coming back to, and it helps them see why looking after something for a few minutes each day can add up.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

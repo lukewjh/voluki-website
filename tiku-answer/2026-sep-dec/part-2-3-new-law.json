@@ -1,0 +1,84 @@
+{
+  "id": "new-law",
+  "title": "想颁布的新法律",
+  "part": "2-3",
+  "category": "retained",
+  "order": 32,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-new-law",
+          "prompt": "Describe a new law you would like to introduce in your country",
+          "cuePoints": [
+            "What law it is",
+            "What changes this law brings",
+            "Whether this new law will be popular",
+            "How you came up with the new law",
+            "And explain how you feel about this new law"
+          ],
+          "answers": {
+            "basic": "I'd introduce a rule that requires employers to show a realistic salary range in job ads. I thought of it because someone can read a whole description, prepare for an interview and only then find out the pay is far from what they need. That seems like a lot of time for both sides to spend before discussing something so basic.\n\nImagine seeing two ads for fairly similar jobs and having no way to tell whether either fits your needs. You might spend a few evenings getting ready for an interview before you find out something that could have saved you the trouble. I would want the range to be fairly narrow and to mean something in practice. If the highest figure were only available in very unusual cases, the advert could explain what experience it was based on. That would still leave some room to talk about the offer after both sides know a bit more.\n\nWith the rule, an applicant could decide earlier whether the job was worth applying for. A company could still offer a different amount based on experience, but it would have to give people a useful starting point. I think applicants would welcome it. Some employers might find it awkward at first, especially if they've never shared that information. I'd feel good about a change that made the first conversation a bit more straightforward for everyone.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-new-law-01",
+          "prompt": "What rules should students follow at school?",
+          "answers": {
+            "basic": "Students should arrive on time, respect other people and follow safety rules. I'd also expect them to hand in their own work and ask before borrowing things. A good rule should help make it clear what students can expect from one another. If everyone has to put shared equipment back after using it, for example, the next class can get started without waiting for a teacher to find something that should already be in the room.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-new-law-02",
+          "prompt": "Do people in your country usually obey the law?",
+          "answers": {
+            "basic": "I think most people follow basic rules in daily life. How consistently a rule is followed depends in part on how clear it is and how fairly it's enforced. For example, people are more likely to follow a crossing signal when they can see that the traffic will stop and that waiting won't take very long. Clear signs and consistent behaviour around them can make following the rule feel like the ordinary thing to do.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-new-law-03",
+          "prompt": "What kinds of behavior are considered as good behavior?",
+          "answers": {
+            "basic": "I'd count keeping your word, giving others space and taking responsibility when you make a mistake. Small things like waiting your turn matter too. In a shared space, good behaviour often means noticing how your actions affect people who didn't choose to be there with you. Playing a video through headphones on a crowded train is a small example, and the effect is obvious to anybody who has been stuck next to a loud speaker.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-new-law-04",
+          "prompt": "Do you think children can learn about the law outside of school?",
+          "answers": {
+            "basic": "Yes. They see rules in action when they cross the street, use a library or play sport. An adult can explain the reason at the moment it matters. If a parent explains why cars and people have to take turns at a crossing, a child can see the purpose of a rule straight away. Later, the same child may start asking why some rules apply to everyone and who gets to decide how they should be enforced.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-new-law-05",
+          "prompt": "What are the benefits for people to obey rules?",
+          "answers": {
+            "basic": "Shared rules help people know what to expect. On a road, for example, everyone is safer when drivers and pedestrians follow the same signals. Rules can save time as well as keep people safe, because each person can make a plan based on what others are likely to do. If everyone leaves a sports court when their booking ends, the next group can start on time without having to interrupt a game and negotiate.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-new-law-06",
+          "prompt": "How can parents teach children to obey rules?",
+          "answers": {
+            "basic": "Parents can explain the reason and follow the rule themselves. If they ask children to put things away, it helps when they do the same. I'd start with something the child can see, like how much faster everyone gets out of the door if the shoes are in one place. Once they've experienced the benefit a few times, they're more likely to remember why the rule exists and follow it even when nobody is watching.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,127 @@
+.speaking-sync-notice {
+  margin: 12px 0;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--muted);
+  background: var(--surface-soft);
+  font-size: 0.875rem;
+}
+
+.question-card {
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface);
+  scroll-margin-top: 78px;
+}
+
+.question-content {
+  padding: clamp(15px, 3.4vw, 25px);
+}
+
+.question-prompt {
+  margin: 0;
+  font-size: clamp(1.125rem, 2.6vw, 1.35rem);
+  font-weight: 720;
+  line-height: 1.48;
+  overflow-wrap: anywhere;
+}
+
+.cue-points {
+  margin-top: 14px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.cue-points p {
+  margin-bottom: 4px;
+  font-weight: 650;
+}
+
+.cue-points ul {
+  margin: 0;
+  padding-inline-start: 21px;
+}
+
+.answer {
+  border-top: 1px solid var(--line);
+  border-radius: 0 0 8px 8px;
+  background: var(--surface-soft);
+}
+
+.question-card summary {
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px clamp(15px, 3.4vw, 25px);
+  border-radius: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  list-style: none;
+  cursor: pointer;
+}
+
+.question-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.answer-icon {
+  position: relative;
+  display: grid;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  place-items: center;
+}
+
+.answer-icon::before,
+.answer-icon::after {
+  position: absolute;
+  width: 12px;
+  height: 1.5px;
+  background: currentColor;
+  content: "";
+}
+
+.answer-icon::after {
+  transform: rotate(90deg);
+}
+
+.hide-answer,
+.answer[open] .show-answer,
+.answer[open] .answer-icon::after {
+  display: none;
+}
+
+.answer[open] .hide-answer {
+  display: inline;
+}
+
+.answer-content {
+  max-width: 72ch;
+  padding: 0 clamp(15px, 3.4vw, 25px) clamp(15px, 3.4vw, 25px);
+  line-height: 1.78;
+  overflow-wrap: anywhere;
+}
+
+.answer-content p {
+  margin-bottom: 0.85em;
+}
+
+.answer-content p:last-child {
+  margin-bottom: 0;
+}
+
+.answer-content .answer-label {
+  margin-bottom: 0.35em;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  font-weight: 750;
+}
+
+.question-card summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}

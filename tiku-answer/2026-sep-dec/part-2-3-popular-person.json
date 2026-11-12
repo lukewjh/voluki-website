@@ -1,0 +1,83 @@
+{
+  "id": "popular-person",
+  "title": "受欢迎的人",
+  "part": "2-3",
+  "category": "new",
+  "order": 22,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-popular-person",
+          "prompt": "Describe a popular person",
+          "cuePoints": [
+            "Who this person is",
+            "What kind of person he or she is",
+            "When you see him/her normally",
+            "And explain why you think this person is popular"
+          ],
+          "answers": {
+            "basic": "There's someone I often see at a regular badminton session who seems to know everyone. He's usually there when I arrive at the weekend. If a new player is standing by the door looking unsure, he'll go over, ask their name and find them a game. He does it so casually that they don't feel like they're being singled out.\n\nI saw him do it one evening when a new player came on their own and spent most of the warm-up watching. He asked if they'd like to do a few easy rallies with him, then brought two more people over once they felt comfortable. A little later they were laughing and working out who would serve next. He didn't make a big deal of helping, so there was no awkward moment where everyone had to stop and pay attention. He was just making room for another person, which is something he does pretty regularly.\n\nI think that's the main reason people like him. He's quite a good player, but he's just as happy to have a relaxed game with someone who's learning. He also remembers who's coming back after a break and asks how they're getting on. When he can't make a session, people usually ask where he is. I can understand that. The atmosphere is a little warmer when he's there, especially if you don't know many people yet.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-popular-person-01",
+          "prompt": "Why do people want to be popular?",
+          "answers": {
+            "basic": "Being popular can make people feel accepted and give them more chances to meet others. Some people also like knowing that others pay attention to their ideas. That can matter in practical ways as well as emotionally, because being known makes it easier to invite people to something. At a sports club, for instance, the person who knows everyone can often get a game going, and seeing people turn up makes them feel like they belong there.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-popular-person-02",
+          "prompt": "Is it easier to become popular nowadays?",
+          "answers": {
+            "basic": "It's easier to get noticed through social media. Staying popular is harder because there is always something new for people to look at. Someone can reach thousands of people with one funny clip, even if they had no audience the day before. Keeping those people interested takes more work, because one clip gives them very little reason to remember your name unless you keep making things they actually want to see.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-popular-person-03",
+          "prompt": "What are the qualities of being a good teacher?",
+          "answers": {
+            "basic": "A good teacher explains things clearly and notices when someone is confused. When I coach badminton, I find that one correction a player can actually try is often enough. With a badminton beginner, I might ask them to show me what they just tried so I can see where the instruction stopped making sense. The ability to change your explanation matters, because a student who didn't understand the first example may pick it up quickly from a simpler one.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-popular-person-04",
+          "prompt": "Do you think good teachers are always popular among students?",
+          "answers": {
+            "basic": "No. A teacher who gives demanding feedback may be unpopular at first, and students may appreciate the same teacher later when they can see their progress. A teacher who asks students to rewrite a weak answer might seem strict in the moment. If the feedback is clear and the next answer is easier to write, those students may appreciate the effort later, even if they weren't happy to be given the extra work at the time.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-popular-person-05",
+          "prompt": "Is it important for a teacher to be popular?",
+          "answers": {
+            "basic": "It helps if students feel comfortable asking questions. I'd put being fair and explaining things well ahead of being everyone's favourite teacher. For instance, a student may like a teacher because they tell funny stories, but that doesn't necessarily help the student understand the next chapter. A quieter teacher who explains a confusing idea and takes questions seriously can make just as much of a difference to how the class feels about learning.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-popular-person-06",
+          "prompt": "Why are some students popular in school?",
+          "answers": {
+            "basic": "Some are outgoing and make an effort to include others. Others get noticed because they're good at a sport or something the school values. I remember that the people who got everyone involved were often the ones you wanted to see outside class as well. Being good at a sport can get someone noticed early on, but inviting others to join in gives them a reason to stay interested after the match is over.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

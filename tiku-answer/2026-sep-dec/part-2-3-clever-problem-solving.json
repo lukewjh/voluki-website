@@ -1,0 +1,83 @@
+{
+  "id": "clever-problem-solving",
+  "title": "机智解决问题的人",
+  "part": "2-3",
+  "category": "retained",
+  "order": 47,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-clever-problem-solving",
+          "prompt": "Describe a person who solved a problem in a smart way",
+          "cuePoints": [
+            "Who this person is",
+            "What the problem was",
+            "How he/she solved it",
+            "And explain why you think he/she did it in a smart way"
+          ],
+          "answers": {
+            "basic": "A player I know found a smart way to get more people playing during a busy badminton session. We had several people waiting and only one court, so some of us were standing around for quite a while. A few people wanted to finish full games, which meant nobody was sure when they'd get on.\n\nAt first we tried to remember the order by calling out names. That worked until someone went to get water and another pair turned up, and then there were two different ideas about who was next. I could see people getting a little impatient because they had paid for time at the hall and wanted to use it. The person who came up with the idea was waiting with us, so he'd seen exactly where things were getting confused. He asked if we'd try changing the order of play for just the next two games and see how it felt.\n\nHe suggested playing shorter games and having the next pair put their rackets beside the court in order. Anyone could look down and see whose turn it was. Within a few minutes people had stopped asking when they were going on and started paying attention to the game again. I thought it was clever because he used something everyone already had and made it easy to see what was happening. We kept playing instead of spending ten minutes arguing about the system.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-clever-problem-solving-01",
+          "prompt": "Do you think smart children are happier than other children?",
+          "answers": {
+            "basic": "I don't think intelligence tells you much about how happy a child is. Having friends, feeling supported and enjoying what they do are probably more important. A child might do very well in class and still spend lunch on their own, which can make school feel difficult. Another child might enjoy learning at their own pace and have friends who make them look forward to going in, even if they get lower marks on a test.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-clever-problem-solving-02",
+          "prompt": "Is it important for schools to identify and develop each student’s talents?",
+          "answers": {
+            "basic": "Yes. Some students are good at things that don't show up in a written exam. Giving them different activities helps them notice what they enjoy and do well. For example, a student who stays quiet in class might be very good at showing another person how to do something practical. A school can give them a chance to see that strength by offering different ways to take part, and that can change what they expect of themselves over time.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-clever-problem-solving-03",
+          "prompt": "Do you think children are born smart or they learn to become smart?",
+          "answers": {
+            "basic": "People may start with different strengths. Practice, encouragement and the chance to try new things can change what a child learns to do well. A child may pick up a movement or an idea faster than others the first time they try it. Over a few months, though, a child who gets good feedback and plenty of chances to practise can catch up or develop a strength that wouldn't have shown up on the first day.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-clever-problem-solving-04",
+          "prompt": "How do children become smart at school?",
+          "answers": {
+            "basic": "They can learn to ask good questions and work through a problem in more than one way. Feedback helps them understand why an answer worked or where they went wrong. In maths, for instance, a student can compare two ways of getting the same answer and decide which one they'd use next time. Over time that makes them better at spotting what kind of problem they're dealing with, so they can choose an approach even when the exact example is new.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-clever-problem-solving-05",
+          "prompt": "Why are some people well-rounded and others only good at one thing?",
+          "answers": {
+            "basic": "It depends partly on what they've had the chance to practise. Someone might focus on one skill for years, while another person has time and interest in several areas. For instance, a player who has spent years practising one sport may know a great deal about it and have little time for another. Someone who moves between several hobbies may get comfortable with different kinds of tasks, and either approach can be useful depending on what they want to do.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-clever-problem-solving-06",
+          "prompt": "Why does modern society need talents of all kinds?",
+          "answers": {
+            "basic": "Most big problems need several kinds of skills. A software project, for instance, needs people who can build it, explain it and understand what users actually need. If a service is confusing, an engineer can fix what happens behind the scenes, but someone still needs to find out where users get lost. Putting those strengths together makes it easier to solve the whole problem, because a person who sees one part clearly may miss what somebody else notices straight away.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

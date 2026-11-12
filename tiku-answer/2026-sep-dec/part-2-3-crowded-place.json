@@ -1,0 +1,83 @@
+{
+  "id": "crowded-place",
+  "title": "拥挤地方",
+  "part": "2-3",
+  "category": "new",
+  "order": 17,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-crowded-place",
+          "prompt": "Describe a crowded place you went to",
+          "cuePoints": [
+            "Where it was",
+            "When you went there",
+            "Who you went there with",
+            "What you did there"
+          ],
+          "answers": {
+            "basic": "I went to a weekend food market in Shanghai with a friend one Saturday afternoon. We had planned to walk through and pick up something to eat. By the time we got there, the narrow space between the stalls was so full that we had to keep stopping every few steps.\n\nFrom the entrance we could smell something cooking before we could see which stall it came from. It took a while just to get close enough to read the signs, and if one person stopped to order, everybody behind them had to squeeze past. My friend spotted something he wanted and pointed across the path, but a group came between us before I could see what he meant. We tried staying together for a few minutes after that. By the time we reached the middle, my friend wanted to try a stall on the other side and I wanted to get a better look at the food near us.\n\nWe split up for a few minutes to look at different stalls and immediately lost sight of each other. After that we agreed to meet beside a drinks stand that was easy to spot. We bought a couple of snacks, found a quieter spot outside and shared them there. The food was good, and I liked watching the people coming out with bags in both hands. I would probably go earlier next time. It would be nice to see what was on sale without feeling that I had to keep moving.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-crowded-place-01",
+          "prompt": "Do you think it is a good trend to have more big cities?",
+          "answers": {
+            "basic": "Big cities can offer more jobs and better transport. I think growth makes sense when housing and public services grow with them, so daily life stays manageable. A city like Shanghai gives people more choice about where to work and what to do in their free time. If it becomes hard to find an affordable place within reach of those jobs, though, people can end up spending so much time commuting that they see very little of those benefits.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-crowded-place-02",
+          "prompt": "Do you think there are some people who enjoy crowded places?",
+          "answers": {
+            "basic": "Yes. Some people enjoy the energy of a full stadium or a night market. Being surrounded by people can make an event feel more exciting. At a close sports match, hearing people react to the same point can make the whole thing feel bigger. Someone who finds a crowded subway exhausting might still enjoy that, because they chose to be there and the people around them are paying attention to something they care about.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-crowded-place-03",
+          "prompt": "Why do people go to crowded places?",
+          "answers": {
+            "basic": "Sometimes they have to, like on the subway at rush hour. Other times the crowd is part of the fun, for example at a match or a festival. It also matters whether there's a good reason to go at that particular time. A busy food market might have several stalls you can't find elsewhere, and people can be willing to wait if the visit is something they've looked forward to all week and they can go with a friend.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-crowded-place-04",
+          "prompt": "Will people use bikes more or less in cities in the future?",
+          "answers": {
+            "basic": "I think more people will cycle for short trips if cities build safe routes. Where the roads feel dangerous, people will probably stick with the subway or the bus. For example, if someone can ride from their apartment to a station without having to mix with fast traffic, a bike may save time. Having somewhere easy to leave it matters too, because even a good route feels less useful if you're worried about the bike once you arrive.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-crowded-place-05",
+          "prompt": "Will there be more or less green space in cities in the future?",
+          "answers": {
+            "basic": "I hope there'll be more. Large parks take space, but cities can still plant trees along streets and turn small unused areas into places people can sit. A city could also make the green space it already has easier to reach, for example by adding crossings or opening another entrance to a park. To me the important question is whether people can get somewhere green on an ordinary afternoon, because that affects how often they actually use it.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-crowded-place-06",
+          "prompt": "Which cities are overcrowded in your country?",
+          "answers": {
+            "basic": "Some parts of Shanghai and Beijing feel very crowded at rush hour. In Shanghai, the difference between a busy interchange and a quiet residential street can be quite striking. Part of the issue is that many people are trying to reach the same places at the same time. On a weekday evening, for instance, a station where several lines meet can be packed, and walking a little farther from the main route can make the area feel completely different.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

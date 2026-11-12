@@ -1,0 +1,83 @@
+{
+  "id": "childhood-friend",
+  "title": "发小",
+  "part": "2-3",
+  "category": "retained",
+  "order": 33,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-childhood-friend",
+          "prompt": "Describe a friend from your childhood",
+          "cuePoints": [
+            "Who he/she is",
+            "Where and how you met each other",
+            "What you often did together",
+            "And explain what made you like him/her"
+          ],
+          "answers": {
+            "basic": "One of my childhood friends was a boy I met at school in Hunan. We first talked because we both wanted to play badminton after class. I was around ten when I started playing, and at that age we were mostly trying to keep the shuttle going for as long as we could.\n\nWe didn't have many ideas about how to practise at first, so we'd make up little games. One was seeing whether we could send the shuttle back to the same patch of ground without moving too far. We were both quite pleased when we managed a decent rally, even if we lost count halfway through. I remember that he was usually willing to keep playing after a mistake. If one of us missed an easy shot, the other would just pick up the shuttle and start again, so there was no reason to feel embarrassed about it.\n\nWe used to play whenever we found some space. When it got too windy, we'd put the rackets down and go buy a snack. Sometimes we argued over whether the shuttle had landed in, then forgot about it by the time we walked home. I liked him because he was easy to be around. If I was having a bad day, I didn't have to explain much. We could play for a while and I'd usually feel better. That's one of the things I miss about being a kid.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-childhood-friend-01",
+          "prompt": "Do you still keep in touch with your friends from childhood? Why or why not?",
+          "answers": {
+            "basic": "Living in Shanghai makes it harder to see people I knew growing up in Hunan. A message now and then is a simple way to keep in touch, even when both sides are busy. When I go back for a holiday, I sometimes send a message to see whether anyone else is in the area. It's harder to have the kind of regular contact we had at school, but getting together for a game or a meal can make it easy to catch up.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-childhood-friend-02",
+          "prompt": "How important is childhood friendship to children?",
+          "answers": {
+            "basic": "It's quite important. Friends give children someone to share little problems with and help them learn to take turns and make up after an argument. Children get to make some choices together without an adult deciding everything, which is useful practice for later. If two friends both want the same turn in a game, they can learn to work it out and find that a small argument doesn't have to spoil the whole friendship.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-childhood-friend-03",
+          "prompt": "What do you think of communicating via social media?",
+          "answers": {
+            "basic": "It's handy for making plans and sending small updates. For a serious conversation, I'd rather call so I can hear how the other person is feeling. I use group chats to arrange badminton because everyone can answer when they get a minute and we can all see the plan. For a personal conversation, tone matters more, and a call makes it easier to notice if somebody needs time to say what they're actually thinking.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-childhood-friend-04",
+          "prompt": "Do you think online communication through social media will replace face-to-face communication?",
+          "answers": {
+            "basic": "I think social media will stay useful, especially for friends who live apart, and people will still want to meet in person. Being in the same room still makes it easier to notice a pause, share a joke or do something together. For example, it's easy to send an old friend a photo of a court where you used to play, even if they're in another city. To find out how life is going for them now, I'd still enjoy having a meal together, where there's time for the conversation to move naturally.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-childhood-friend-05",
+          "prompt": "What's the difference between having younger friends and older friends?",
+          "answers": {
+            "basic": "An older friend may have useful experience with a problem you're facing. A younger friend may introduce you to a different way of doing something. Shared interests matter more to me than age. For example, someone who's been in the same line of work longer might help me put a bad week into perspective. A younger friend might show me a new way to learn a skill, and in both cases the friendship works better when people are curious about each other's ideas.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-childhood-friend-06",
+          "prompt": "Has technology changed people's friendships? How?",
+          "answers": {
+            "basic": "Yes. It's easier to keep a friendship going across cities, but a quick reaction can become a substitute for a proper conversation if people are busy. I can send someone a clip that makes me think of them even if we haven't talked for weeks, which is a nice way to keep a connection. If I want to know how they're really doing, though, I need to make time for more than a quick reply or reaction.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

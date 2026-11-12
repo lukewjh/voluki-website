@@ -1,0 +1,83 @@
+{
+  "id": "live-sports-event",
+  "title": "喜欢的现场体育赛事",
+  "part": "2-3",
+  "category": "retained",
+  "order": 39,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-live-sports-event",
+          "prompt": "Describe a live sports event you watched and liked",
+          "cuePoints": [
+            "What it was",
+            "When and where you watched it",
+            "Who you watched it with",
+            "And explain why you liked it"
+          ],
+          "answers": {
+            "basic": "I once watched a local badminton doubles tournament in a sports hall in Shanghai. It was on a weekend, and I went with a friend I usually play with. We sat close enough to hear the players call to each other between shots, which is a detail I rarely pick up when I watch a clip on my phone.\n\nWe had gone expecting to watch for a little while and see how good the local players were. Once we were inside, it was easy to get caught up in the way people reacted around us. There were a few quiet seconds whenever somebody got ready to serve, and then you could hear people shifting in their seats as the rally went on. My friend and I would try to guess where a player was about to put the shuttle. We got it wrong often enough that it became another reason to watch closely.\n\nOne match got very close near the end. One pair kept putting the shuttle into the same corner until the other pair changed where they were standing. My friend pointed it out, and from then on we were both watching their feet as much as the shuttle. I liked being able to see that sort of thing live. The crowd was following every point, and on the way home we were still talking about which shots we'd try in our next game.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-live-sports-event-01",
+          "prompt": "Why do some people like to watch sports events?",
+          "answers": {
+            "basic": "It's exciting to see how players deal with pressure. I also like watching badminton to see what choices players make when a rally starts going against them. A live match also gives people something to share, especially if they're following the same player or have been looking forward to the game for a while. If the score gets close, even somebody who knows the rules quite well can be surprised by how differently two players handle the next point.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-live-sports-event-02",
+          "prompt": "Where do people normally watch sports events?",
+          "answers": {
+            "basic": "Many people watch at home on a TV or phone. If there's a venue nearby, they might go in person, especially for a team or player they follow. I might watch a big match on my phone if it's happening far away, then go in person to a smaller event near where I live. The distance, the cost and the people I'm watching with can all affect which option feels worth making time for.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-live-sports-event-03",
+          "prompt": "What are the advantages of watching sports events online?",
+          "answers": {
+            "basic": "It's easy to watch from anywhere, and you can often replay a key point. That's useful when a shot is so fast you miss it the first time. If I'm watching badminton, I can go back and see what a player did with their feet just before an unusual shot. It's also convenient when the event is far away, because I can still follow the important points without arranging the rest of my day around travelling to the venue.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-live-sports-event-04",
+          "prompt": "What sports matches are suitable for children to attend?",
+          "answers": {
+            "basic": "I'd pick a short local match in a sport the child enjoys. A smaller venue can make it easier to see what's happening and leave if they get tired. For example, at a local badminton match you can see the court quite well and explain the score without having to shout. If the child can follow what's going on and still has the option to take a break, they're more likely to leave wanting to see another game.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-live-sports-event-05",
+          "prompt": "Why do some people spend a lot going to other countries to watch sports events?",
+          "answers": {
+            "basic": "They may want to see a favourite athlete or experience an event they've followed for years. For some people, it's also a good reason to visit a new city. Someone who's watched an event online for years might enjoy hearing the crowd and seeing what goes on between points. Going with a friend can make the cost feel more worthwhile, because the match becomes part of a trip they've been able to plan and look forward to together.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-live-sports-event-06",
+          "prompt": "What sports games are popular in your country?",
+          "answers": {
+            "basic": "Basketball, football, badminton and table tennis all have a following. I hear about badminton most often because a lot of the people I know play it themselves. Which sport you notice most probably depends on where you live and what your friends do. I see basketball in public spaces and at schools, while in my own week a badminton hall is where I'm most likely to meet people who want to talk about a recent match.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

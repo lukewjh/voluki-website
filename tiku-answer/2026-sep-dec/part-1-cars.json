@@ -1,0 +1,62 @@
+{
+  "id": "cars",
+  "title": "Cars",
+  "part": "1",
+  "category": "retained",
+  "order": 18,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-cars-01",
+          "prompt": "Did you enjoy traveling by car when you were a kid?",
+          "answers": {
+            "basic": "Yes, especially if we were going somewhere new. I liked sitting by the window, though I used to get restless if the journey went on too long. I could look out at places I hadn't seen before, and I always looked forward to getting out for a snack halfway through.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-cars-02",
+          "prompt": "What types of cars do you like?",
+          "answers": {
+            "basic": "I like practical cars that are easy to park and have room for a sports bag. I don't need anything particularly large or flashy. I'd be happy with something compact that I could fit into a tight parking space after an evening at the sports hall.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-cars-03",
+          "prompt": "Do you prefer to be a driver or a passenger?",
+          "answers": {
+            "basic": "I'd rather be a passenger on a long trip because I can look around or listen to something. For a short trip on my own, driving is fine. As a passenger, I can check the route or talk to whoever's driving, which makes a long journey feel a bit more relaxed.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-cars-04",
+          "prompt": "What do you usually do when there is a traffic jam?",
+          "answers": {
+            "basic": "If I'm a passenger, I usually check the map or put some music on. If I'm driving, I just leave enough space and wait. I find it easier to stay patient when I allow extra time in the first place, especially if I'm heading to a lesson.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-cars-05",
+          "prompt": "Do you think car colours are important?",
+          "answers": {
+            "basic": "I'd choose a colour that's easy to keep looking clean. Beyond that, I care much more about how the car feels and what it costs to run. Grey would probably suit me because a bit of dust wouldn't stand out much between washes.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-cars-06",
+          "prompt": "Will you buy an expensive car in the future?",
+          "answers": {
+            "basic": "Probably not. The subway covers most of my journeys in Shanghai, so I'd only consider a car if I had a regular reason to use one. If I did need one to carry gear regularly, I'd look for something reliable and easy to park before thinking about a nicer model.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

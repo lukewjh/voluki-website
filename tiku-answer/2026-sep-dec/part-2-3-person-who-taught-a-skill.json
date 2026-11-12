@@ -1,0 +1,83 @@
+{
+  "id": "person-who-taught-a-skill",
+  "title": "教你新技能的人",
+  "part": "2-3",
+  "category": "new",
+  "order": 19,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-person-who-taught-a-skill",
+          "prompt": "Describe a person who taught you a new skill",
+          "cuePoints": [
+            "Who this person was",
+            "What the skill was",
+            "How you learned it",
+            "And explain how you felt about this person"
+          ],
+          "answers": {
+            "basic": "I'd talk about a coach whose badminton lessons I watch online. He helped me understand how to take the first step when moving back for a shot. I used to concentrate so much on getting to the back of the court that I hardly thought about what my feet were doing at the start.\n\nI'd watched other demonstrations before and could recognise what a good version looked like, but that didn't tell me why my version felt rushed. In this lesson, the coach let the clip run at normal speed first so I could see the whole problem. Then he slowed it down and showed where the player was before the shuttle went up. That made me notice that my first move was often taking me slightly away from where I needed to go. For the first time I knew what to watch for when I tried it again.\n\nWhat I liked about his lesson was that he separated the movement into stages. He showed the first step on its own, explained what it was for, and then put the rest of the movement back in. I paused the video and tried that first part slowly the next time I went to the hall. I was grateful for the way he explained it. It made the skill easier to learn, and it changed how I coach. Now I ask myself which part a student needs to see first.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-person-who-taught-a-skill-01",
+          "prompt": "Why is self-discipline important when learning a new skill?",
+          "answers": {
+            "basic": "Progress comes from regular practice. When I work on a badminton shot, short sessions spread across a few weeks help me build a more reliable movement. It's easy to feel motivated when you first see someone do a skill well, then get discouraged when it takes longer than you expected. Keeping a regular time to work on one small thing helps you notice progress, because you can compare what felt difficult last week with how it feels today.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-person-who-taught-a-skill-02",
+          "prompt": "What are the differences between learning from a teacher and learning by oneself?",
+          "answers": {
+            "basic": "A teacher can spot an error you don't notice and give you something specific to work on. Learning alone gives you more control over the pace and schedule. If I'm practising by myself, I can pause a video and repeat the same movement until I have a question about it. A teacher can then help me find out whether the part I'm focusing on is really what's causing trouble, which can save a lot of practice in the wrong direction.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-person-who-taught-a-skill-03",
+          "prompt": "How do adults learn a new skill?",
+          "answers": {
+            "basic": "Most adults learn when they have a clear reason to. They might watch a lesson, try it on a real task and ask someone for feedback when they get stuck. I often learn a new tool for work by trying to use it on one small problem first. If I can get it to do something useful, I have a better reason to read the instructions and a clearer idea of what to ask when I need advice.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-person-who-taught-a-skill-04",
+          "prompt": "How can parents and teachers teach children new skills?",
+          "answers": {
+            "basic": "I'd show one small step, let the child try it and point out one thing they did well. Then I'd give them another go with one simple correction. On court, for example, I'd have a beginner practise the grip before asking them to think about their feet as well. Once they feel what the grip is supposed to be like, they can use that feeling to check their own movement, and the next instruction is easier to take in.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-person-who-taught-a-skill-05",
+          "prompt": "Where can children learn new skills?",
+          "answers": {
+            "basic": "They can learn at home, at school or through a sports club. Playgrounds are also good places to practise things like taking turns and working with other children. What matters is whether they get a chance to use what they've been shown. At home they can help make a simple meal, while a sports club gives them a different kind of practice, because they have to listen and work with people who may do things a little differently.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-person-who-taught-a-skill-06",
+          "prompt": "Why should children learn new skills?",
+          "answers": {
+            "basic": "New skills give children more ways to spend their time and solve problems. Finding something they're good at can also make them more confident. It's useful for children to have the experience of being a beginner and getting a little better with practice. When a child finally manages to keep a rally going, for instance, they have a real example of progress they can remember the next time something feels too difficult at first.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

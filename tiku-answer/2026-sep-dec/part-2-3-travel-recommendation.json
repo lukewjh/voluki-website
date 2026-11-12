@@ -1,0 +1,83 @@
+{
+  "id": "travel-recommendation",
+  "title": "推荐旅行过的地方",
+  "part": "2-3",
+  "category": "retained",
+  "order": 44,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-travel-recommendation",
+          "prompt": "Describe a place you have travelled to that you would like to recommend to others",
+          "cuePoints": [
+            "What it is",
+            "Where it is",
+            "What you saw and did there",
+            "And explain why you would like to recommend it to others"
+          ],
+          "answers": {
+            "basic": "I'd recommend a trip to West Lake in Hangzhou. It's in the city, so you can spend a day by the water without needing to go far out of town. When I went, I left most of the afternoon free and walked along the lake. I could see boats out on the water and trees along the paths.\n\nI remember taking a look at the map when I arrived and deciding there was no point trying to cover the whole lake. I picked one section that looked easy to reach and turned off the map once I was on the path. Some parts were quite busy, especially where people stopped to take photos, but the walk felt different a little farther along. I found a place where I could see the water between the trees and stayed there for a while. That ended up being the part of the afternoon I remembered most clearly.\n\nI stopped for something to eat and carried on once the path got quieter. I liked having the time to sit for a few minutes without feeling that I had to get to the next stop. I'd recommend it to friends in Shanghai because it's a manageable trip and you can enjoy it without a long list of plans. If a friend asked what to do there, I'd tell them to pick one stretch of the lake and give themselves plenty of time to walk it.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-travel-recommendation-01",
+          "prompt": "Where do people in your country often go for holidays?",
+          "answers": {
+            "basic": "Some people go to nearby towns or mountain areas for a short break. For a longer holiday, a big city, a beach or a trip back home can all be popular choices. From Shanghai, a nearby city with a lake or a good place to walk can work well for a free weekend. A trip home might make more sense during a longer break, because people have time to see relatives and can spread the journey out over a few days.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-travel-recommendation-02",
+          "prompt": "What is the ideal length for a holiday?",
+          "answers": {
+            "basic": "About a week works well for me. That's long enough to slow down and do a few things without feeling like every day has to be packed. The first day often goes partly on travel, and it can take another day before I stop thinking about work. With a week, I can pick a couple of things I really want to see and still leave room to spend a whole afternoon somewhere I happen to like.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-travel-recommendation-03",
+          "prompt": "How do people usually plan holidays?",
+          "answers": {
+            "basic": "People often choose the dates first, then compare transport and book a place to stay. After that they save a few places to visit or ask friends for ideas. If I'm going with friends, the first useful question is when everyone can actually take time off. Then we can agree on things like the price of the train and how far we want to stay from the places we plan to visit, while leaving the smaller choices for later.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-travel-recommendation-04",
+          "prompt": "Is it important to plan a holiday ahead?",
+          "answers": {
+            "basic": "It's worth booking the main things ahead, especially if you're travelling during a holiday. I like to leave the daily schedule flexible so I can change it if I find something interesting. If transport and a room are sorted, I find it easier to relax once I get there. I'd be happy to change a walk if it rains or spend more time by a lake than I'd planned, because those decisions have very little effect on whether I can get home again.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-travel-recommendation-05",
+          "prompt": "Why do many countries try to attract people to visit?",
+          "answers": {
+            "basic": "Visitors spend money on transport, hotels, food and activities. Tourism can support local jobs and give people from different places a chance to meet. It can make a difference to a small town if visitors give local cafés and guesthouses enough business to stay open. I think it works best when visitors can also get to know the place a little, because a good experience gives them a reason to recommend it or come back later.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-travel-recommendation-06",
+          "prompt": "How do people decide when to travel?",
+          "answers": {
+            "basic": "They usually work around holidays, time off and the weather. Some choose a quieter month because prices are lower and popular places are less crowded. If someone wants to take their children, school dates may matter more than the ideal weather. I have a bit more choice for a short trip, so I'd check whether I can take a quieter day off and spend less time waiting for transport or getting into places once I'm there.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

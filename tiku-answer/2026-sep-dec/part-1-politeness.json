@@ -1,0 +1,46 @@
+{
+  "id": "politeness",
+  "title": "Politeness",
+  "part": "1",
+  "category": "new",
+  "order": 5,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-politeness-01",
+          "prompt": "On what occasions should we be polite?",
+          "answers": {
+            "basic": "It matters when you're asking someone for help or sharing a space with strangers. For example, I'd keep my voice down when taking a call on the subway. Small things like that make it easier for everyone to share a crowded place without getting irritated with each other.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-politeness-02",
+          "prompt": "What did you do to show your politeness as a child?",
+          "answers": {
+            "basic": "I used to greet relatives when they came over and thank them if they brought something. My family would remind me if I forgot. I wanted the adults to feel welcome, so I'd sometimes bring them a chair or get them some water as well.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-politeness-03",
+          "prompt": "Do you think being polite is very important?",
+          "answers": {
+            "basic": "Yes. A polite request usually makes it easier for both people to deal with a problem. That matters when you're busy or when you disagree. Even at work, asking someone to check one specific thing politely can make a difficult conversation go much more smoothly.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-politeness-04",
+          "prompt": "How did you learn to be polite as a child?",
+          "answers": {
+            "basic": "I mostly learned from watching my family. They would say thank you to the people who helped them, and I gradually started doing the same. I remember being reminded to wait until someone had finished speaking before I jumped in with my own story.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

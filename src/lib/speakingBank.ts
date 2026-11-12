@@ -1,5 +1,3 @@
-import data from "../../tiku-answer/ielts-speaking-2026-sep-dec.json";
-
 export const speakingCategories = [
   { id: "new", label: "新题" },
   { id: "retained", label: "保留题" },
@@ -29,56 +27,45 @@ interface Section {
   questions: SpeakingQuestion[];
 }
 
-interface Collection extends Topic {
-  slug: string;
+interface TopicFile extends Topic {
+  part: "1" | "2-3";
+  order: number;
   sections: Section[];
+}
+
+export interface SpeakingTopic extends TopicFile {
+  slug: string;
+  sourcePath: string;
 }
 
 export interface SpeakingGroup {
   id: "1" | "2-3";
   label: string;
-  topics: Collection[];
+  topics: SpeakingTopic[];
 }
 
-const bank = data as {
-  title: string;
-  part1: (Topic & { questions: SpeakingQuestion[] })[];
-  part2And3: (Topic & { part2: SpeakingQuestion; part3: SpeakingQuestion[] })[];
-};
+const files = import.meta.glob<TopicFile>("/tiku-answer/2026-sep-dec/*.json", {
+  eager: true,
+  import: "default"
+});
 
-const variants = [
-  { id: "student", label: "学生版" },
-  { id: "work", label: "工作版" }
-] as const;
+const topics: SpeakingTopic[] = Object.entries(files).map(([path, topic]) => ({
+  ...topic,
+  slug: path.slice(path.lastIndexOf("/") + 1, -".json".length),
+  sourcePath: path.slice(1)
+})).sort((a, b) => a.order - b.order);
 
-export const bankTitle = bank.title;
+export const bankTitle = "2026 年 9-12 月雅思口语题库";
 
 export const speakingGroups: SpeakingGroup[] = [
   {
     id: "1",
     label: "Part 1",
-    topics: bank.part1.map(({ questions, ...topic }) => ({
-      ...topic,
-      slug: `part-1-${topic.id}`,
-      sections: questions.some((question) => question.variant)
-        ? variants.map(({ id, label }) => ({
-            id,
-            label,
-            questions: questions.filter((question) => question.variant === id)
-          }))
-        : [{ id: "part-1", questions }]
-    }))
+    topics: topics.filter((topic) => topic.part === "1")
   },
   {
     id: "2-3",
     label: "Part 2 与 Part 3",
-    topics: bank.part2And3.map(({ part2, part3, ...topic }) => ({
-      ...topic,
-      slug: `part-2-3-${topic.id}`,
-      sections: [
-        { id: "part-2", label: "Part 2", questions: [part2] },
-        { id: "part-3", label: "Part 3", questions: part3 }
-      ]
-    }))
+    topics: topics.filter((topic) => topic.part === "2-3")
   }
 ];

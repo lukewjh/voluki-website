@@ -1,0 +1,83 @@
+{
+  "id": "noisy-place",
+  "title": "嘈杂的地方",
+  "part": "2-3",
+  "category": "new",
+  "order": 6,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-noisy-place",
+          "prompt": "Describe a noisy place you have been to",
+          "cuePoints": [
+            "Where it is",
+            "When you went there",
+            "What you did there",
+            "And explain why you feel it’s a noisy place"
+          ],
+          "answers": {
+            "basic": "One noisy place I know is a badminton hall in Shanghai. I went there one Saturday evening to play doubles with a few friends. The courts were all booked, and we had to walk past several games just to reach the one at the back.\n\nWe arrived a few minutes before our booking and waited near the net while the previous group finished. I was trying to tell my friends who I'd play with first, but everyone seemed to be talking louder than usual just to finish a sentence. During the warm-up I could see people giving little signals with their rackets across the court. I ended up doing the same thing whenever my partner was too far away to hear me. Nobody seemed particularly annoyed by it, because most of us were making just as much noise once our own games began.\n\nThe noise came from a bit of everything. Shoes squeaked on the floor, people shouted the score, and you could hear a sharp crack every time someone hit a hard shot. The ceiling was quite high, so the sound seemed to bounce around. At one point my partner was trying to tell me whose serve it was, and I had to walk over to hear him. I got used to it once we started playing. When I stepped outside at the end, though, I suddenly noticed how quiet the street was.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-noisy-place-01",
+          "prompt": "How can people consider others' feelings when chatting in public?",
+          "answers": {
+            "basic": "People can keep their voices down and use headphones for videos. If they need to take a long call, they can step outside or move somewhere quieter. On a crowded train, I try to think about whether the people next to me have any way to move away from the noise. A quick call to say I'm running late is understandable, and a long conversation can usually wait until I get off at the next stop.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-noisy-place-02",
+          "prompt": "How would people usually respond to noises in your country?",
+          "answers": {
+            "basic": "I think people are fairly patient with ordinary street noise. If a neighbour plays loud music late at night, someone might ask them to turn it down or speak to building management. People are more likely to say something when the same noise keeps coming back at a time when they're trying to sleep. A short conversation in the daytime can help, because the neighbour may have no idea how clearly the sound carries into another flat at night.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-noisy-place-03",
+          "prompt": "Which area is exposed to noise more, the city or the countryside?",
+          "answers": {
+            "basic": "I'd say cities are usually noisier because of traffic, construction and the number of people sharing a small space. The countryside can be loud too, but the noise is often less constant. In Shanghai, I can walk past a busy crossing and still hear traffic after I've turned into the next street. A village can have a loud morning when there's farm work going on, but there may be longer stretches in the day when you can hear someone talking from quite far away.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-noisy-place-04",
+          "prompt": "What kinds of noises are there in our life?",
+          "answers": {
+            "basic": "We hear traffic, building work, people talking and phones going off. At home, even a washing machine can feel loud when you're trying to concentrate. There are also noises I actually enjoy, like the sound of a good shot at a badminton hall. How I feel about a noise depends on what I'm trying to do at the time, so the same group of people chatting can sound friendly during dinner and distracting during a work call.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-noisy-place-05",
+          "prompt": "Should children not be allowed to make noise under any circumstances?",
+          "answers": {
+            "basic": "Children should be able to make noise when they're playing outside or joining a game. In a library or on a quiet train, they can learn to lower their voices. I'd explain the reason in terms they can see, like pointing out that someone nearby is trying to read. If children also have a place where they can run around and call to each other, it's easier for them to understand why the expectation changes from one place to another.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-noisy-place-06",
+          "prompt": "Do you think it is good for children to make noise?",
+          "answers": {
+            "basic": "It can be healthy when they're playing and expressing excitement. As they grow older, they can learn to notice when their noise is bothering someone. When a child calls for the shuttle in a game, for instance, they're learning to communicate with another player. I think adults can show them how to do that clearly and also show them when to give someone a little quiet, such as while another child is listening to instructions.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

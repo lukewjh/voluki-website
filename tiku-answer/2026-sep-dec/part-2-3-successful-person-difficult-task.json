@@ -1,0 +1,83 @@
+{
+  "id": "successful-person-difficult-task",
+  "title": "做困难事情并成功的人",
+  "part": "2-3",
+  "category": "new",
+  "order": 2,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-successful-person-difficult-task",
+          "prompt": "Describe a person you know who did something difficult and was successful",
+          "cuePoints": [
+            "Who this person is",
+            "What difficult thing this person did",
+            "Why this person was successful",
+            "And explain how you feel about this person"
+          ],
+          "answers": {
+            "basic": "I'd talk about a colleague who helped fix a slow service. The difficult part was that it worked fine most of the time, so we couldn't just open the app and see the problem. When things got busy, though, one request would take much longer than it should.\n\nIt was awkward to investigate because people noticed the delays at different times and described them in different ways. Some of us thought the service needed more capacity, but it was hard to tell from a general report that the app felt slow. He asked us to find one example with a clear time and an action we could repeat. We then tried the same action when the system was quiet and when more requests were coming in. That gave us a much better place to start, because we finally had a pair of results we could compare.\n\nMy colleague picked one slow request from the logs and followed it step by step. He found that the service was asking the database for the same information several times. He changed that one part, then checked the result under a similar load before calling it fixed. I remember him showing us two timings side by side. The difference was obvious. I admire the way he worked. When several people had theories about what might be wrong, he stayed patient and found a way to test one of them.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-successful-person-difficult-task-01",
+          "prompt": "In which sectors are companies more likely to succeed in China?",
+          "answers": {
+            "basic": "I'd look at sectors that solve everyday problems, like healthcare and services for older people. I can also see room for small tech companies that make simple tools people are willing to pay for. A business that makes booking appointments simpler, for example, is dealing with something customers already do and can see the point of. I'd also look at how easy it is to reach those customers, because a good product can go unnoticed if nobody knows where to find it.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-successful-person-difficult-task-02",
+          "prompt": "Is it easy to start up a company?",
+          "answers": {
+            "basic": "The first step can be quite simple, especially if you sell a service online. Finding enough customers and keeping the business running are the harder parts. Someone can start offering badminton lessons with a small group and find out whether people want to come back. To turn it into a business, they'd still need to cover court fees, find a dependable schedule and give people enough reason to choose those sessions again next month.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-successful-person-difficult-task-03",
+          "prompt": "Other than making money, what is more important for a company?",
+          "answers": {
+            "basic": "A company needs people to trust it. If it keeps its promises to customers and treats its staff well, people are more likely to stick with it. One test is what happens when the company gets something wrong. If a shop sends the wrong product and sorts it out quickly, I'd feel comfortable buying from it again, and that sort of confidence matters when you want customers and employees to stay with you for years.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-successful-person-difficult-task-04",
+          "prompt": "Does money equal success?",
+          "answers": {
+            "basic": "Money is one sign that a business is doing well. I'd also count building a product people rely on or creating a workplace where people want to stay. A business can have a good month because it offered a heavy discount, so I'd want to know what happens when the offer ends. If people keep coming back at the normal price and the staff can handle the work comfortably, that tells me a lot more about its future.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-successful-person-difficult-task-05",
+          "prompt": "How can companies help protect the environment?",
+          "answers": {
+            "basic": "They can cut back on packaging and design products that are easier to repair. They can also check how much energy they use and fix the obvious sources of waste. A small retailer could start by checking which orders really need a large box and which could go in something smaller. The change is easier to keep up if it also saves money or time, because then the people packing orders have a practical reason to make it part of the routine.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-successful-person-difficult-task-06",
+          "prompt": "Is it difficult to do business in today's world?",
+          "answers": {
+            "basic": "Yes, because customers can compare prices and reviews in seconds. At the same time, a small business can reach people online without opening a shop, which helps. That gives a new company a chance to try an idea with a few customers before spending much. It also raises expectations, because if a delivery takes longer than promised, customers can tell other people about it straight away and the business has to respond while it's still dealing with the original problem.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

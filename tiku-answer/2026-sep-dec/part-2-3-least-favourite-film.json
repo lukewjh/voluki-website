@@ -1,0 +1,67 @@
+{
+  "id": "least-favourite-film",
+  "title": "最不喜欢的电影",
+  "part": "2-3",
+  "category": "new",
+  "order": 20,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-least-favourite-film",
+          "prompt": "Describe your least favourite movie",
+          "cuePoints": [
+            "When you watched it",
+            "Where you watched it",
+            "What it was about",
+            "And explain why it’s your least favourite movie"
+          ],
+          "answers": {
+            "basic": "One film I really didn't enjoy was a science fiction film I watched at home one Saturday night. I can't remember the title now, but it was about a rescue crew looking for people on a damaged spaceship. I thought it would be interesting to see how they made decisions with very little information.\n\nAt the beginning, the crew received a message and had to decide whether they had enough time to reach the ship. I liked that part because it gave them a choice that seemed to matter. Once they arrived, though, the film kept adding another emergency before the previous one had been explained. There was a scene where someone went back for a piece of equipment, and I couldn't tell why it was worth the risk. By then I was mostly waiting for the film to slow down long enough to let me understand what was happening.\n\nIn the end, most of the film was people running down dark corridors while something went wrong behind them. The characters hardly had time to talk, so I never got to know any of them well enough to care what happened. I remember pausing it to get a glass of water and realising there was still nearly an hour left. I like science fiction when it gives me an idea to think about afterwards. With this one, I mostly remembered how loud it was.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-least-favourite-film-01",
+          "prompt": "Can movies help people better understand the cultural background of a country?",
+          "answers": {
+            "basic": "Yes. Films can show how people speak to relatives, what they eat and how a neighbourhood feels. I'd watch more than one film to get a fuller picture. For example, a scene at a family dinner might show who serves the food and how people talk to someone older. Those details can give me questions to ask, and seeing them in several different stories helps me remember that one family on screen only represents one way of living.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-least-favourite-film-02",
+          "prompt": "Are movies more likely to help people become more creative than books?",
+          "answers": {
+            "basic": "Both can help in different ways. A film can inspire someone with sound and images, and a book gives readers space to imagine how a scene looks for themselves. A film can make me notice how music changes the mood of a scene, which might give me an idea I can use somewhere else. With a book, I do more of the work myself, like imagining what the room looks like from only a couple of details on the page.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-least-favourite-film-03",
+          "prompt": "What are the differences between watching movies at home and in a cinema?",
+          "answers": {
+            "basic": "At home you can pause, get a snack and watch whenever you want. A cinema has a bigger screen and fewer distractions, which helps you get into the film. At home I'm much more likely to check my phone when the story takes a while to get going. In a cinema, even hearing other people laugh can change the experience, although I'd still choose home if I wanted to stop and talk about the film as I watched it.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-least-favourite-film-04",
+          "prompt": "What kinds of movies are the most popular in China?",
+          "answers": {
+            "basic": "Comedies and action films often draw a lot of attention, especially around holidays. Family films are also an easy choice when several generations go out together. I think it matters who people are going with as much as what kind of film they usually like. A comedy can be an easy choice for a group of friends, whereas when I watch something on my own I'm more likely to pick a story based on one subject I already enjoy.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

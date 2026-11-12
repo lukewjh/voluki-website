@@ -1,0 +1,67 @@
+{
+  "id": "local-news",
+  "title": "当地新闻",
+  "part": "2-3",
+  "category": "retained",
+  "order": 53,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-local-news",
+          "prompt": "Describe a piece of local news that people are interested in",
+          "cuePoints": [
+            "What it was about",
+            "Where you saw/heard it",
+            "Who was involved",
+            "And explain why people were interested in it"
+          ],
+          "answers": {
+            "basic": "A piece of local news I noticed was that a sports centre in Shanghai was reopening some courts after repairs. I saw the update because someone shared it in a badminton group chat. The centre had put out a notice about the reopening, and people in the group started checking which evenings they could book.\n\nBefore it reopened, it was one of those places people in the group kept asking about. It was easy to get to from work, and several players had got used to meeting there on the same evening each week. The notice finally gave people a date they could plan around. I remember someone asking if we could get the old group together again, and a few people answered almost straight away. That made me see how much of the interest was about getting the routine back, because finding a place to play also meant seeing the same people regularly.\n\nIt mattered to the people who played nearby because it was already hard to find a court at a good time. A few of them had been travelling farther than usual to play after work. I remember the chat going from quiet to busy quite suddenly as people started tagging their usual partners. It was a small bit of news for most of the city, but for us it meant there was another place to get a game in without a long trip home.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-local-news-01",
+          "prompt": "Do people read the newspaper where you live?",
+          "answers": {
+            "basic": "Some still do, especially people who enjoy reading a printed paper. Most people I see in Shanghai check the news on their phones during breaks or on the subway. A printed paper can still be part of somebody's morning routine, particularly if they like sitting down and reading without notifications. For a quick update about a subway delay, I'd check my phone, and that difference in convenience probably explains why so many people I know use both formats differently.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-local-news-02",
+          "prompt": "Do people prefer local or international news?",
+          "answers": {
+            "basic": "Local news matters when it affects travel, weather or life in your area. People follow international news when an event interests them or affects the work they do. If a station near my home is closed, the local update is the one I need straight away because it changes my route. Someone who works with a team overseas may also check international news regularly, so I think the preference can change with what people need to know that day.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-local-news-03",
+          "prompt": "Do you think it's important to have a national identity?",
+          "answers": {
+            "basic": "It can give people a sense of belonging and a connection to shared history. People can feel that connection in different ways depending on where and how they grew up. It can help people feel part of a bigger community, especially when they recognise a story or tradition they share with somebody from another region. Growing up in Hunan and living in Shanghai gives me different experiences to draw on, and both can contribute to how I understand where I'm from.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-local-news-04",
+          "prompt": "How can people develop their national identity?",
+          "answers": {
+            "basic": "They can learn about their region and other parts of their country, listen to family stories and take part in community events. Everyday experiences often make the idea more personal. A family story about moving somewhere for work, for example, can lead to questions about how other parts of the country have changed. Visiting a new place or sharing a holiday meal with someone from another region can give those bigger ideas a connection to something you've actually done.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

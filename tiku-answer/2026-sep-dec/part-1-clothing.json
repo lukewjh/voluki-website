@@ -1,0 +1,62 @@
+{
+  "id": "clothing",
+  "title": "Clothing",
+  "part": "1",
+  "category": "retained",
+  "order": 24,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-clothing-01",
+          "prompt": "What kind of clothes do you like to wear?",
+          "answers": {
+            "basic": "I like simple, comfortable clothes, such as a T-shirt and trousers. On a day when I'm coaching, I usually have sports clothes in my bag. A plain shirt works for most things I do, and I can switch into a lighter top once I get to the hall.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-clothing-02",
+          "prompt": "Do you prefer to wear comfortable and casual clothes or smart clothes?",
+          "answers": {
+            "basic": "I prefer casual clothes because I spend a lot of time at a desk or on court. I still dress a little smarter for a formal occasion. A neat T-shirt and comfortable trousers are enough for an ordinary day when I'm going straight from work to badminton.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-clothing-03",
+          "prompt": "Do you like wearing T-shirts?",
+          "answers": {
+            "basic": "Yes, they're easy to move in and go with most things I own. I wear lighter ones when I'm playing badminton. On a warm day, I notice straight away if a shirt feels heavy or sticks to me after a few rallies.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-clothing-04",
+          "prompt": "Do you spend a lot of time choosing clothes?",
+          "answers": {
+            "basic": "Usually I decide in a minute or two. I spend longer only when the weather is changing or I need to dress for an event. I often leave a clean top by my bag the night before if I'm going to a lesson straight after work.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-clothing-05",
+          "prompt": "Do you wear different styles of clothes on weekdays and weekends?",
+          "answers": {
+            "basic": "A bit. On weekdays I wear simple clothes that are fine for work. At weekends I often end up in sports clothes because I'm heading to a court. If I'm meeting friends after a game, I'll usually take a spare shirt and change once we finish playing.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-clothing-06",
+          "prompt": "What colour clothes do you like?",
+          "answers": {
+            "basic": "I like navy, grey and black because they're easy to put together. Sometimes I'll pick a brighter T-shirt to play badminton in. A navy top with grey trousers is the kind of thing I can put on without having to think about it.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

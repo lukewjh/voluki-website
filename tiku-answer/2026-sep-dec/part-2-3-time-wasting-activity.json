@@ -1,0 +1,67 @@
+{
+  "id": "time-wasting-activity",
+  "title": "浪费时间的活动",
+  "part": "2-3",
+  "category": "new",
+  "order": 16,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-time-wasting-activity",
+          "prompt": "Describe an activity you do regularly that you think is a waste of time",
+          "cuePoints": [
+            "What it is",
+            "When you usually do it",
+            "Why you do it",
+            "And explain why you think it is a waste of time"
+          ],
+          "answers": {
+            "basic": "I have a habit of scrolling through short videos after work. It usually starts when I sit down to answer a message or look up a badminton clip. If I'm already tired, it's easy to watch whatever comes next instead of deciding what I actually want to do.\n\nIt happens most easily on evenings when I get home without a plan. I sit down while I'm waiting for dinner or before I get ready for bed, and the next clip is already playing by the time I think about getting up. A lot of the videos are things I'd never look for on my own. I watch because they're short and I can always tell myself there's only one more. Occasionally I look at the time and realise that the gap I meant to fill has turned into a big part of the evening.\n\nSome videos are useful. I sometimes save a drill I can try at the court. The problem is the extra twenty or thirty minutes after I've found what I came for. I put the phone down and can't remember most of what I watched. That annoys me because I'd been meaning to read a few pages or get to bed a bit earlier. These days I try to save the clip I want and close the app. It's a small thing, but it makes the evening feel longer.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-time-wasting-activity-01",
+          "prompt": "Why do some people refuse to abide by rules?",
+          "answers": {
+            "basic": "Some people break rules because they think the rule is unfair or makes life harder for no good reason. Others simply copy the people around them. A rule is easier to follow when people can see who it helps and when it applies to everyone in the same way. If a player sees other people staying on a booked court after their time is up, for instance, it becomes harder to see why they should leave on time themselves.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-time-wasting-activity-02",
+          "prompt": "What kinds of things make people feel pressured?",
+          "answers": {
+            "basic": "Deadlines, money worries and comparing yourself with other people can all create pressure. It gets worse when several problems arrive at the same time. Sometimes it's the uncertainty that makes a problem feel heavy, like knowing something is due but having no idea how long it will take. I feel more in control if I can name one thing to do next, even if I still have several other things to deal with later.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-time-wasting-activity-03",
+          "prompt": "Will you continue doing something when you are aware that it’s a waste of time?",
+          "answers": {
+            "basic": "I might keep doing it for a while if it has become a habit. Once I notice that, I try to replace it with something I actually enjoy, like playing badminton. With short videos, I find that the first useful clip makes it easy to justify watching another five. If I save what I came for and leave my phone by the door while I make dinner, I have a better chance of spending the rest of the evening the way I intended.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-time-wasting-activity-04",
+          "prompt": "How do you balance life and work?",
+          "answers": {
+            "basic": "I try to finish the main work task before I leave. Having a badminton session booked after work helps me stop checking messages and switch off. I also try to be realistic about how much I can fit into one evening. If I've had a difficult day at work, it helps to have either a short game or a quiet night planned, so the time outside work actually feels like something I get to choose.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

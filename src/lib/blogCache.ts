@@ -9,9 +9,13 @@ type CachedResult = { entry: StoredResponse; stale: boolean };
 const marker = "X-Voluki-Blog-Stored-At";
 const memoryBudget = 16 * 1024 * 1024;
 
+export function contentEdgeCache(): Cache | undefined {
+  return typeof caches === "undefined" ? undefined : (caches as CacheStorage & { default?: Cache }).default;
+}
+
 // The edge cache retains a last successful version for outages. Freshness is
 // checked separately, so its one-day retention never extends the normal 60s TTL.
-export function createBlogCache(now: () => number = Date.now) {
+export function createBlogCache(now: () => number = Date.now, label = "Blog") {
   const memory = new Map<string, StoredResponse>();
   const pending = new Map<string, Promise<CachedResult>>();
   let memoryBytes = 0;
@@ -61,12 +65,12 @@ export function createBlogCache(now: () => number = Date.now) {
         refresh = (async (): Promise<CachedResult> => {
           try {
             const result = await load(previous ? responseFor(previous) : undefined);
-            if (!result.ok) throw new Error("Blog refresh failed.");
+            if (!result.ok) throw new Error(label + " refresh failed.");
             const next: StoredResponse = {
               bytes: new Uint8Array(await result.arrayBuffer()),
               headers: [...result.headers], storedAt: now(), retryAt: 0
             };
-            if (next.bytes.byteLength > 8 * 1024 * 1024) throw new Error("Blog cache entry is too large.");
+            if (next.bytes.byteLength > 8 * 1024 * 1024) throw new Error(label + " cache entry is too large.");
             remember(key, next);
             if (edge) {
               try {
@@ -80,7 +84,7 @@ export function createBlogCache(now: () => number = Date.now) {
           } catch (error) {
             if (!previous || now() - previous.storedAt >= retainSeconds * 1000) throw error;
             previous.retryAt = now() + 15000;
-            console.warn("Blog refresh failed; serving the last successful cached version.");
+            console.warn(label + " refresh failed; serving the last successful cached version.");
             return { entry: previous, stale: true };
           } finally {
             pending.delete(key);

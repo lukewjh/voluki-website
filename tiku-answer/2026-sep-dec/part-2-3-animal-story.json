@@ -1,0 +1,83 @@
+{
+  "id": "animal-story",
+  "title": "包含动物的故事或书",
+  "part": "2-3",
+  "category": "retained",
+  "order": 46,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-animal-story",
+          "prompt": "Describe a story/book with animals in it",
+          "cuePoints": [
+            "What animals are in it",
+            "What the story/book is about",
+            "Why you read the story/book",
+            "And explain what you think of this story/book"
+          ],
+          "answers": {
+            "basic": "A story with animals I remember is The Tortoise and the Hare. The hare is so sure he'll win a race that he stops to rest, while the tortoise keeps moving and reaches the finish first. I read it as a child because it was in a book of short stories, and the race was easy to picture.\n\nWhat made it easy to follow was that I could see why both animals made their choices. The hare had a good reason to feel confident at the start, and the tortoise seemed to know it would have to keep going for much longer. I remember expecting the hare to wake up and still manage to get there first. When that didn't happen, I went back to see how long the tortoise had been moving while the hare was asleep. It was a simple surprise, but it made me think about the race again after I'd closed the book.\n\nWhen I was little, I thought the funny part was the hare waking up too late. As an adult, I think about the tortoise more. The animal just does the same small thing for long enough to get somewhere. I sometimes feel like that when I'm learning a new movement in badminton. It can look the same for several sessions before I notice that it's easier. I like that a story this short can make sense in a different way years later.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-animal-story-01",
+          "prompt": "Should schools teach children about animals?",
+          "answers": {
+            "basic": "Yes. Children can learn what animals need and how to behave around them. It also gives them a way to understand things like habitats and food chains. A school could start with animals children already see, like birds in a park, and ask what those animals need to live there. It gives them a reason to look more closely when they go outside, and bigger ideas about the environment become easier to understand once they have a real example in mind.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-animal-story-02",
+          "prompt": "Some people think pets should not be kept in cities. What do you think?",
+          "answers": {
+            "basic": "I think keeping a pet in a city is fine if the owner can meet its needs. The amount of space and time they have matters, as does keeping shared areas clean. For instance, an owner who can take a dog out regularly may be able to give it a good life even without a private garden. The problems are more likely to appear when the owner is away for long hours or other people have to deal with noise in a shared building.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-animal-story-03",
+          "prompt": "Many people regard pets as members of their family. What do you think?",
+          "answers": {
+            "basic": "I understand that. A pet is part of someone's daily routine, and people often build a strong bond after years of looking after it. Someone may spend years arranging part of every day around walks, feeding and coming home at a certain time. When I see it that way, it makes sense that the animal's absence would change how the whole home feels, even if a visitor only ever sees a quiet dog by the door.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-animal-story-04",
+          "prompt": "Do many people keep pets in your country?",
+          "answers": {
+            "basic": "I see quite a few people walking dogs in Shanghai, and cats seem popular with people who live in flats. How common it is probably varies by neighbourhood. For example, near a park I notice owners who go out at similar times and know each other's dogs. In a building where there's less space or fewer places to walk, keeping an animal may be a much bigger decision, even if the people there like pets just as much.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-animal-story-05",
+          "prompt": "What are the advantages of keeping a pet?",
+          "answers": {
+            "basic": "A pet can give people company and a reason to keep a routine. A dog can also get someone out for a regular walk and talking to neighbours. The benefit can be as simple as having a reason to take a short walk after dinner every day. There's also the feeling of coming home to something that depends on you, although that daily responsibility is worth thinking through before you decide whether a pet would suit the way you live.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-animal-story-06",
+          "prompt": "Why do people always tell children stories with animals?",
+          "answers": {
+            "basic": "Animals make stories easy to picture and remember. A child might understand a lesson about sharing more easily when it happens to a fox or a rabbit. An animal character also makes it easy to show a quality quickly, like making a hare confident because it can run fast. A child can follow what happens to the hare and the tortoise before they have the words to explain why doing something steadily can matter more than starting out quickly.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

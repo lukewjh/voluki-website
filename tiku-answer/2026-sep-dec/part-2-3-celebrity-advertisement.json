@@ -1,0 +1,83 @@
+{
+  "id": "celebrity-advertisement",
+  "title": "名人出演的广告",
+  "part": "2-3",
+  "category": "retained",
+  "order": 43,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-celebrity-advertisement",
+          "prompt": "Describe an advertisement with a famous person in it",
+          "cuePoints": [
+            "Who the person is",
+            "Where you can see it",
+            "What the advertisement is about",
+            "And explain how you feel about the advertisement"
+          ],
+          "answers": {
+            "basic": "I remember seeing a short ad with Lin Dan in it while I was watching badminton clips on my phone. It was for badminton equipment, and most of the ad was a player getting ready for a rally. Lin Dan was the person I recognised straight away, partly from the way he held the racket before he moved.\n\nIt was the sort of ad I could have scrolled past, because it opened with a fairly ordinary view of a court. What made me stop was seeing the player get ready before the shot, which gave me a chance to guess what he would do. The sound of the racket stood out too, because there wasn't much talking over it. By the time the product came up, I already knew what kind of play they wanted people to imagine. I thought that worked well for someone who already enjoys badminton and pays attention to those little details.\n\nThe clip caught my attention because I play the same sport. It was more interesting to see the racket moving on court than to hear a list of features. I watched it a second time because I wanted to see the shot again. I liked the ad as a short sports clip, though I'd still want to try the equipment myself before buying it. A great player can make almost any racket look good.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-celebrity-advertisement-01",
+          "prompt": "What are the advantages and disadvantages of advertisements?",
+          "answers": {
+            "basic": "Ads can tell us that a useful product exists or that a shop has a sale. They can also interrupt what we're doing or encourage us to buy things we hadn't planned to buy. For instance, a notice about a new local shop can be useful if I already need something it sells. An ad that keeps appearing while I'm watching a video can have the opposite effect, because I start to associate the product with the interruption, even if I might have liked it otherwise.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-celebrity-advertisement-02",
+          "prompt": "Why are many advertisements endorsed by celebrities? How useful are they?",
+          "answers": {
+            "basic": "A familiar face can get attention quickly. I think the ad is more convincing when the person has a real connection to the product, like a player showing a racket. A celebrity gives people a reason to pause long enough to see what the ad is about. That attention only goes so far, though, because if someone famous recommends a product they've no obvious reason to use, I may remember their face and still have no idea whether the product is any good.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-celebrity-advertisement-03",
+          "prompt": "What is the most important factor in an advertisement?",
+          "answers": {
+            "basic": "The message should be clear. After seeing it once, I should know what the product does and why I might want to try it. For example, a racket ad could show what the racket feels like in a quick exchange at the net. A clear demonstration would help me decide whether to try it, and I'd probably remember that detail longer than a video with a lot of quick cuts and very little information.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-celebrity-advertisement-04",
+          "prompt": "Why are some advertisements boring?",
+          "answers": {
+            "basic": "Some repeat a slogan without telling you anything useful. Others take too long to get to the point, especially when they're interrupting a video you wanted to watch. It also matters whether the ad understands what someone wants to know before making a choice. If I'm looking at shoes, I'd pay attention to a short clip showing how they grip the floor, whereas a long story that could go with any brand would probably lose me fairly quickly.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-celebrity-advertisement-05",
+          "prompt": "Is advertising important for a company? Why?",
+          "answers": {
+            "basic": "Yes, especially when customers haven't heard of the company. Advertising can get people to try something once, and the product itself has to give them a reason to return. A local business could use an ad to let people nearby know it has opened, which can bring in people who would never walk past the door. Once they've come in, I'd expect them to judge the business on how the visit actually went, so good service still matters after the ad has done its job.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-celebrity-advertisement-06",
+          "prompt": "Which is more effective, online advertising or offline advertising?",
+          "answers": {
+            "basic": "Online ads can reach people with a specific interest and link straight to the product. An offline sign can be more useful when you want to bring people into a local shop. For example, a specialist online shop can show an ad to players who already follow a sport, even if they live in different cities. A sign outside a badminton hall can reach someone who needs a service right there, so I'd choose the method based on where the customer is likely to act.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "id": "websites",
+  "title": "Websites",
+  "part": "1",
+  "category": "retained",
+  "order": 15,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-websites-01",
+          "prompt": "What kinds of websites do you often visit?",
+          "answers": {
+            "basic": "I often visit documentation sites for work and personal blogs when I'm learning a new skill. I also look at badminton sites for drills or match clips. I usually go in with a question, such as how to fix an error or show a beginner what their feet should do.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-websites-02",
+          "prompt": "What is your favourite website?",
+          "answers": {
+            "basic": "I use GitHub a lot. I like being able to see how other people built something and read the discussion when they run into a problem. A small example in a repository can tell me more about how something works than a long explanation with no code.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-websites-03",
+          "prompt": "Are there any changes to the websites you often visit?",
+          "answers": {
+            "basic": "Yes, I see more video and interactive examples than I used to. I still look for the plain written instructions when I want to check a detail quickly. When I'm learning a new tool, it's nice to run a small example in the browser and see the result immediately.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-websites-04",
+          "prompt": "What kinds of websites are popular in your country?",
+          "answers": {
+            "basic": "Video sites, shopping sites and social platforms are all popular. In my line of work, people also spend a lot of time on developer forums. It's useful when someone posts a problem I recognise and the replies show several ways to deal with it.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-websites-05",
+          "prompt": "Do you prefer getting information from websites or books?",
+          "answers": {
+            "basic": "For a quick question, I go to a website because I can search for the exact thing I need. For a subject I want to understand in depth, a book is nice. If I'm fixing a setting on my site I'll search online, but I'd sit down with a book to learn a subject from the beginning.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-websites-06",
+          "prompt": "Would you like to have your own website?",
+          "answers": {
+            "basic": "Yes, and I've already started one. I wanted a place to share what I'm learning and build a personal brand around my interests. I can use it for longer posts about backend work or badminton, then add to those posts as I learn more.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-websites-07",
+          "prompt": "What have you learned from websites that help with your life or studies?",
+          "answers": {
+            "basic": "I've learned how to fix coding problems and set up my own website. I can also find training drills and try them out in my badminton sessions. A clip of a coach slowing down a movement can give me a practical way to explain it in my next lesson.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

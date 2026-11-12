@@ -1,0 +1,46 @@
+{
+  "id": "watch",
+  "title": "Watch",
+  "part": "1",
+  "category": "retained",
+  "order": 16,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-watch-01",
+          "prompt": "Do you wear a watch?",
+          "answers": {
+            "basic": "I don't wear one every day. My phone is usually close by, and on court I prefer to keep my wrists clear. I'll sometimes wear one for a longer walk so I can see the time without pulling my phone out of a bag.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-watch-02",
+          "prompt": "Have you ever got a watch as a gift?",
+          "answers": {
+            "basic": "Yes, I remember getting a simple watch as a gift when I was younger. I wore it to school for a while. I liked checking the time myself between classes, and I remember trying to see how quickly I could learn to read the face.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-watch-03",
+          "prompt": "Why do some people wear expensive watches?",
+          "answers": {
+            "basic": "Some people enjoy the design or the way it was made. A watch can also remind someone of an important event if they bought it to celebrate. Someone might buy one after their first promotion and wear it for years because it brings that moment back.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-watch-04",
+          "prompt": "Do you think it is important to wear a watch? Why?",
+          "answers": {
+            "basic": "I find it handy when I need to check the time without taking my phone out. For most days, though, my phone does the job. A watch makes more sense to me when I'm walking with a bag or trying to stay off my phone.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

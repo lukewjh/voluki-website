@@ -1,0 +1,83 @@
+{
+  "id": "interesting-video",
+  "title": "有趣视频",
+  "part": "2-3",
+  "category": "retained",
+  "order": 28,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-interesting-video",
+          "prompt": "Describe an interesting video",
+          "cuePoints": [
+            "When and where you watched it",
+            "What it is about",
+            "Why you watched it",
+            "And explain how you feel about it"
+          ],
+          "answers": {
+            "basic": "I watched an interesting badminton video at home one evening after work. It was from the online coach I follow. He was explaining why a player kept arriving late to the back of the court. I'd been thinking about how to explain a similar problem in a lesson, so I wanted to see what he noticed.\n\nThe thing that caught my attention was how ordinary the first clip looked. The player reached the shuttle, so at normal speed it was tempting to assume they just needed to move faster. I watched it twice and still couldn't say where the problem began. The coach let us see the same movement from another angle, with enough space to watch the player's feet. I moved my phone a little closer and tried to work it out before he explained it. It was the first time I'd thought to look that early in the movement.\n\nHe replayed the movement slowly and asked viewers to look at the first step. Once I spotted it, I understood why the rest of the movement felt rushed. I liked that he gave me one thing to look for and enough time to see it for myself. I paused the video and wrote down how I'd explain it in my own words. It was only a small part of the lesson, but it was the bit I kept thinking about afterwards.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-interesting-video-01",
+          "prompt": "What kind of videos do people in your country like to watch?",
+          "answers": {
+            "basic": "Short clips about food, comedy and daily life seem popular. People also watch longer videos when they want to learn something, like how to cook a dish or fix a device. I think short videos fit into gaps in the day, like the time you spend waiting for a train. For something practical, I'd look for a longer video, because if I'm learning a badminton drill I want to see the setup, the movement and what to do if it goes wrong.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-interesting-video-02",
+          "prompt": "Which is more helpful, watching videos or reading books?",
+          "answers": {
+            "basic": "I'd use a video to learn a movement, like a badminton serve. A book is useful when I need to work through an idea at my own pace. With a serve, I can slow a clip down and see exactly when the racket makes contact. For an idea that has several steps, I like being able to keep a page open, go back to an earlier example and think about it for as long as I need.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-interesting-video-03",
+          "prompt": "What skills can people learn from watching videos?",
+          "answers": {
+            "basic": "People can learn simple repairs, cooking and sport techniques. The important part is trying the skill yourself, because watching someone else can make a difficult step look easy. Someone learning to cook can pause after the first step, try it and check whether their food looks anything like what's on the screen. That kind of feedback is harder to get with a skill like singing, where it's useful to have somebody listen and point out what you can't hear yourself.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-interesting-video-04",
+          "prompt": "Are there any differences between the videos that young people and old people like to watch?",
+          "answers": {
+            "basic": "There is plenty of overlap. Younger viewers might follow more short clips or gaming streams, while some older viewers use video for news, cooking tips or exercise. Part of the difference may be how people find the videos in the first place. Someone who follows gaming accounts will keep seeing more of those clips, and somebody who was sent a cooking video by a friend may go on to look for more recipes from the same person.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-interesting-video-05",
+          "prompt": "Are there any differences between the videos that young men and young women like to watch?",
+          "answers": {
+            "basic": "There may be some differences on average, but I'd expect interests to matter more. Two people who play the same sport may watch similar videos whatever their gender. For example, people I know who play badminton often send each other the same clips about footwork. The recommendations on each person's phone can also make a difference, because once you've watched a few videos on a subject, you're likely to be shown more of them whether or not that was your main interest.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-interesting-video-06",
+          "prompt": "What makes a video go viral online?",
+          "answers": {
+            "basic": "It helps if the point is clear in the first few seconds. People also share clips that are funny or useful, especially if they immediately think of someone who would enjoy them. For example, a clip that shows a common mistake and fixes it in twenty seconds is easy to send to someone who makes that mistake. Timing matters as well, because if it arrives while lots of people are already talking about the same thing, it gives them a simple way to join in.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

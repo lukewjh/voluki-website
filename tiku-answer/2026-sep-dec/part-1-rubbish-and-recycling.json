@@ -1,0 +1,46 @@
+{
+  "id": "rubbish-and-recycling",
+  "title": "Rubbish and recycling",
+  "part": "1",
+  "category": "new",
+  "order": 2,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-rubbish-and-recycling-01",
+          "prompt": "Did you recycle when you were a kid?",
+          "answers": {
+            "basic": "A little. We used to keep cardboard boxes and empty bottles separate at home. I didn't think much about why we were doing it at the time. I mostly remember folding the boxes flat so we'd have enough room to stack them by the door.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-rubbish-and-recycling-02",
+          "prompt": "Is waste sorting common in your country?",
+          "answers": {
+            "basic": "It's quite common where I live in Shanghai. The bins near my building have different labels, and people are used to checking them before throwing things away. For example, when I finish unpacking a delivery, I know where to take the cardboard before it piles up at home.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-rubbish-and-recycling-03",
+          "prompt": "How do you recycle things like paper and plastic?",
+          "answers": {
+            "basic": "I flatten boxes so they take up less space, and I empty bottles before putting them with the recyclables. I usually take them downstairs together. I keep a bag near the door for the smaller things, so I can take it with me when I go out.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-rubbish-and-recycling-04",
+          "prompt": "What do you do when you see rubbish on the street?",
+          "answers": {
+            "basic": "If it's something clean and easy to pick up, like a bottle, I put it in a bin. If it looks sharp or dirty, I leave it alone. There's often a bin near a subway entrance, so I can usually get rid of a bottle without going out of my way.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "id": "history-lover",
+  "title": "学习并喜欢历史的人",
+  "part": "2-3",
+  "category": "new",
+  "order": 18,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-history-lover",
+          "prompt": "Describe a person who learns history and loves history",
+          "cuePoints": [
+            "Who this person is",
+            "How he/she learns history",
+            "Why he/she loves history",
+            "And explain how you feel about him/her"
+          ],
+          "answers": {
+            "basic": "A friend I know through work enjoys reading about the history of Shanghai. He sometimes visits an old street or a small museum at the weekend. Then he looks up what used to be there and compares old photos with what he saw in person. He's shown me a few pictures on his phone when we've walked past a building together.\n\nOne time he showed me a photo of a street I'd walked down earlier that week. I recognised the corner from the shape of one building, even though the shopfronts and the way people were getting around looked completely different. He'd found the picture after noticing a small detail on the building that made him curious about its age. He went back another day to check which parts were still there. I would normally have walked past without looking up, so it was interesting to see how one question had sent him back to a place we both knew.\n\nI asked him once why he spends so much time on it. He said he likes finding out what ordinary people did in places he already knows. I can see the appeal. The street you walk down to get lunch feels different once you know what was there fifty years ago. I like listening to him because he tells one story at a time. I usually remember it the next time I'm in the area.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-history-lover-01",
+          "prompt": "Besides big historical events, what else is important when learning history?",
+          "answers": {
+            "basic": "It's worth learning what ordinary people ate, how they travelled and what work they did. Those details make it easier to picture the period. An old photo of a street can tell you something about how people got around and what they could buy nearby. Those ordinary details also help explain bigger events, because you get a better idea of what a change meant to a family trying to get on with daily life.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-history-lover-02",
+          "prompt": "Do you think people should learn ancient history before learning modern history?",
+          "answers": {
+            "basic": "A rough timeline helps, but people can begin with whichever period interests them. A modern event often gives them a reason to go back and look at what came before it. For example, someone who is curious about how their city looks today might start with an old photo of a street they know. Once they have a question they actually want answered, they're likely to remember earlier events better because those events help them make sense of something familiar.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-history-lover-03",
+          "prompt": "Is it important to learn how people in the past lived their lives?",
+          "answers": {
+            "basic": "Yes, because daily life shows what people had to deal with. Comparing how families travelled then and now can make a big change easier to understand. A child can understand what a new railway meant if they first hear how long a visit to relatives used to take. I like examples like that because they put the dates into a story about a real choice, like whether people could afford the time to travel at all.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-history-lover-04",
+          "prompt": "How do children learn history before they attend school?",
+          "answers": {
+            "basic": "They can hear stories from relatives, look at family photos or visit a museum with their parents. Those experiences give them a first idea of how life changes over time. A grandparent might show a child a photo of their old school and explain why everybody dressed differently. The child is likely to ask about something they recognise, like the playground, and that one question can be enough to get a conversation going about how life used to be.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-history-lover-05",
+          "prompt": "At what age do you think people should begin to learn history?",
+          "answers": {
+            "basic": "I'd introduce simple stories around primary school age. Dates and more complicated ideas can come later when children have more context. I'd start with short stories about a person or a place they know, because that gives them something to picture. Once they can put a few events in order and connect them to a place they've visited, they can start asking bigger questions about why things changed and what different people thought at the time.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-history-lover-06",
+          "prompt": "Do you think children should begin learning history from an early age?",
+          "answers": {
+            "basic": "Yes, if it starts with something close to them. Finding out what school was like for their grandparents is a good way to get curious. It could be as simple as walking past an old shop and talking about what was there before. I think that kind of history is easier to remember at first, because the child can compare the story with what they see in front of them on the way home.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "id": "uninteresting-conversation",
+  "title": "听不感兴趣的话",
+  "part": "2-3",
+  "category": "new",
+  "order": 12,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-uninteresting-conversation",
+          "prompt": "Describe a time when someone talked about something you were not interested in but you kept listening",
+          "cuePoints": [
+            "Who the person was",
+            "What he/she talked about",
+            "Why you kept listening",
+            "And explain how you felt about the experience"
+          ],
+          "answers": {
+            "basic": "A friend once spent most of a subway ride telling me about a phone he was thinking of buying. We'd just finished playing badminton and I was pretty tired. He had several models open on his phone and wanted to compare the cameras and all the different settings. After the first few minutes, I was having trouble remembering which one he was talking about.\n\nThe trouble was that most of the differences sounded the same to me by that point. He'd move from one page to another and ask whether I thought a particular feature was worth paying for. I was listening enough to know he wanted an answer, but I couldn't have repeated half of what he'd said. I remember looking up at the station names and realising we'd still be on the train for a while. I decided to put my own phone away so I could at least give him my full attention and see what he was trying to decide.\n\nI kept listening because I could see he'd put a lot of thought into it. Eventually I asked what he actually wanted to take pictures of. That turned out to be a question he was happy to talk about, and it made the conversation easier for me to follow. I was relieved when we moved on, but I'm glad I stayed with it. He needed someone to help him think aloud more than he needed someone who knew about phones.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-uninteresting-conversation-01",
+          "prompt": "How can we tell if a listener is listening carefully?",
+          "answers": {
+            "basic": "A careful listener usually asks a question that relates to what you've just said. They can also sum up the main point, which tells you more than a polite nod. I pay attention to whether their next question picks up a specific detail, such as why I changed my mind halfway through a decision. Some people listen quietly without much eye contact, so what they say when it's their turn can be a better clue than how attentive they look.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-uninteresting-conversation-02",
+          "prompt": "What would happen if the listener didn’t listen carefully?",
+          "answers": {
+            "basic": "They might miss a detail or give an answer that has little to do with the conversation. The speaker can also feel ignored and stop sharing. At work a missed detail can mean someone spends an afternoon doing the wrong task. In a personal conversation, the effect may be harder to see, because the speaker might carry on politely and simply decide to share less the next time they have something important to say.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-uninteresting-conversation-03",
+          "prompt": "What kind of topics do young people like to talk about today?",
+          "answers": {
+            "basic": "People I know often talk about work, travel, sport or something they saw online. The topic usually depends on what the group has in common. With my badminton friends, we can spend ages talking about a shot because everyone knows why it was tricky. The same people might talk about a show or a place to eat in another group, where a sport they play every week would be harder to bring everyone into.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

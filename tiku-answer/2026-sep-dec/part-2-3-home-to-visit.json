@@ -1,0 +1,83 @@
+{
+  "id": "home-to-visit",
+  "title": "喜欢拜访但不想住的家",
+  "part": "2-3",
+  "category": "retained",
+  "order": 45,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-home-to-visit",
+          "prompt": "Describe a home that you like to visit but do not want to live in",
+          "cuePoints": [
+            "Where it is",
+            "What it is like",
+            "Why you like to visit it",
+            "And explain why you would not like to live there"
+          ],
+          "answers": {
+            "basic": "I like visiting a relative's home in Hunan. It's in a quieter area than the part of Shanghai where I live. The rooms are fairly simple, and there's a spot outside where she keeps a few pots of chillies and spring onions. When I visit, we usually eat together and sit around talking for much longer than we meant to.\n\nOne thing I enjoy is that people come and go while we're talking. Somebody will step out to check what is cooking and come back with something they remembered halfway through. There is usually room to sit near the door for a while if the weather is good, and I can see the plants without having to move far. It's easy to spend an afternoon there without making a plan for it. At my place in Shanghai I'm more likely to be thinking about when I need to leave for work or whether I've packed for a lesson.\n\nI like going because the day has a different pace. I can put my phone down, have another cup of tea and listen to what people have been doing since I last visited. For everyday life, though, I'd miss being able to get to work and go to different badminton halls by subway. A lot of my routine is in Shanghai now. That home feels right for a visit when I have a few days off. I enjoy coming back to my own routine afterwards.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-home-to-visit-01",
+          "prompt": "Do Chinese people like to visit others’ homes?",
+          "answers": {
+            "basic": "Yes, especially if they're visiting family or someone they know well. In a busy city it's also common to meet friends in a café or restaurant for convenience. Visiting someone at home makes it easier to spend several hours together without feeling that you have to leave when the meal ends. I notice that most when I go back to Hunan for a holiday, because having tea and talking after dinner can be the part everybody remembers.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-home-to-visit-02",
+          "prompt": "What do Chinese people do when they visit others?",
+          "answers": {
+            "basic": "They usually sit and talk, have some tea or share a meal. If they're staying for a while, they might help prepare the food or play a game together. Food often makes it easier to get a visit started, because people have something to do while the conversation warms up. In a family home, a quick cup of tea can turn into a long meal if someone starts telling a story that everybody wants to add to.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-home-to-visit-03",
+          "prompt": "What kind of place do people in your country like to live in?",
+          "answers": {
+            "basic": "It depends on their stage of life. Some want easy access to work and public transport, while others value a quiet street and enough room for family. In Shanghai I'd want somewhere close to the subway because it would affect my work and coaching almost every day. Someone with a different routine might value a bit more space for children to play or a quieter street, especially if they spend more of their time close to home.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-home-to-visit-04",
+          "prompt": "What's the difference between homes in cities and those in the countryside?",
+          "answers": {
+            "basic": "City homes tend to be smaller and closer to shops and transport. A home in the countryside may have more room and outdoor space, but daily trips can take longer. That means a city flat can work well for someone who needs to make several short trips in one day. A home with a little outdoor space can be better for someone who likes growing things or having people over, as long as the longer trip to shops fits their routine.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-home-to-visit-05",
+          "prompt": "What kind of gifts do people usually bring when they visit others?",
+          "answers": {
+            "basic": "Fruit or a box of snacks is an easy choice. If I know the person well, I'd bring something I already know they enjoy. When I go back to see relatives, something everyone can share after a meal is usually an easy choice. The main thing for me is picking something that suits the people I'm visiting, so a small box of food they enjoy feels more thoughtful than something expensive they may never use.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-home-to-visit-06",
+          "prompt": "How often do you visit your relatives or friends?",
+          "answers": {
+            "basic": "I visit people when our schedules line up, usually on weekends or holidays. Living in Shanghai means I see friends nearby more often than relatives back in Hunan. For instance, I can meet friends for a game after work without making it into a whole trip. Seeing relatives in Hunan takes more planning, so I tend to do it when I can stay for a few days and have time to talk over a proper meal.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

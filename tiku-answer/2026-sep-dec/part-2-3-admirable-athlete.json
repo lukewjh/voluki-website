@@ -1,0 +1,83 @@
+{
+  "id": "admirable-athlete",
+  "title": "钦佩的运动员",
+  "part": "2-3",
+  "category": "new",
+  "order": 23,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-admirable-athlete",
+          "prompt": "Describe a successful sportsperson you admire",
+          "cuePoints": [
+            "Who he/she is",
+            "What you know about him/her",
+            "What he/she is like in real life",
+            "What achievement he/she has made"
+          ],
+          "answers": {
+            "basic": "A sportsperson I admire is Lin Dan. He's a Chinese badminton player and won Olympic gold in men's singles twice. I started playing when I was ten, and later I watched clips of his matches to see what a really good player does when the other person is putting him under pressure.\n\nOne thing I look for when I watch is what he does after a shot that doesn't go as planned. It's easy to admire a great winner, but I learn more from the way he gets back into position and gives himself another chance. I remember replaying a short rally because I thought he'd rushed to the back of the court. The second time I noticed how early he seemed to read the other player's movement. It made sense that he looked so calm, because he'd done some of the work before the shuttle even arrived.\n\nThe thing I notice is how much time he seems to have. He can keep a rally going at one pace and suddenly change it when he sees an opening. I don't know him personally. In interviews, he comes across as quite direct when he talks about his game, and on court he looks very focused. Winning Olympic gold twice is a remarkable achievement. What sticks with me when I go back to those matches is how clean his basic movements look, even when the score is close.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-admirable-athlete-01",
+          "prompt": "Why are there so few top athletes?",
+          "answers": {
+            "basic": "At that level, athletes need years of practice, good coaching and the chance to compete. Even talented people can be held back by an injury or a lack of time. Reaching the top also means performing well against other people who've made the same commitment. A badminton player can be the strongest person in their local club and still need years to get used to facing people who react faster, move differently and know how to take away their best shot.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-admirable-athlete-02",
+          "prompt": "What is the most popular sport in your country?",
+          "answers": {
+            "basic": "I'd say basketball is one of the most widely played sports in China. Badminton is very popular too, and I like that people can keep playing it at different ages. Basketball is easy to see at schools because a court can serve a lot of people through the day. Badminton fits a different routine for me, since I can book a hall in the evening and get a good game even if only one other person can make it.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-admirable-athlete-03",
+          "prompt": "Is it easy to identify children’s talents?",
+          "answers": {
+            "basic": "Sometimes it shows early, but children develop at different speeds. I'd give them time to try several sports and see what they enjoy and keep improving at. A child who looks average at first might just have had fewer chances to practise. In a badminton lesson I notice who keeps trying a movement after a mistake, because if they're still curious after a difficult session, they may improve much more over the next few months than you'd expect.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-admirable-athlete-04",
+          "prompt": "Is talent important in sports?",
+          "answers": {
+            "basic": "Talent can help someone learn faster at the start. Over time, regular practice and the ability to handle setbacks make a big difference too. Someone with good timing might find it easier to return a fast shot on their first day. After a while, though, they still need to build a movement they can repeat under pressure, and that takes the kind of practice where you pay attention to what happens on the days you play badly.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-admirable-athlete-05",
+          "prompt": "What qualities should an athlete have?",
+          "answers": {
+            "basic": "I'd put patience and consistency near the top. An athlete has to repeat basic movements and stay calm enough to think clearly when a match is going badly. I'd also add being willing to listen when someone points out a weakness. A player who's used to winning a certain way may need to change when they meet a stronger opponent, and being able to try a new approach without losing confidence makes a difference across a whole season.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-admirable-athlete-06",
+          "prompt": "Should students have physical education and do sports at school?",
+          "answers": {
+            "basic": "Yes. School sport gives children a chance to move regularly and try an activity they might enjoy for years. There should be options for people who prefer different kinds of exercise. For example, a child who avoids competitive team games might enjoy swimming or playing badminton with a friend. Giving them a few options makes exercise feel like something they can choose to keep doing later, which matters much more than whether they win a match while they're at school.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

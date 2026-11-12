@@ -1,0 +1,134 @@
+{
+  "id": "hometown",
+  "title": "Hometown",
+  "part": "1",
+  "category": "evergreen",
+  "order": 29,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-hometown-01",
+          "prompt": "Where is your hometown?",
+          "answers": {
+            "basic": "I grew up in Hunan, in central China. I live in Shanghai now, but Hunan is still what I think of when someone asks where I'm from. A lot of my early memories, including when I started playing badminton at around ten, are tied to growing up there.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-hometown-02",
+          "prompt": "Is that a big city or a small place?",
+          "answers": {
+            "basic": "I'd call it a smaller place compared with Shanghai. It has the things you'd need day to day, and the streets feel less crowded to me. It feels possible to do several things on one short trip because the places I know are closer together.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-hometown-03",
+          "prompt": "Please describe your hometown a little.",
+          "answers": {
+            "basic": "It's the part of Hunan where I spent my school years. I remember the spicy food, familiar streets and afternoons when I could go out and play badminton. Even now, the smell of chillies cooking can take me back to walking home hungry after playing for an hour.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-hometown-04",
+          "prompt": "How long have you been living there?",
+          "answers": {
+            "basic": "I lived in Hunan for most of my childhood. I moved away later and now live in Shanghai, so these days I go back to visit. When I'm back, familiar streets still make me feel like I know my way around, even if some shops have changed.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-hometown-05",
+          "prompt": "Do you think you will continue living there for a long time?",
+          "answers": {
+            "basic": "I'm based in Shanghai for work now, so I expect to stay here for a while. I'd still like to go back to Hunan when I get the chance. Most of my work and coaching are in Shanghai now, so going back to Hunan feels more like a break.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-hometown-06",
+          "prompt": "Do you like your hometown?",
+          "answers": {
+            "basic": "Yes, I feel at home there. Even small things like the way people speak or the smell of a familiar dish remind me of growing up. For instance, hearing someone speak with the same accent as my relatives can make a place feel familiar quite quickly.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-hometown-07",
+          "prompt": "Do you like living there?",
+          "answers": {
+            "basic": "I enjoyed living there, and I like going back now. After a busy few weeks in Shanghai, it's good to spend time somewhere that feels familiar. I especially like coming back when I have a few days free and can take my time over a family meal.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-hometown-08",
+          "prompt": "What do you like (most) about your hometown?",
+          "answers": {
+            "basic": "I probably miss the food most. A spicy meal in Hunan tastes like what I grew up eating, and I always look forward to that when I go back. Stir-fried pork with chillies is one of those things I'd order straight away because it tastes like home to me.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-hometown-09",
+          "prompt": "Is there anything you dislike about it?",
+          "answers": {
+            "basic": "The humid summer weather can wear me out a bit. If I go out to play in the afternoon, I feel like I need a second shower afterwards. I remember wanting to get out early for a game, before it was so hot that moving around felt like hard work.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-hometown-10",
+          "prompt": "What's your hometown famous for?",
+          "answers": {
+            "basic": "Hunan is well known for its spicy food. A dish like stir-fried pork with chillies is the kind of thing many people think of first. When friends ask what to try first, I'd suggest one dish with fresh chillies so they can taste what makes it familiar to me.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-hometown-11",
+          "prompt": "Did you learn about the history of your hometown at school?",
+          "answers": {
+            "basic": "Yes, we learned a little local history at school. I remember the stories better when they were connected to places I'd actually seen. A story about a street or building nearby was easier to picture than a list of dates we had to remember.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-hometown-12",
+          "prompt": "Are there many young people in your hometown?",
+          "answers": {
+            "basic": "Yes, there are young people studying and working there. Some move to bigger cities for a few years, so you tend to see more familiar faces during holidays. It's nice to go back at those times because people I knew at school may be back visiting their own families too.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-hometown-13",
+          "prompt": "Is your hometown a good place for young people to pursue their careers?",
+          "answers": {
+            "basic": "It depends on what they want to do. Staying close to family can be a real advantage, and a bigger city may offer more options in a specialised field like backend development. For a local business, knowing the area and the people might matter more than having lots of companies to choose from.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-hometown-14",
+          "prompt": "Have you learned anything about the history of your hometown?",
+          "answers": {
+            "basic": "A little. I learned some local stories at school, and talking to older people helped me picture what the area was like before I grew up there. Hearing how relatives got around or bought things years ago made local history feel connected to places I already knew.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-hometown-15",
+          "prompt": "Did you learn about the culture of your hometown in your childhood?",
+          "answers": {
+            "basic": "Yes. Most of it came from daily life, like the food we made at home, the way people spoke and how we spent holidays together. For instance, I learned which dishes felt right for a holiday long before I knew where the traditions behind them came from.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

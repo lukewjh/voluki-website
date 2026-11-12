@@ -1,0 +1,60 @@
+{
+  "id": "natural-place-in-city",
+  "title": "喜欢的城市自然之地",
+  "part": "2-3",
+  "category": "new",
+  "order": 7,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-natural-place-in-city",
+          "prompt": "Describe a natural place in your city that you enjoy visiting",
+          "cuePoints": [
+            "Where it is",
+            "What it is like",
+            "How often you go there",
+            "Who you often go there with",
+            "And explain why you enjoy visiting there"
+          ],
+          "answers": {
+            "basic": "I like walking by the Huangpu River in Shanghai. There are stretches with trees and a path along the water, and you can watch boats go past without having to cross a busy road every few minutes. I try to go every few weeks when I have a free afternoon. Sometimes a friend comes with me, especially if we both feel like a break after playing indoors.\n\nI usually start at a spot where the path is wide enough that people can walk at their own pace. At first I still find myself checking my phone, especially if I've come straight from work. After a while there's usually something that makes me look up, like a boat turning or a patch of light moving across the water. If I'm there with a friend, the conversation tends to slow down as well. We can stop halfway through a sentence to watch something and pick it up again without feeling we need to hurry.\n\nWe usually pick a direction and walk until we feel like turning back. I like hearing the water and feeling the wind, because most of my week is spent at a desk or in a sports hall. I don't normally plan anything else around the walk. It's enough to get some air, talk for a bit and go home feeling like I had a proper break.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-natural-place-in-city-01",
+          "prompt": "Which is more important, protecting the environment or developing the economy?",
+          "answers": {
+            "basic": "If I had to choose, I'd protect the environment first, because damage to clean water or air can be hard to undo. I'd look for ways to grow the economy within those limits. For example, factories can still create jobs if they have to account for how they handle waste. There may be an extra cost at first, but leaving a river polluted can take away other ways people earn a living and make the area less pleasant for everyone who lives there.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-natural-place-in-city-02",
+          "prompt": "Do you think staying in a natural place would help change people’s mood?",
+          "answers": {
+            "basic": "Yes. Walking somewhere green makes it easier to stop thinking about work for a while. I usually feel calmer when there's space to walk without much traffic around. The change can be quite small, like feeling less impatient after ten minutes by the river. I think part of it is that you have fewer demands on your attention there, so you can let a thought go instead of immediately having to deal with another sound or message.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-natural-place-in-city-03",
+          "prompt": "Do you think there should be many natural places in cities?",
+          "answers": {
+            "basic": "Yes, and I'd spread them around the city. Even a small neighbourhood park can make a difference if people can reach it on foot after work. A large park across town is great for a weekend, but a small one near your building can become part of your daily routine. I'd make sure people have a safe way to walk there and somewhere to sit, because those details matter if you're older or looking after a child.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "id": "shoes",
+  "title": "Shoes",
+  "part": "1",
+  "category": "new",
+  "order": 4,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-shoes-01",
+          "prompt": "Which do you prefer, fashionable shoes or comfortable shoes?",
+          "answers": {
+            "basic": "Comfortable shoes, definitely. When I play badminton, I care about how stable the shoes feel when I move sideways. The colour is a bonus. A pair that grips well gives me more confidence when I have to stop suddenly near the edge of the court.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-shoes-02",
+          "prompt": "How much money do you usually spend on shoes?",
+          "answers": {
+            "basic": "For everyday shoes, I'd spend a few hundred yuan. I'm willing to pay a bit more for badminton shoes if they fit properly and feel stable on court. I usually try a few side steps in the shop because walking around in a straight line only tells me so much.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-shoes-03",
+          "prompt": "Have you ever bought shoes online?",
+          "answers": {
+            "basic": "Yes, usually when I already know the brand and my size. For a new pair of badminton shoes, I'd rather try them on first. I've ordered a replacement pair online before because I'd worn the same model for months and knew it suited my feet.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-shoes-04",
+          "prompt": "Do you like buying shoes? How often?",
+          "answers": {
+            "basic": "I buy shoes when a pair is worn out, so maybe once or twice a year. I quite enjoy trying on court shoes, though. It's satisfying to find a pair that feels right, especially when the old ones have started slipping on court.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "id": "happy-person",
+  "title": "快乐人士",
+  "part": "2-3",
+  "category": "new",
+  "order": 3,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-happy-person",
+          "prompt": "Describe a happy person you know",
+          "cuePoints": [
+            "Who this person is",
+            "What he/she is like",
+            "How he/she shows happiness",
+            "And explain why you think he/she is a happy person"
+          ],
+          "answers": {
+            "basic": "A friend I play badminton with comes to mind. When I arrive at a court and hear someone laughing before I've even changed my shoes, there's a good chance it's him. He gets a lot of enjoyment out of small things, like finally getting a serve in after missing it several times.\n\nWhat I like is that his mood doesn't depend on whether he's playing well. Sometimes he arrives after a long day and says he only wants an easy game. Half an hour later he's usually chatting away and asking how everyone else's week has been. He also notices people who've been standing by the court for a while and invites them to play. I remember turning up tired once and thinking I'd go home after a game or two. Spending a bit of time around him made it much easier to forget the day I'd just had.\n\nYou can tell when he's happy because he talks more, laughs easily and starts looking for someone else to join the game. Once he hit the frame of his racket and the shuttle somehow went over the net. He laughed so hard that we had to stop for a minute. He has bad days like everyone else, but he pays attention to the parts that went well. Even after a game he's lost, he'll remember one good rally and ask if we can play again next week.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-happy-person-01",
+          "prompt": "When do you think people are happiest?",
+          "answers": {
+            "basic": "I think people are happiest when they can relax with people they trust. An ordinary dinner with close friends can be more enjoyable than a big event. With good friends, there's no pressure to keep the conversation going every second or look as if everything is going well. I notice that after badminton, when everyone is tired and we can still sit over a bowl of noodles for ages, talking about one funny point from the game.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-happy-person-02",
+          "prompt": "How can the arts spread positive emotions in society?",
+          "answers": {
+            "basic": "A song or a film can help people see a familiar problem in a kinder way. A local performance can also give neighbours something to enjoy together. For instance, an outdoor concert gives people who would normally pass one another in the street a reason to stop and listen together. They may start talking afterwards, and even those who went on their own can leave feeling that they shared something with the people around them for a while.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-happy-person-03",
+          "prompt": "Do you think teachers are able to spot the unhappy children?",
+          "answers": {
+            "basic": "Some teachers notice when a talkative student suddenly goes quiet. But some children hide their feelings well, so a private chat can tell a teacher more than watching from across the classroom. A teacher might ask what break time has been like lately, since that gives the student something easier to talk about than their feelings in general. It also helps when the same adult checks in again later, because some children need a bit of time before they're ready to say anything.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-happy-person-04",
+          "prompt": "Should teachers know what children are doing all the time?",
+          "answers": {
+            "basic": "Teachers should know enough to keep children safe at school. Children also need some room to play, make choices and solve little problems on their own. If two children disagree about whose turn it is in a game, a teacher can stay nearby and see whether they work it out. They can step in if someone is being hurt, and the children still get a chance to practise speaking up for themselves in a fairly safe situation.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-happy-person-05",
+          "prompt": "What would make a student happy at school?",
+          "answers": {
+            "basic": "Having a friend to sit with can make a big difference. It also helps when there is at least one subject or activity a student looks forward to. I remember school feeling easier on days when there was something to do together after class. Even a small success can help, like working out a problem that felt impossible the day before, because it gives you a reason to want to come back and try the next one.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-happy-person-06",
+          "prompt": "Do you think doing a job that you like is more important than other things?",
+          "answers": {
+            "basic": "Liking your job matters because you spend so much time at it. I'd still weigh it alongside pay, health and whether the job leaves enough time for life outside work. For example, a job can be interesting and still leave you too tired to enjoy anything once you get home. I'd look for work that gives me enough of a challenge during the day and still lets me do things I care about, like teaching badminton in the evening.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

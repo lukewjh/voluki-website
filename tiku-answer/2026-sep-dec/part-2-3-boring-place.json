@@ -1,0 +1,83 @@
+{
+  "id": "boring-place",
+  "title": "去过的无聊地方",
+  "part": "2-3",
+  "category": "retained",
+  "order": 29,
+  "sections": [
+    {
+      "id": "part-2",
+      "label": "Part 2",
+      "questions": [
+        {
+          "id": "p2-boring-place",
+          "prompt": "Describe a boring place",
+          "cuePoints": [
+            "Where it is",
+            "Who you went there with",
+            "What you did there",
+            "And explain why you think it is a boring place"
+          ],
+          "answers": {
+            "basic": "A place I found quite boring was the waiting area in a shopping mall in Shanghai. I went with a friend who needed to get a phone repaired. We thought it would be quick, but the shop asked us to come back in an hour. We sat on a bench outside and talked for a bit while people went past.\n\nAt first we thought we might look around, but neither of us needed anything and the shops closest to us all seemed to sell the same sort of thing. We walked as far as the next set of lifts and ended up back on the bench. My friend didn't have his phone, so we tried guessing how long the repair would take without asking again. That got old quite quickly. People kept walking past with things to do and places to go, which made me more aware that we were just filling time until we could leave.\n\nAfter a while we ran out of things to say. The same ad kept playing on a screen across from us, and there wasn't much to look at apart from the entrances to other shops. I kept taking out my phone to check the time. I think it felt especially dull because we were just waiting for something to happen. If I went back, I'd find a café or take a walk and set an alarm for when we needed to return.",
+            "upgraded": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "part-3",
+      "label": "Part 3",
+      "questions": [
+        {
+          "id": "p3-boring-place-01",
+          "prompt": "Why do most children think education is boring?",
+          "answers": {
+            "basic": "Children can lose interest if they spend too much time listening and can't see why a lesson matters. Giving them something to try can change how it feels. For example, a lesson about how things move is easier to get into if students can roll something across a table and see what happens when they change the angle. The activity gives them a reason to want an explanation, and that's when the information is more likely to stick.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-boring-place-02",
+          "prompt": "Why aren’t young people willing to listen to the experiences of older people?",
+          "answers": {
+            "basic": "Advice can feel like a lecture if it arrives before anyone has asked for it. Young people may listen more willingly when the story connects to a problem they actually face. Someone worried about a first job might want to hear how an older person dealt with being new on a team. That same advice could be irritating if the younger person was trying to talk about something else, because it would feel like the adult had decided what they needed before listening.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-boring-place-03",
+          "prompt": "What can people do when they feel bored?",
+          "answers": {
+            "basic": "They could take a walk, message a friend or try a small task they've been putting off. I often feel better once I've moved around a bit. I like choosing something small enough to start straight away, because being bored can make a bigger plan feel like too much work. A ten-minute walk often changes how I feel, and if I'm still restless afterwards I've at least worked out that I want something more engaging to do.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-boring-place-04",
+          "prompt": "Why are some teachers’ classes boring? Are there any solutions?",
+          "answers": {
+            "basic": "A lesson can drag when the teacher talks for a long time without checking what the class understands. A short activity or a real example can give students a reason to pay attention. For instance, a teacher can show two possible answers to a maths problem and ask the class to work out which one makes sense. Having to make a choice keeps people involved, and what they say gives the teacher a better idea of where they got lost in the first place.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-boring-place-05",
+          "prompt": "Why do some young people feel bored when talking with old people?",
+          "answers": {
+            "basic": "They may have few topics in common at first. Asking about something specific, like a first job or a favourite sport, can make it easier for both sides to join in. It can also feel one-sided if one person gives a lot of advice and never asks about the other person's life. A conversation about a first job can go much better when both people get to say what was difficult for them and compare the parts they recognise.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p3-boring-place-06",
+          "prompt": "Do most people think news about celebrities is boring?",
+          "answers": {
+            "basic": "It depends on the story. Some people enjoy a good interview, but a small rumour can feel pointless if it has nothing to do with the person's work. If an athlete talks about coming back from a difficult season, people who follow the sport may want to hear what changed. A story about where that same athlete went for dinner might interest a few fans, but it gives most readers much less to talk about or remember.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "id": "travelling",
+  "title": "Travelling",
+  "part": "1",
+  "category": "new",
+  "order": 1,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-travelling-01",
+          "prompt": "Do you prefer to sit by the window when travelling?",
+          "answers": {
+            "basic": "Yes, especially on a train. I like watching the view change outside, and it gives me a reason to put my phone away for a while. On the train back to Hunan, I especially like seeing the buildings give way to fields as we leave the city.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-travelling-02",
+          "prompt": "Did you have a long journey with your family as a child?",
+          "answers": {
+            "basic": "Yes, I remember taking a long train journey from Hunan with my family. I spent most of it looking out of the window and asking how much longer we had. It felt like a big adventure because I'd never been on a train long enough to eat more than one meal there.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

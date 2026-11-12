@@ -1,0 +1,102 @@
+{
+  "id": "the-city-you-live-in",
+  "title": "The city you live in",
+  "part": "1",
+  "category": "evergreen",
+  "order": 31,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-the-city-you-live-in-01",
+          "prompt": "What city do you live in?",
+          "answers": {
+            "basic": "I live in Shanghai. I moved here after growing up in Hunan, so living in such a big city was a change for me. I got used to it by finding places I could go regularly, especially badminton halls where I started recognising a few faces.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-the-city-you-live-in-02",
+          "prompt": "Do you like this city? Why?",
+          "answers": {
+            "basic": "Yes. I can do the kind of work I want and find people to play badminton with, even if I decide quite late in the day. On a free evening I can find a court or get something to eat with friends without having to plan the whole day around it.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-the-city-you-live-in-03",
+          "prompt": "How long have you lived in this city?",
+          "answers": {
+            "basic": "I've been here for a while now. It feels like home in the sense that I have my work, my usual courts and a routine here. I noticed it started to feel familiar when I could get to most of my usual places without checking a map.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-the-city-you-live-in-04",
+          "prompt": "Are there big changes in this city?",
+          "answers": {
+            "basic": "Yes, some areas change quite quickly. I tend to notice it in smaller ways, like a new shop or a route that suddenly gets easier to walk. That matters to me more day to day than a new tower, because it changes where I can stop on the way home.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-the-city-you-live-in-05",
+          "prompt": "Is this city your permanent residence?",
+          "answers": {
+            "basic": "Shanghai is where I'm based at the moment, and I expect to stay for work. I haven't made a decision about where I'll live long term. Being able to do backend work and coach in the same city is a good reason for me to stay at this stage.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-the-city-you-live-in-06",
+          "prompt": "Are there people of different ages living in this city?",
+          "answers": {
+            "basic": "Yes, my neighbourhood has families, younger people who go out to work and plenty of older residents. I often see them using the same small public spaces at different times. A park can be full of older people exercising in the morning and children running around when school finishes.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-the-city-you-live-in-07",
+          "prompt": "Are the people friendly in the city?",
+          "answers": {
+            "basic": "Generally, yes. People may look busy on the subway, but I've had strangers give me directions or hold the lift when my hands were full. When I first moved, I remember how helpful it was when someone pointed me towards the right subway exit.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-the-city-you-live-in-08",
+          "prompt": "Is the city friendly to children and old people?",
+          "answers": {
+            "basic": "In many areas, yes. A nearby park and good public transport help both groups. Some busy crossings could still be easier to get around. I notice the difference near a park where there's somewhere to sit and the nearest crossing is easy to find.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-the-city-you-live-in-09",
+          "prompt": "Do you often see your neighbors?",
+          "answers": {
+            "basic": "I see a few of them in the lift or on my way out. We usually exchange a quick hello and go on with our day. It's usually when we're both coming back from work, so saying hello is enough to make it feel friendly.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-the-city-you-live-in-10",
+          "prompt": "What's the weather like where you live?",
+          "answers": {
+            "basic": "Summers in Shanghai are hot and humid. In winter the damp can make it feel colder than I expect, so I usually check the weather before heading out. If I'm taking my racket bag across town in summer, I usually bring a spare shirt because the walk can feel quite warm.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-the-city-you-live-in-11",
+          "prompt": "Would you recommend your city to others?",
+          "answers": {
+            "basic": "Yes, especially if they enjoy walking, good food and seeing different parts of a city. It's easy to get around by subway, so they can explore at their own pace. I'd tell a friend to leave part of the day free for a walk by the river, then stop somewhere for food.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

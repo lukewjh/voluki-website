@@ -1,0 +1,150 @@
+{
+  "id": "home-accommodation",
+  "title": "Home / accommodation",
+  "part": "1",
+  "category": "evergreen",
+  "order": 28,
+  "sections": [
+    {
+      "id": "part-1",
+      "questions": [
+        {
+          "id": "p1-home-accommodation-01",
+          "prompt": "What kind of house or apartment do you want to live in in the future?",
+          "answers": {
+            "basic": "I'd like an apartment with good light and space for a desk. Being near a subway station and a badminton hall would make it a great fit for me. I'd especially like a window by the desk so I can sit down to read without having to turn the light on.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-home-accommodation-02",
+          "prompt": "Are the transport facilities to your home very good?",
+          "answers": {
+            "basic": "Yes, I can get to the subway without much trouble. That's useful when I go straight from work to a court on the other side of town. I can carry my gear on the subway and get there without having to worry about parking after work.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-home-accommodation-03",
+          "prompt": "Do you prefer living in a house or an apartment?",
+          "answers": {
+            "basic": "An apartment makes more sense for me in Shanghai. I don't need a lot of space, and I'd rather be able to get to places easily. A flat close to the subway works well on nights when I need to get home from a lesson with my racket bag.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-home-accommodation-04",
+          "prompt": "Please describe the room you live in.",
+          "answers": {
+            "basic": "It's a simple room with a bed, a desk and a place to put my clothes. My badminton bag usually ends up next to the door. I use the desk to read or work on my site, so I try to leave enough space to open a notebook.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-home-accommodation-05",
+          "prompt": "What part of your home do you like the most?",
+          "answers": {
+            "basic": "I like the spot by the desk best. That's where I write notes for my blog or work on a small project when I have a free evening. The light is quite good there, and having a regular place to sit makes it easy to pick up a half-finished idea.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-home-accommodation-06",
+          "prompt": "How long have you lived there?",
+          "answers": {
+            "basic": "I've lived in my current place for a while now. I've had time to find a grocery shop and a few courts I can reach easily. The routes feel familiar enough now that I can decide where to shop or play without looking at a map first.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-home-accommodation-07",
+          "prompt": "Do you plan to live there for a long time?",
+          "answers": {
+            "basic": "I can see myself staying here for the time being. I'd consider moving if my commute changed or I needed more space. At the moment I can get to work and reach several badminton halls, so it suits the way I spend my week.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-home-accommodation-08",
+          "prompt": "What’s the difference between where you are living now and where you have lived in the past?",
+          "answers": {
+            "basic": "Where I grew up in Hunan felt less rushed. In Shanghai I have more places to go and better transport, but I appreciate how quiet my place feels when I get home. In Hunan I could go out without much planning, whereas in Shanghai I often check the subway route before heading somewhere new.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-home-accommodation-09",
+          "prompt": "Can you describe the place where you live?",
+          "answers": {
+            "basic": "It's a fairly simple apartment in Shanghai, with enough room to work and relax. There are shops nearby, which is handy when I come home late. Inside, the main things I need are a comfortable desk, somewhere to keep my sports gear and a quiet place to sleep.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-home-accommodation-10",
+          "prompt": "What room does your family spend most of the time in?",
+          "answers": {
+            "basic": "When we're all together, my family usually spends the most time in the living room. That's where we sit and talk after a meal. If we're visiting around a holiday, someone usually puts the kettle on and we end up there until it's time to eat again.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-home-accommodation-11",
+          "prompt": "What's your favorite room in your apartment or house?",
+          "answers": {
+            "basic": "My favourite room is the one with my desk. I can sit down, work on my site for an hour and leave my notes ready for next time. I keep a notebook within reach there, so an idea from a badminton lesson can turn into a post later.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-home-accommodation-12",
+          "prompt": "What makes you feel pleasant in your home?",
+          "answers": {
+            "basic": "A quiet room and a bit of natural light do a lot for me. I also like getting home and knowing I can put my bag down and switch off. On a busy evening, even ten minutes by the window with a cup of tea can make it feel like I'm properly home.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-home-accommodation-13",
+          "prompt": "Do you think it is important to live in a comfortable environment?",
+          "answers": {
+            "basic": "Yes. A comfortable place makes it easier to rest after work. Even something small, like a chair that fits you, can change how you feel at home. I notice it on evenings when I need to read or practise English, because it's easier to settle down somewhere quiet.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-home-accommodation-14",
+          "prompt": "Do you live in an apartment or a house?",
+          "answers": {
+            "basic": "I live in an apartment in Shanghai. It's a practical size for me and easy to look after when the week gets busy. I have a spot for my desk and a place by the door for my racket bag, so the space works well.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-home-accommodation-15",
+          "prompt": "Who do you live with?",
+          "answers": {
+            "basic": "I live on my own at the moment. I like being able to keep my own hours, especially on days when I get back late from coaching. If I finish a lesson late, I can unpack, shower and eat at my own pace without disturbing anyone.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-home-accommodation-16",
+          "prompt": "What do you usually do in your apartment?",
+          "answers": {
+            "basic": "I usually cook something simple, get my gear ready for the next session or work on my blog. Some evenings I just sit down and read. On Sundays I often check my racket bag and put a clean top by the door before I settle down with a book.",
+            "upgraded": null
+          }
+        },
+        {
+          "id": "p1-home-accommodation-17",
+          "prompt": "What kinds of accommodation do you live in?",
+          "answers": {
+            "basic": "I live in a small apartment. I have enough room for a proper desk and somewhere to leave my badminton gear, which is about all I need. That makes it easy to keep tidy, even when I come in late and have to leave for work early the next morning.",
+            "upgraded": null
+          }
+        }
+      ]
+    }
+  ]
+}

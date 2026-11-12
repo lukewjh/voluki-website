@@ -1,98 +1,109 @@
 ---
-import type { InferGetStaticPropsType } from "astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import SpeakingView from "../../components/SpeakingView.astro";
+import { getSpeakingTopicAnswers } from "../../lib/githubSpeaking";
 import { speakingCategories, speakingGroups } from "../../lib/speakingBank";
 
-export function getStaticPaths() {
-  return speakingGroups.flatMap(({ id, label, topics }) =>
-    topics.map((topic, index) => ({
-      params: { topic: topic.slug },
-      props: {
-        topic,
-        part: id,
-        partLabel: label,
-        previous: topics[index - 1],
-        next: topics[index + 1]
-      }
-    }))
-  );
-}
+export const prerender = false;
+Astro.response.headers.set("Cache-Control", "no-store");
 
-type Props = InferGetStaticPropsType<typeof getStaticPaths>;
-const { topic, part, partLabel, previous, next } = Astro.props;
-const category = speakingCategories.find(({ id }) => id === topic.category)?.label;
-const bankUrl = part === "1" ? "/ielts-speaking/" : "/ielts-speaking/?part=2-3";
+const slug = Astro.params.topic;
+const group = speakingGroups.find(({ topics }) => topics.some((topic) => topic.slug === slug));
+const index = group?.topics.findIndex((topic) => topic.slug === slug) ?? -1;
+const base = group?.topics[index];
+const current = base ? await getSpeakingTopicAnswers(Astro, base) : undefined;
+const topic = current?.topic;
+const part = group?.id;
+const partLabel = group?.label;
+const previous = group?.topics[index - 1];
+const next = group?.topics[index + 1];
+const category = speakingCategories.find(({ id }) => id === topic?.category)?.label;
+const bankUrl = part === "2-3" ? "/ielts-speaking/?part=2-3" : "/ielts-speaking/";
+if (!topic) Astro.response.status = 404;
 ---
 
-<BaseLayout title={topic.title + " · IELTS-Speaking"} description={partLabel + " 口语练习 · " + topic.title}>
-  <article class="speaking-topic">
+<BaseLayout
+  title={(topic?.title ?? "话题未找到") + " · IELTS-Speaking"}
+  description={topic ? partLabel + " 口语练习 · " + topic.title : undefined}
+>
+  {topic ? <article class="speaking-topic">
     <div class="topic-links">
       <a class="topic-back" href={bankUrl}><span aria-hidden="true">←</span> 返回 IELTS-Speaking</a>
-      {part === "2-3" && <a class="topic-jump" href="#part-3">跳到 Part 3 <span aria-hidden="true">↓</span></a>}
     </div>
     <header class="topic-header">
       <p class="topic-meta">{partLabel} <span aria-hidden="true">·</span> {category}</p>
       <h1 lang={part === "1" ? "en" : "zh-CN"}>{topic.title}</h1>
     </header>
+    {current?.notice && <p class="speaking-sync-notice" role="status" data-speaking-sync-notice>{current.notice}</p>}
 
-    {topic.sections.map((section) => {
-      const PromptHeading = section.label ? "h3" : "h2";
-      return (
-        <section class="question-section" id={section.id} aria-label={section.label ?? partLabel}>
-          {section.label && <h2>{section.label}</h2>}
-          <div class="question-list">
-            {section.questions.map((question) => (
-              <article class="question-card" id={question.id}>
-                <div class="question-content" lang="en">
-                  <PromptHeading class="question-prompt">{question.prompt}</PromptHeading>
-                  {question.cuePoints && (
-                    <div class="cue-points">
-                      <p>You should say:</p>
-                      <ul>
-                        {question.cuePoints.map((point) => <li>{point}</li>)}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-                <details class="answer">
-                  <summary>
-                    <span class="show-answer">查看答案</span>
-                    <span class="hide-answer">收起答案</span>
-                    <span class="answer-icon" aria-hidden="true"></span>
-                  </summary>
-                  <div class="answer-content" lang="en">
-                    {question.answers.upgraded && <p class="answer-label" lang="zh-CN">基础版</p>}
-                    {question.answers.basic.split("\n\n").map((paragraph) => <p>{paragraph}</p>)}
-                    {question.answers.upgraded && (
-                      <>
-                        <p class="answer-label" lang="zh-CN">升级版</p>
-                        {question.answers.upgraded.split("\n\n").map((paragraph) => <p>{paragraph}</p>)}
-                      </>
+    <SpeakingView topic={topic.slug}>
+      {part === "2-3" && (
+        <a class="topic-jump" slot="card-actions" href="#part-3">跳到 Part 3 <span aria-hidden="true">↓</span></a>
+      )}
+      {topic.sections.map((section) => {
+        const PromptHeading = section.label ? "h3" : "h2";
+        return (
+          <section class="question-section" id={section.id} aria-label={section.label ?? partLabel}>
+            {section.label && <h2>{section.label}</h2>}
+            <div class="question-list">
+              {section.questions.map((question) => (
+                <article class="question-card" id={question.id} data-speaking-question>
+                  <div class="question-content" lang="en">
+                    <PromptHeading class="question-prompt">{question.prompt}</PromptHeading>
+                    {question.cuePoints && (
+                      <div class="cue-points">
+                        <p>You should say:</p>
+                        <ul>
+                          {question.cuePoints.map((point) => <li>{point}</li>)}
+                        </ul>
+                      </div>
                     )}
                   </div>
-                </details>
-              </article>
-            ))}
-          </div>
-        </section>
-      );
-    })}
+                  <details class="answer">
+                    <summary>
+                      <span class="show-answer">查看答案</span>
+                      <span class="hide-answer">收起答案</span>
+                      <span class="answer-icon" aria-hidden="true"></span>
+                    </summary>
+                    <div class="answer-content" lang="en">
+                      {question.answers.upgraded && <p class="answer-label" lang="zh-CN">基础版</p>}
+                      {question.answers.basic.split("\n\n").map((paragraph) => <p>{paragraph}</p>)}
+                      {question.answers.upgraded && (
+                        <>
+                          <p class="answer-label" lang="zh-CN">升级版</p>
+                          {question.answers.upgraded.split("\n\n").map((paragraph) => <p>{paragraph}</p>)}
+                        </>
+                      )}
+                    </div>
+                  </details>
+                </article>
+              ))}
+            </div>
+          </section>
+        );
+      })}
 
-    <nav class="topic-navigation" aria-label="相邻话题">
-      {previous && (
-        <a class="previous-topic" href={"/ielts-speaking/" + previous.slug + "/"}>
-          <span><span aria-hidden="true">←</span> 上一个话题</span>
-          <strong lang={part === "1" ? "en" : "zh-CN"}>{previous.title}</strong>
-        </a>
-      )}
-      {next && (
-        <a class="next-topic" href={"/ielts-speaking/" + next.slug + "/"}>
-          <span>下一个话题 <span aria-hidden="true">→</span></span>
-          <strong lang={part === "1" ? "en" : "zh-CN"}>{next.title}</strong>
-        </a>
-      )}
-    </nav>
-  </article>
+      <nav class="topic-navigation" aria-label="相邻话题">
+        {previous && (
+          <a class="previous-topic" href={"/ielts-speaking/" + previous.slug + "/"}>
+            <span><span aria-hidden="true">←</span> 上一个话题</span>
+            <strong lang={part === "1" ? "en" : "zh-CN"}>{previous.title}</strong>
+          </a>
+        )}
+        {next && (
+          <a class="next-topic" href={"/ielts-speaking/" + next.slug + "/"}>
+            <span>下一个话题 <span aria-hidden="true">→</span></span>
+            <strong lang={part === "1" ? "en" : "zh-CN"}>{next.title}</strong>
+          </a>
+        )}
+      </nav>
+    </SpeakingView>
+  </article> : (
+    <section class="speaking-topic">
+      <h1>话题未找到</h1>
+      <a class="topic-back" href={bankUrl}><span aria-hidden="true">←</span> 返回 IELTS-Speaking</a>
+    </section>
+  )}
 </BaseLayout>
 
 <style>
@@ -150,7 +161,7 @@ const bankUrl = part === "1" ? "/ielts-speaking/" : "/ielts-speaking/?part=2-3";
 
   .question-section {
     margin-top: clamp(20px, 4vw, 34px);
-    scroll-margin-top: 16px;
+    scroll-margin-top: 78px;
   }
 
   .question-section > h2 {
@@ -161,119 +172,6 @@ const bankUrl = part === "1" ? "/ielts-speaking/" : "/ielts-speaking/?part=2-3";
   .question-list {
     display: grid;
     gap: 12px;
-  }
-
-  .question-card {
-    border: 1px solid var(--line);
-    border-radius: 9px;
-    background: var(--surface);
-    scroll-margin-top: 16px;
-  }
-
-  .question-content {
-    padding: clamp(15px, 3.4vw, 25px);
-  }
-
-  .question-prompt {
-    margin: 0;
-    font-size: clamp(1.125rem, 2.6vw, 1.35rem);
-    font-weight: 720;
-    line-height: 1.48;
-    overflow-wrap: anywhere;
-  }
-
-  .cue-points {
-    margin-top: 14px;
-    color: var(--muted);
-    line-height: 1.5;
-  }
-
-  .cue-points p {
-    margin-bottom: 4px;
-    font-weight: 650;
-  }
-
-  .cue-points ul {
-    margin: 0;
-    padding-inline-start: 21px;
-  }
-
-  .answer {
-    border-top: 1px solid var(--line);
-    border-radius: 0 0 8px 8px;
-    background: var(--surface-soft);
-  }
-
-  summary {
-    display: flex;
-    min-height: 46px;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 10px clamp(15px, 3.4vw, 25px);
-    border-radius: inherit;
-    font-size: 0.875rem;
-    font-weight: 700;
-    list-style: none;
-    cursor: pointer;
-  }
-
-  summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .answer-icon {
-    position: relative;
-    display: grid;
-    width: 16px;
-    height: 16px;
-    flex: 0 0 16px;
-    place-items: center;
-  }
-
-  .answer-icon::before,
-  .answer-icon::after {
-    position: absolute;
-    width: 12px;
-    height: 1.5px;
-    background: currentColor;
-    content: "";
-  }
-
-  .answer-icon::after {
-    transform: rotate(90deg);
-  }
-
-  .hide-answer,
-  .answer[open] .show-answer,
-  .answer[open] .answer-icon::after {
-    display: none;
-  }
-
-  .answer[open] .hide-answer {
-    display: inline;
-  }
-
-  .answer-content {
-    max-width: 72ch;
-    padding: 0 clamp(15px, 3.4vw, 25px) clamp(15px, 3.4vw, 25px);
-    line-height: 1.78;
-    overflow-wrap: anywhere;
-  }
-
-  .answer-content p {
-    margin-bottom: 0.85em;
-  }
-
-  .answer-content p:last-child {
-    margin-bottom: 0;
-  }
-
-  .answer-content .answer-label {
-    margin-bottom: 0.35em;
-    color: var(--muted);
-    font-size: 0.8125rem;
-    font-weight: 750;
   }
 
   .topic-navigation {
@@ -309,7 +207,7 @@ const bankUrl = part === "1" ? "/ielts-speaking/" : "/ielts-speaking/?part=2-3";
     text-align: right;
   }
 
-  :is(a, summary):focus-visible {
+  a:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
   }
