@@ -116,7 +116,7 @@
           "prompt": "What work do you do?",
           "variant": "work",
           "answers": {
-            "basic": "I work full-time as a backend software engineer. I also coach badminton part-time, which gives me a very different way to spend time after work. On a typical day I work on the parts of an app users don't see, then head to the court to teach. hhhhh"
+            "basic": "I work full-time as a backend software engineer. I also coach badminton part-time, which gives me a very different way to spend time after work. On a typical day I work on the parts of an app users don't see, then head to the court to teach. "
           }
         },
         {
