@@ -1,0 +1,322 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { bankTitle, speakingCategories, speakingGroups } from "../../lib/speakingBank";
+
+const topicCount = speakingGroups.reduce((count, group) => count + group.topics.length, 0);
+const cardCount = speakingGroups
+  .flatMap((group) => group.topics)
+  .flatMap((topic) => topic.sections)
+  .reduce((count, section) => count + section.questions.length, 0);
+---
+
+<BaseLayout title="IELTS-Speaking" description="按话题浏览雅思口语题卡，展开英文答案进行背诵。">
+  <section class="speaking-bank" data-speaking-bank>
+    <header class="bank-header">
+      <p class="bank-season">{bankTitle.replace("雅思口语题库", "").trim()}</p>
+      <h1>IELTS-Speaking</h1>
+      <p class="bank-count">{topicCount} 个话题 <span aria-hidden="true">·</span> {cardCount} 张卡片</p>
+    </header>
+
+    <div class="bank-controls" data-controls hidden>
+      <div class="part-selector" role="group" aria-label="选择考试部分">
+        {speakingGroups.map((group) => (
+          <button type="button" data-part={group.id} aria-controls={"bank-part-" + group.id} aria-pressed="false">
+            {group.label}
+          </button>
+        ))}
+      </div>
+      <input
+        type="search"
+        data-search
+        aria-label="搜索当前部分的话题或原题"
+        placeholder="搜索话题或原题"
+      />
+    </div>
+    <p class="search-status" role="status" data-search-status></p>
+
+    {speakingGroups.map((group) => (
+      <section id={"bank-part-" + group.id} data-part-panel={group.id} aria-label={group.label}>
+        <h2 class="part-heading">{group.label}</h2>
+        {speakingCategories.map((category) => {
+          const topics = group.topics.filter((topic) => topic.category === category.id);
+          return topics.length > 0 && (
+            <section class="bank-category" data-category aria-label={category.label}>
+              <h2>{category.label}</h2>
+              <ul class="collection-grid">
+                {topics.map((topic) => {
+                  const questions = topic.sections.flatMap((section) => section.questions);
+                  const searchText = [topic.title, ...questions.map((question) => question.prompt)]
+                    .join(" ").normalize("NFKC").toLowerCase();
+                  return (
+                    <li data-collection={searchText}>
+                      <a class="collection-card" href={"/ielts-speaking/" + topic.slug + "/"}>
+                        <div class="collection-title">{topic.title}</div>
+                        <div class="collection-meta">
+                          <span>{group.id === "1" ? questions.length + " 张卡片" : "1 张题卡 · " + (questions.length - 1) + " 道追问"}</span>
+                          <span class="collection-arrow" aria-hidden="true">→</span>
+                        </div>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          );
+        })}
+      </section>
+    ))}
+  </section>
+</BaseLayout>
+
+<script>
+  const bank = document.querySelector<HTMLElement>("[data-speaking-bank]")!;
+  const controls = bank.querySelector<HTMLElement>("[data-controls]")!;
+  const search = bank.querySelector<HTMLInputElement>("[data-search]")!;
+  const status = bank.querySelector<HTMLElement>("[data-search-status]")!;
+  const buttons = [...controls.querySelectorAll<HTMLButtonElement>("[data-part]")];
+  const panels = [...bank.querySelectorAll<HTMLElement>("[data-part-panel]")];
+  const initialUrl = new URL(window.location.href);
+  let part = initialUrl.searchParams.get("part") === "2-3" ? "2-3" : "1";
+  search.value = initialUrl.searchParams.get("q") ?? "";
+
+  function renderCollections() {
+    const query = search.value.trim();
+    const terms = query.normalize("NFKC").toLowerCase().split(/\s+/).filter(Boolean);
+    let results = 0;
+
+    for (const button of buttons) {
+      button.setAttribute("aria-pressed", String(button.dataset.part === part));
+    }
+
+    for (const panel of panels) {
+      panel.hidden = panel.dataset.partPanel !== part;
+      if (panel.hidden) continue;
+
+      for (const category of panel.querySelectorAll<HTMLElement>("[data-category]")) {
+        let matches = 0;
+        for (const topic of category.querySelectorAll<HTMLElement>("[data-collection]")) {
+          const content = topic.dataset.collection ?? "";
+          topic.hidden = !terms.every((term) => content.includes(term));
+          if (!topic.hidden) matches += 1;
+        }
+        category.hidden = matches === 0;
+        results += matches;
+      }
+    }
+
+    status.textContent = query
+      ? results > 0 ? "找到 " + results + " 个话题" : "没有找到匹配的话题，试试其他关键词。"
+      : "";
+  }
+
+  function updateCollections() {
+    renderCollections();
+    const url = new URL(window.location.href);
+    if (part === "1") url.searchParams.delete("part");
+    else url.searchParams.set("part", part);
+    if (search.value.trim()) url.searchParams.set("q", search.value.trim());
+    else url.searchParams.delete("q");
+    if (url.href !== window.location.href) history.replaceState(history.state, "", url);
+  }
+
+  renderCollections();
+  controls.hidden = false;
+  bank.dataset.enhanced = "";
+
+  for (const button of buttons) {
+    button.addEventListener("click", () => {
+      part = button.dataset.part === "2-3" ? "2-3" : "1";
+      updateCollections();
+    });
+  }
+  search.addEventListener("input", updateCollections);
+</script>
+
+<style>
+  .speaking-bank {
+    padding: clamp(24px, 5vw, 70px) 0 clamp(48px, 7vw, 92px);
+  }
+
+  .bank-header {
+    margin-bottom: clamp(24px, 4vw, 42px);
+  }
+
+  .bank-season,
+  .bank-count,
+  .search-status {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+
+  .bank-season {
+    margin-bottom: 10px;
+    font-weight: 650;
+  }
+
+  h1 {
+    max-width: none;
+    margin: 0 0 14px;
+    font-size: clamp(2.15rem, 5.3vw, 4rem);
+    line-height: 1.12;
+  }
+
+  .bank-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 0 18px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .bank-controls[hidden],
+  [data-enhanced] .part-heading {
+    display: none;
+  }
+
+  .part-selector {
+    display: flex;
+    padding: 3px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface-soft);
+  }
+
+  .part-selector button {
+    min-height: 44px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 5px;
+    color: var(--muted);
+    background: transparent;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .part-selector button[aria-pressed="true"] {
+    color: var(--bg);
+    background: var(--text);
+  }
+
+  input[type="search"] {
+    width: min(100%, 340px);
+    min-height: 50px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--text);
+    background: var(--surface);
+    font-size: 1rem;
+  }
+
+  input::placeholder {
+    color: var(--muted);
+  }
+
+  .search-status:not(:empty) {
+    margin: 16px 0 0;
+  }
+
+  .part-heading {
+    margin: 32px 0 0;
+  }
+
+  .bank-category {
+    margin-top: clamp(22px, 3.6vw, 40px);
+  }
+
+  .bank-category h2 {
+    margin-bottom: 12px;
+    font-size: 1.125rem;
+  }
+
+  .collection-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .collection-card {
+    display: flex;
+    min-height: 108px;
+    height: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 18px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    transition: border-color 160ms ease, background-color 160ms ease;
+  }
+
+  .collection-card:hover {
+    border-color: var(--text);
+    background: var(--surface-soft);
+  }
+
+  .collection-title {
+    font-weight: 750;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+  }
+
+  .collection-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 0.8125rem;
+  }
+
+  .collection-arrow {
+    color: var(--text);
+    line-height: 1;
+    font-size: 1rem;
+  }
+
+  :is(button, input, a):focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 850px) {
+    .collection-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 560px) {
+    .collection-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 8px;
+    }
+
+    .part-selector,
+    input[type="search"] {
+      width: 100%;
+    }
+
+    .part-selector button {
+      flex: 1;
+    }
+
+    .collection-card {
+      min-height: 0;
+      gap: 7px;
+      padding: 13px 15px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .collection-card {
+      transition: none;
+    }
+  }
+</style>

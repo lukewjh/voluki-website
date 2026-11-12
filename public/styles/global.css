@@ -112,8 +112,14 @@ nav a:hover,
   color: var(--accent);
 }
 
+.site-header nav a[aria-current] {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
 .theme-toggle {
   display: grid;
+  flex: 0 0 32px;
   width: 32px;
   height: 32px;
   place-items: center;
@@ -840,6 +846,19 @@ h3 {
 }
 
 @media (max-width: 900px) {
+  .site-header {
+    gap: 20px;
+  }
+
+  .header-actions,
+  .site-header nav {
+    gap: 10px 16px;
+  }
+
+  .site-header nav {
+    flex-wrap: wrap;
+  }
+
   .home-hero {
     grid-template-columns: 1fr;
     gap: 44px;
@@ -899,6 +918,7 @@ h3 {
     align-items: flex-start;
     gap: 18px;
     flex-direction: column;
+    padding: 22px 0 18px;
   }
 
   .header-actions {
