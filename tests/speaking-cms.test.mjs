@@ -26,6 +26,7 @@ test("the CMS lists topics by title and exposes both versions as multiline answe
   const collection = settings.content.find(({ name }) => name === "ielts-speaking");
   assert.equal(collection.path, "tiku-answer/2026-sep-dec");
   assert.equal(collection.format, "json");
+  assert.match(collection.filename?.template ?? collection.filename ?? "", /\.json$/);
   assert.deepEqual(collection.view.search, ["title"]);
   const sections = collection.fields.find(({ name }) => name === "sections");
   const questions = sections.fields.find(({ name }) => name === "questions");

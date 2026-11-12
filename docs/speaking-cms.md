@@ -10,7 +10,13 @@
 
 首次接入需要部署一次。线上沿用博客的 `BLOG_GITHUB_REPO`、`BLOG_GITHUB_BRANCH` 和只读 `BLOG_GITHUB_TOKEN` 设置。网站访问时只取当前话题的文件，按话题缓存约 60 秒。同步失败时会显示最近一次同步的答案，并提示同步状态。冷启动遇到失败时显示本次部署时的答案。
 
-首次部署后，在 CMS 修改一道题并保存。约一分钟后用卡片和导图各打开一次，确认两处显示的是同一版答案。验证成功后，可在 Cloudflare Pages 的 **Settings → Build → Build watch paths** 中保留现有排除项并加上 `tiku-answer/2026-sep-dec/*`。纯答案提交随后可跳过构建。目录或题目结构变更需要构建部署，若只修改了已排除的题库路径，可以手动触发构建。
+首次部署后，在 CMS 修改一道题并保存。约一分钟后用卡片和导图各打开一次，确认两处显示的是同一版答案。验证成功后，在 Cloudflare Pages 的 **Settings → Build → Build watch paths** 中，把这三条排除路径分别添加为独立条目，并保留项目已有的其他规则。
+
+- `src/content/blog/*`
+- `public/content_imgs/*`
+- `tiku-answer/2026-sep-dec/*`
+
+纯答案提交随后可跳过构建。目录或题目结构变更需要构建部署，若只修改了已排除的题库路径，可以手动触发构建。
 
 本地开发默认读取工作区文件。需要调试线上读取时，可以用 `SPEAKING_SOURCE=github` 启动开发服务。
 
