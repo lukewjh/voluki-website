@@ -19,12 +19,76 @@
   padding: clamp(15px, 3.4vw, 25px);
 }
 
+.question-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 8px;
+}
+
 .question-prompt {
   margin: 0;
   font-size: clamp(1.125rem, 2.6vw, 1.35rem);
   font-weight: 720;
   line-height: 1.48;
   overflow-wrap: anywhere;
+}
+
+.question-play {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  margin-block: -6px;
+  margin-inline-end: -6px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 8px;
+  color: var(--text);
+  background: transparent;
+  cursor: pointer;
+}
+
+.question-play span {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface-soft);
+}
+
+.question-play span::before {
+  width: 0;
+  height: 0;
+  margin-inline-start: 2px;
+  border-block: 5px solid transparent;
+  border-inline-start: 8px solid currentColor;
+  content: "";
+}
+
+.question-play:hover span,
+.question-play[data-playing] span {
+  border-color: var(--text);
+}
+
+.question-play[data-playing] span::before {
+  width: 9px;
+  height: 9px;
+  margin: 0;
+  border: 0;
+  background: currentColor;
+}
+
+.question-audio-status {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.question-audio-status:empty {
+  margin: 0;
 }
 
 .cue-points {
@@ -121,7 +185,7 @@
   font-weight: 750;
 }
 
-.question-card summary:focus-visible {
+.question-card :is(summary, .question-play):focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }

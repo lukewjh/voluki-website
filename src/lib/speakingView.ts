@@ -56,6 +56,51 @@ export function mountSpeakingView(root: HTMLElement) {
   let mapData: Promise<SpeakingMapNode> | undefined;
   let loadVersion = 0;
   let cardRequest: AbortController | undefined;
+  let playback: { audio: HTMLAudioElement; button: HTMLButtonElement } | undefined;
+
+  function stopAudio() {
+    if (!playback) return;
+    const { audio, button } = playback;
+    playback = undefined;
+    audio.pause();
+    audio.removeAttribute("src");
+    audio.load();
+    button.setAttribute("aria-label", "播放题目");
+    button.title = "播放题目";
+    delete button.dataset.playing;
+  }
+
+  root.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const button = target.closest<HTMLButtonElement>("[data-question-audio]");
+    const source = button?.dataset.questionAudio;
+    if (!button || !source) return;
+    const sameButton = playback?.button === button;
+    stopAudio();
+    if (sameButton) return;
+
+    const card = button.closest("[data-speaking-question]");
+    const feedback = card?.querySelector("[data-question-audio-status]");
+    if (feedback) feedback.textContent = "";
+    const audio = new Audio(source);
+    playback = { audio, button };
+    button.setAttribute("aria-label", "停止播放题目");
+    button.title = "停止播放题目";
+    button.dataset.playing = "";
+
+    const onError = () => {
+      if (playback?.audio !== audio) return;
+      stopAudio();
+      if (feedback) feedback.textContent = "题目音频暂时无法播放，请重试。";
+    };
+    audio.addEventListener("error", onError, { once: true });
+    audio.addEventListener("ended", () => {
+      if (playback?.audio === audio) stopAudio();
+    }, { once: true });
+    void audio.play().catch(onError);
+  });
+  window.addEventListener("pagehide", stopAudio);
 
   function remember(next: Selection) {
     selection = next;
@@ -82,6 +127,7 @@ export function mountSpeakingView(root: HTMLElement) {
   }
 
   function applyMode(next: Mode) {
+    stopAudio();
     mode = next;
     loadVersion += 1;
     try {
@@ -141,6 +187,7 @@ export function mountSpeakingView(root: HTMLElement) {
 
   async function openQuestion(node: SpeakingMapNode) {
     if (!node.href || mode !== "map") return;
+    stopAudio();
     const local = node.href === path && localCards.get(node.id);
     const open = local ? local.querySelector("details")!.open : selection?.id === node.id && selection.open;
     remember({ id: node.id, href: node.href, open: Boolean(open) });
@@ -228,6 +275,7 @@ export function mountSpeakingView(root: HTMLElement) {
   }, true);
   reader.addEventListener("close", () => {
     if (reader.open) return;
+    if (playback && reader.contains(playback.button)) stopAudio();
     cardRequest?.abort();
     readerContent.removeAttribute("aria-busy");
     if (mode === "map") map?.focusSelected();

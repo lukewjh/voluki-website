@@ -4,4 +4,5 @@ dist/
 .wrangler/
 .env
 .env.*
+/audio/
 .DS_Store

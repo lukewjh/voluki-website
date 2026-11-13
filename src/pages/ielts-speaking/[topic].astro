@@ -49,7 +49,24 @@ if (!topic) Astro.response.status = 404;
               {section.questions.map((question) => (
                 <article class="question-card" id={question.id} data-speaking-question>
                   <div class="question-content" lang="en">
-                    <PromptHeading class="question-prompt">{question.prompt}</PromptHeading>
+                    <div class="question-heading">
+                      <PromptHeading class="question-prompt">{question.prompt}</PromptHeading>
+                      {section.id !== "part-2" && (
+                        <button
+                          class="question-play"
+                          type="button"
+                          lang="zh-CN"
+                          aria-label="播放题目"
+                          title="播放题目"
+                          data-question-audio={"/audio/2026-sep-dec/" + question.id + ".mp3"}
+                        >
+                          <span aria-hidden="true"></span>
+                        </button>
+                      )}
+                    </div>
+                    {section.id !== "part-2" && (
+                      <p class="question-audio-status" lang="zh-CN" role="status" data-question-audio-status></p>
+                    )}
                     {question.cuePoints && (
                       <div class="cue-points">
                         <p>You should say:</p>
