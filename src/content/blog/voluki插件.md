@@ -5,7 +5,7 @@ date: 2026-11-16
 tags:
   - chrome extension
 image: /blog-media/icon-1.png
-draft: true
+draft: false
 ---
 Github地址：  
 [https://github.com/lukewjh/Reading-Expression2Anki.git](https://github.com/lukewjh/Reading-Expression2Anki.git)
