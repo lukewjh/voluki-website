@@ -2692,7 +2692,7 @@ import { rioLists } from "../lib/rioMaterials";
     const requestQuiz = async (material, batchIndex, signal?: AbortSignal) => {
       const response = await fetch("/api/rio/generate-quiz", {
         method: "POST",
-        headers: aiRequestHeaders(),
+        headers: { ...aiRequestHeaders(), Accept: "application/json" },
         body: JSON.stringify({
           material: {
             id: material.id,
@@ -2706,7 +2706,8 @@ import { rioLists } from "../lib/rioMaterials";
       const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(data.error ?? "Quiz 生成失败，请稍后重试。");
+        const ray = response.headers.get("cf-ray");
+        throw new Error(data.error ?? `Quiz 请求失败（HTTP ${response.status}${ray ? `，Ray ID ${ray}` : ""}），请稍后重试。`);
       }
 
       return data;

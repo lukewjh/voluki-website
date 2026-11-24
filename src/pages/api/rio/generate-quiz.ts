@@ -298,6 +298,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
     isPhraseMatchQuiz ? 2 : material.type === "sentence_pattern" ? 3 : expectedCardCount;
   const selectedScenes = sample(scenes, selectedSceneCount);
   const isVocabularyQuiz = material.type === "vocabulary";
+  const useDeepSeekFastQuiz = isVocabularyQuiz &&
+    /^https:\/\/api\.deepseek\.com(?:\/v1)?$/i.test(apiBaseUrl) &&
+    /^(?:deepseek-v4-(?:pro|flash)|deepseek-chat|deepseek-flash)$/i.test(model);
   const isAdverbQuiz = material.type === "adverb";
   let systemPrompt: string;
 
@@ -590,10 +593,11 @@ ${selectedScenes.map((scene, index) => `${index + 1}. ${scene}`).join("\n")}`;
           }
         ],
         response_format: { type: "json_object" },
+        ...(useDeepSeekFastQuiz ? { thinking: { type: "disabled" } } : {}),
         max_tokens: isPhraseMatchQuiz
           ? 1600
           : isVocabularyQuiz
-            ? 850
+            ? 4096
             : isAdverbQuiz || batch.batchIndex === 0
               ? 1800
               : 1400,
@@ -624,7 +628,11 @@ ${selectedScenes.map((scene, index) => `${index + 1}. ${scene}`).join("\n")}`;
 
   const outputText = extractOutputText(data);
 
-  if (!outputText) {
+  if (isVocabularyQuiz && data?.choices?.[0]?.finish_reason === "length") {
+    return jsonResponse({ error: "AI 已达到输出长度上限，未能生成完整的五个例句。请重新生成或调整模型配置。" }, 502);
+  }
+  if (!outputText.trim()) {
+    if (isVocabularyQuiz) return jsonResponse({ error: "AI 返回了空答案，请重新生成；如果持续出现，请检查所选模型。" }, 502);
     return jsonResponse({ error: "AI returned empty output" }, 502);
   }
 
