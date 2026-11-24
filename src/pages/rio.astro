@@ -1,169 +1,69 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-
-export const prerender = false;
-
-type EnglishItem = {
-  id: number;
-  type: string;
-  text: string;
-};
-
-type D1PreparedStatement = {
-  bind: (...values: unknown[]) => D1PreparedStatement;
-  all: <T>() => Promise<{ results?: T[]; meta?: Record<string, unknown> }>;
-  first: <T>() => Promise<T | null>;
-};
-
-type D1Database = {
-  prepare: (query: string) => D1PreparedStatement;
-};
-
-const sections = [
-  { title: "Chunks", type: "chunk", required: 3 },
-  { title: "Sentence Patterns", type: "sentence_pattern", required: 1 },
-  { title: "Vocabulary", type: "vocabulary", required: 2 },
-  { title: "Adverbs", type: "adverb", required: 1 }
-] as const;
-
-const db = (Astro.locals as any).runtime?.env?.DB as D1Database | undefined;
-
-let dbStatus: "success" | "missing" | "error" = "missing";
-let dbError = "";
-let totalCount = 0;
-let items: EnglishItem[] = [];
-
-if (db) {
-  try {
-    const itemsResult = await db
-      .prepare(
-        `SELECT id, type, text
-         FROM english_items
-         WHERE type IN (?, ?, ?, ?)
-         ORDER BY
-           CASE type
-             WHEN 'chunk' THEN 1
-             WHEN 'sentence_pattern' THEN 2
-             WHEN 'vocabulary' THEN 3
-             WHEN 'adverb' THEN 4
-             ELSE 5
-           END,
-           id ASC`
-      )
-      .bind(...sections.map((section) => section.type))
-      .all<EnglishItem>();
-
-    dbStatus = "success";
-    items = itemsResult.results ?? [];
-    totalCount = items.length;
-  } catch (error) {
-    dbStatus = "error";
-    dbError = error instanceof Error ? error.message : "Unknown D1 query error";
-  }
-}
-
-const itemsByType = sections.map((section) => ({
-  ...section,
-  items: items.filter((item) => item.type === section.type)
-}));
+import { rioLists } from "../lib/rioMaterials";
 ---
 
-<BaseLayout
-  title="RIO"
-  description="随机 chunk 输入输出一体化，用于练习与数据库能力测试。"
->
+<BaseLayout title="RIO" description="用欧路生词本中的单词、词组和句型练习英语。">
   <section class="rio-page">
     <div class="rio-head">
-      <div class="rio-title-row">
-        <h1>RIO</h1>
-        <button class="rio-modal-trigger" type="button" data-rio-modal-open>
-          随机生成
-        </button>
-      </div>
-      <p>
-        Random Input Output. 当前页面从 D1 一次性读取英语素材，并按类型分表展示。
-      </p>
+      <h1>RIO</h1>
     </div>
 
-    {
-      dbStatus === "success" ? (
-        <div class="rio-table-grid" aria-label="RIO 数据表">
-          {itemsByType.map((section) => (
-            <section class="rio-table-card">
-              <div class="rio-table-head">
-                <h2>{section.title}</h2>
-                <div class="rio-table-meta">
-                  <span>{section.items.length}</span>
-                  <span data-rio-selection-progress={section.type}>0/{section.required}</span>
-                </div>
-              </div>
-              {section.items.length ? (
-                <table>
-                  <thead>
-                    <tr>
-                      <th scope="col">ID</th>
-                      <th scope="col">Text</th>
-                      <th scope="col">Pick</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {section.items.map((item) => (
-                      <tr data-rio-item-row={item.id}>
-                        <td>{item.id}</td>
-                        <td>
-                          {["sentence_pattern", "chunk", "vocabulary", "adverb"].includes(item.type) ? (
-                            <button
-                              class="rio-quiz-material-button"
-                              type="button"
-                              data-rio-quiz-material
-                              data-rio-material-id={item.id}
-                              data-rio-material-type={item.type}
-                              data-rio-material-text={item.text}
-                            >
-                              {item.text}
-                            </button>
-                          ) : (
-                            item.text
-                          )}
-                        </td>
-                        <td>
-                          <button
-                            class="rio-add-button"
-                            type="button"
-                            aria-label={`Add ${item.text}`}
-                            data-rio-add-item
-                            data-rio-item-id={item.id}
-                            data-rio-item-type={item.type}
-                            data-rio-item-text={item.text}
-                          >
-                            +
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <p class="rio-empty">暂无数据。</p>
-              )}
-            </section>
-          ))}
-          <p class="rio-summary">共读取 {totalCount} 条记录。</p>
+    <section class="rio-panel rio-library" aria-labelledby="rio-library-title">
+      <h2 id="rio-library-title">欧路生词本</h2>
+      <form id="rio-connect">
+        <label for="rio-eudic-key">欧路 API Key</label>
+        <div class="rio-connect-actions">
+          <input id="rio-eudic-key" type="password" autocomplete="off" maxlength="2052" required />
+          <button type="submit">连接生词本</button>
+          <button id="rio-disconnect" type="button" hidden>断开连接</button>
         </div>
-      ) : (
-        <div class="rio-panel">
-          {dbStatus === "missing" ? (
-            <p>
-              当前运行环境没有拿到 <code>DB</code> 绑定。请用 Cloudflare 运行时预览或部署后访问本页测试。
-            </p>
-          ) : (
-            <p>
-              D1 查询失败：<code>{dbError}</code>
-            </p>
-          )}
-        </div>
-      )
-    }
+        <p>授权在此浏览器保留 30 天。<a href="https://my.eudic.net/OpenAPI/Authorization" target="_blank" rel="noreferrer">获取欧路授权</a></p>
+      </form>
+      <form id="rio-mapping" hidden>
+        <fieldset>
+          <legend>选择每个生词本对应的 RIO 列表</legend>
+          <div id="rio-book-choices"></div>
+        </fieldset>
+        <button type="submit">保存映射并加载</button>
+      </form>
+      <template id="rio-book-choice">
+        <label><span></span><select>
+          <option value="">不映射</option>
+          {rioLists.map((list) => <option value={list.type}>{list.title}</option>)}
+        </select></label>
+      </template>
+      <p id="rio-sync-status" role="status" aria-live="polite"></p>
+      <button id="rio-sync-retry" type="button" hidden>重试加载</button>
+    </section>
+    <div id="rio-library-search" role="search" aria-label="生词本词条" hidden>
+      <div class="rio-search-controls">
+        <input id="rio-search-input" type="search" placeholder="搜索所有已映射词条"
+          aria-label="搜索所有已映射词条" aria-controls="rio-lists" autocomplete="off" />
+        <button id="rio-clear-search" type="button" hidden>清空搜索</button>
+      </div>
+      <p id="rio-search-status" role="status"></p>
+    </div>
+    <div id="rio-lists" class="rio-table-grid" aria-label="已映射的 RIO 列表">
+      {rioLists.map((list) => (
+        <section class="rio-table-card" data-rio-list={list.type} hidden>
+          <div class="rio-table-head">
+            <h2>{list.title}</h2>
+            <span data-rio-count>0 条</span>
+          </div>
+          <p class="rio-empty">暂无词条</p>
+          <table hidden>
+            <thead><tr><th scope="col">词条</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </section>
+      ))}
+      <template id="rio-word-row">
+        <tr>
+          <td><button class="rio-quiz-material-button" type="button" data-rio-quiz-material></button></td>
+        </tr>
+      </template>
+    </div>
 
     <div class="rio-modal" hidden data-rio-modal>
       <div class="rio-modal-backdrop" data-rio-modal-close></div>
@@ -281,14 +181,6 @@ const itemsByType = sections.map((section) => ({
       padding-bottom: 34px;
     }
 
-    .rio-title-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-
     .rio-head h1 {
       margin: 0;
       font-size: clamp(38px, 6vw, 64px);
@@ -301,7 +193,6 @@ const itemsByType = sections.map((section) => ({
       font-size: 18px;
     }
 
-    .rio-modal-trigger,
     .rio-modal-close {
       display: inline-flex;
       align-items: center;
@@ -319,15 +210,6 @@ const itemsByType = sections.map((section) => ({
         box-shadow 160ms ease;
     }
 
-    .rio-modal-trigger {
-      min-height: 42px;
-      border-radius: 8px;
-      padding: 0 16px;
-      font-size: 14px;
-    }
-
-    .rio-modal-trigger:hover,
-    .rio-modal-trigger:focus-visible,
     .rio-modal-close:hover,
     .rio-modal-close:focus-visible {
       border-color: var(--text);
@@ -355,13 +237,30 @@ const itemsByType = sections.map((section) => ({
       color: var(--muted);
     }
 
-    .rio-panel code {
-      border-radius: 5px;
-      background: var(--surface-soft);
-      padding: 2px 5px;
-      color: var(--text);
-      font-size: 0.9em;
+    .rio-library { display: grid; gap: 16px; margin-bottom: 22px; }
+    .rio-library h2 { margin: 0; }
+    .rio-library form { display: grid; justify-items: start; gap: 10px; }
+    .rio-library [hidden], .rio-table-grid [hidden] { display: none; }
+    .rio-connect-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .rio-library input, .rio-library select, .rio-library button,
+    .rio-search-controls input, .rio-search-controls button {
+      min-height: 38px; max-width: 100%; padding: 6px 12px; border: 1px solid var(--line);
+      border-radius: 5px; color: var(--text); background: var(--surface); font: inherit;
     }
+    .rio-library button { width: fit-content; cursor: pointer; }
+    .rio-library button:disabled { opacity: .55; cursor: default; }
+    .rio-library form p { font-size: 13px; }
+    .rio-library fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+    .rio-library legend { margin-bottom: 8px; font-weight: 650; }
+    #rio-book-choices { display: grid; gap: 6px; }
+    #rio-book-choices label { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; overflow-wrap: anywhere; }
+
+    #rio-library-search { margin-bottom: 16px; }
+    .rio-search-controls { display: flex; align-items: center; gap: 8px; }
+    .rio-search-controls input { flex: 1; min-width: 0; }
+    .rio-search-controls button { flex-shrink: 0; cursor: pointer; }
+    #rio-search-status { margin: 8px 0 0; color: var(--muted); }
+    #rio-search-status:empty { margin: 0; }
 
     .rio-table-grid {
       display: grid;
@@ -380,13 +279,6 @@ const itemsByType = sections.map((section) => ({
     .rio-table-head h2 {
       margin: 0;
       font-size: 24px;
-    }
-
-    .rio-table-meta {
-      display: inline-flex;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      gap: 6px;
     }
 
     .rio-table-head span {
@@ -422,18 +314,6 @@ const itemsByType = sections.map((section) => ({
       text-transform: uppercase;
     }
 
-    th:first-child,
-    td:first-child {
-      width: 54px;
-      color: var(--muted);
-    }
-
-    th:last-child,
-    td:last-child {
-      width: 58px;
-      text-align: right;
-    }
-
     td {
       color: var(--text);
       overflow-wrap: anywhere;
@@ -460,47 +340,9 @@ const itemsByType = sections.map((section) => ({
       outline: none;
     }
 
-    .rio-add-button {
-      width: 30px;
-      height: 30px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--surface);
-      color: var(--text);
-      font-size: 20px;
-      font-weight: 800;
-      line-height: 1;
-      cursor: pointer;
-    }
-
-    .rio-add-button:hover,
-    .rio-add-button:focus-visible {
-      border-color: color-mix(in srgb, var(--accent) 70%, var(--line));
-      color: var(--accent);
-      outline: none;
-    }
-
-    .rio-add-button.is-selected {
-      border-color: color-mix(in srgb, var(--accent) 70%, var(--line));
-      background: color-mix(in srgb, var(--accent) 12%, var(--surface));
-      color: var(--accent);
-    }
-
-    .rio-add-button:disabled {
-      cursor: not-allowed;
-      opacity: 0.38;
-    }
-
     .rio-empty {
       margin: 0;
       color: var(--muted);
-    }
-
-    .rio-summary {
-      grid-column: 1 / -1;
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size: 15px;
     }
 
     .rio-modal[hidden] {
@@ -787,7 +629,8 @@ const itemsByType = sections.map((section) => ({
       overflow-wrap: anywhere;
     }
 
-    :global(.rio-material-badge.chunk) {
+    :global(.rio-material-badge.chunk),
+    :global(.rio-material-badge.idiom) {
       background: color-mix(in srgb, #e5484d 12%, transparent);
       color: #c92a2a;
     }
@@ -1521,18 +1364,19 @@ const itemsByType = sections.map((section) => ({
   </style>
 
   <script>
+    import { initRioLibrary } from "../lib/rioLibrary";
+    import { rioLists, usesPhraseMatch } from "../lib/rioMaterials";
+    import { exampleCount, readVocabularyRound } from "../lib/rioVocabulary";
+    import { startVocabularyGame } from "../lib/rioVocabularyGame";
     import { aiRequestHeaders } from "../lib/aiClient";
     const modal = document.querySelector("[data-rio-modal]");
     const modalCard = document.querySelector(".rio-modal-card");
-    const openButton = document.querySelector("[data-rio-modal-open]");
     const closeButtons = document.querySelectorAll("[data-rio-modal-close]");
-    const addButtons = document.querySelectorAll("[data-rio-add-item]");
-    const quizMaterialButtons = document.querySelectorAll("[data-rio-quiz-material]");
+    const libraryGrid = document.querySelector(".rio-table-grid");
     const quizModal = document.querySelector("[data-rio-quiz-modal]");
     const quizCloseButtons = document.querySelectorAll("[data-rio-quiz-close]");
     const quizStage = document.querySelector("[data-rio-quiz-stage]");
     const quizMaterialBadge = document.querySelector("[data-rio-quiz-material-badge]");
-    const progressLabels = document.querySelectorAll("[data-rio-selection-progress]");
     const badgesBox = document.querySelector("[data-rio-material-badges]");
     const passageBox = document.querySelector("[data-rio-generated-passage]");
     const challengeList = document.querySelector("[data-rio-challenge-list]");
@@ -1556,18 +1400,6 @@ const itemsByType = sections.map((section) => ({
     let modalAnimationTimer;
     let isClosingModal = false;
     const completeButtonLabel = pageButtons.complete?.textContent ?? "";
-    const selectionRequirements = {
-      chunk: 3,
-      sentence_pattern: 1,
-      vocabulary: 2,
-      adverb: 1
-    };
-    const selectedTargets = {
-      chunk: [],
-      sentence_pattern: [],
-      vocabulary: [],
-      adverb: []
-    };
     const modalState = {
       page: 1,
       materials: null,
@@ -1595,6 +1427,7 @@ const itemsByType = sections.map((section) => ({
       loadingTypeTimer: undefined,
       lastFocusedElement: null
     };
+    let vocabularySession: AbortController | undefined;
     let quizMatchHeightFrame;
     let quizMatchResizeTimer;
     const quizLoadingMessages = [
@@ -1603,45 +1436,13 @@ const itemsByType = sections.map((section) => ({
       "AI正在快速生成，请稍后..."
     ];
 
-    const getSelectedCount = () =>
-      Object.values(selectedTargets).reduce((total, items) => total + items.length, 0);
-
-    const getSelectedPayload = () =>
-      Object.fromEntries(
-        Object.entries(selectedTargets).map(([type, items]) => [
-          type,
-          items.map((item) => item.id)
-        ])
+    const getPracticeMaterials = () => {
+      const materials = getQuizMaterials();
+      return rioLists.flatMap(({ type, limit }) =>
+        shuffleItems(materials.filter((item) => item.type === type))
+          .slice(0, limit)
+          .map(({ id, text }) => ({ id, text, type }))
       );
-
-    const updateSelectionUi = () => {
-      progressLabels.forEach((label) => {
-        if (!(label instanceof HTMLElement)) return;
-
-        const type = label.getAttribute("data-rio-selection-progress");
-        const selected = selectedTargets[type]?.length ?? 0;
-        const required = selectionRequirements[type] ?? 0;
-        label.textContent = `${selected}/${required}`;
-      });
-
-      addButtons.forEach((button) => {
-        if (!(button instanceof HTMLButtonElement)) return;
-
-        const type = button.getAttribute("data-rio-item-type");
-        const id = Number(button.getAttribute("data-rio-item-id"));
-        const selectedItems = selectedTargets[type] ?? [];
-        const isSelected = selectedItems.some((item) => item.id === id);
-        const isFull = selectedItems.length >= (selectionRequirements[type] ?? 0);
-
-        button.classList.toggle("is-selected", isSelected);
-        button.textContent = isSelected ? "✓" : "+";
-        button.disabled = !isSelected && isFull;
-        button.setAttribute("aria-pressed", String(isSelected));
-      });
-
-      if (openButton instanceof HTMLButtonElement) {
-        openButton.textContent = getSelectedCount() ? "开始练习" : "随机生成";
-      }
     };
 
     const updateGrammarButtonLabel = () => {
@@ -1699,7 +1500,6 @@ const itemsByType = sections.map((section) => ({
       activeReader = undefined;
       activeController = undefined;
       passageBox?.classList.remove("is-loading");
-      openButton?.removeAttribute("disabled");
       modalCard?.classList.remove("is-celebrating");
 
       if (celebrationLayer instanceof HTMLElement) {
@@ -1808,8 +1608,8 @@ const itemsByType = sections.map((section) => ({
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;");
 
-    const getQuizMaterials = (type) =>
-      Array.from(quizMaterialButtons)
+    const getQuizMaterials = (type = "") =>
+      Array.from(libraryGrid.querySelectorAll("tr:not([hidden]) [data-rio-quiz-material]"))
         .filter((button) => button instanceof HTMLElement)
         .map((button) => ({
           id: Number(button.getAttribute("data-rio-material-id")),
@@ -1824,23 +1624,27 @@ const itemsByType = sections.map((section) => ({
       material?.type === "chunk"
         ? "选出最地道的英文搭配。"
         : material?.type === "vocabulary"
-          ? "选出当前语境下最合适的同义替换。"
+          ? "选出高亮词在句中的意思。"
         : material?.type === "adverb"
           ? "根据上下文选择最合适的副词。"
           : "选出最准确的中文翻译。";
 
     const getQuizCompleteCopy = (material) =>
-      material?.type === "chunk"
-        ? "换一个 chunk 继续刷题，把固定搭配练成更快的语言反应。"
+      material?.type === "idiom"
+        ? "换一个习语，继续练习它在句子里的含义。"
+        : material?.type === "chunk"
+          ? "换一个 chunk 继续刷题，把固定搭配练成更快的语言反应。"
         : material?.type === "vocabulary"
-          ? "换一个单词继续刷题，把高级词快速降维成核心意思。"
+          ? "五个例句已完成。"
         : material?.type === "adverb"
           ? "换一个副词继续刷题，把语气和逻辑判断练快。"
           : "换一个句型继续刷题，把结构识别变成更快的阅读反应。";
 
     const getQuizNextLabel = (material) =>
-      material?.type === "chunk"
-        ? "下一个 chunk"
+      material?.type === "idiom"
+        ? "下一个习语"
+        : material?.type === "chunk"
+          ? "下一个 chunk"
         : material?.type === "vocabulary"
           ? "下一个单词"
         : material?.type === "adverb"
@@ -1848,23 +1652,22 @@ const itemsByType = sections.map((section) => ({
           : "下一个句型";
 
     const isVocabularyMatchQuiz = (material) => material?.type === "vocabulary";
-    const isChunkMatchQuiz = (material) => material?.type === "chunk";
+    const isPhraseMatchQuiz = (material) => usesPhraseMatch(material?.type);
     const isSentencePatternQuiz = (material) => material?.type === "sentence_pattern";
-    const isMatchingQuiz = (material) => isVocabularyMatchQuiz(material) || isChunkMatchQuiz(material);
 
     const getQuizExpectedCount = (material) =>
-      isChunkMatchQuiz(material)
+      isPhraseMatchQuiz(material)
         ? 24
         : isVocabularyMatchQuiz(material)
-          ? 20
+          ? exampleCount
           : isSentencePatternQuiz(material)
             ? 4
             : 3;
 
-    const getVocabularyRoundSize = () => (isChunkMatchQuiz(quizState.material) ? 6 : 5);
+    const phraseRoundSize = 6;
 
     const getVocabularyRoundCount = () =>
-      Math.ceil(getQuizExpectedCount(quizState.material) / getVocabularyRoundSize());
+      Math.ceil(getQuizExpectedCount(quizState.material) / phraseRoundSize);
 
     const shuffleItems = (items) => {
       const shuffled = [...items];
@@ -1876,17 +1679,6 @@ const itemsByType = sections.map((section) => ({
 
       return shuffled;
     };
-
-    const getVocabularyTypeLabel = (type) =>
-      isChunkMatchQuiz(quizState.material)
-        ? type
-        : type === "collocation"
-        ? "Collocation"
-        : type === "short_sentence"
-          ? "Context"
-        : type === "word_family"
-          ? "Word Family"
-          : "Meaning";
 
     const formatQuizElapsedTime = () => {
       if (!quizState.startedAt) return "";
@@ -2110,6 +1902,7 @@ const itemsByType = sections.map((section) => ({
       window.cancelAnimationFrame(quizMatchHeightFrame);
       quizModal.classList.remove("is-opening");
       quizModal.hidden = true;
+      vocabularySession?.abort();
       quizState.material = null;
       quizState.cards = [];
       quizState.answers = [];
@@ -2131,14 +1924,7 @@ const itemsByType = sections.map((section) => ({
     const renderQuizMaterialBadge = (material) => {
       if (!(quizMaterialBadge instanceof HTMLElement)) return;
 
-      const type =
-        material.type === "chunk"
-          ? "chunk"
-          : material.type === "vocabulary"
-            ? "vocabulary"
-          : material.type === "adverb"
-            ? "adverb"
-            : "sentence_pattern";
+      const type = rioLists.find((list) => list.type === material.type)?.type ?? "";
       quizMaterialBadge.innerHTML = `<span class="rio-material-badge ${type}">${escapeHtml(
         material.text
       )}</span>`;
@@ -2219,7 +2005,7 @@ const itemsByType = sections.map((section) => ({
       }, 1400);
     };
 
-    const renderQuizComplete = () => {
+    const renderQuizComplete = (review: HTMLElement | null = null) => {
       if (!(quizStage instanceof HTMLElement)) return;
 
       stopQuizLoadingMessages();
@@ -2229,7 +2015,7 @@ const itemsByType = sections.map((section) => ({
         <span class="rio-quiz-progress">${expectedCount}/${expectedCount}</span>
         <span class="rio-quiz-complete-mark">✓</span>
         <h3 class="rio-quiz-complete-title">这一轮完成了</h3>
-        <p class="rio-quiz-complete-copy">${escapeHtml(getQuizCompleteCopy(quizState.material))}</p>
+        <p class="rio-quiz-complete-copy">${isVocabularyMatchQuiz(quizState.material) ? (review ? "五个例句已完成。" : "五句全部一次配对成功。") : escapeHtml(getQuizCompleteCopy(quizState.material))}</p>
         <div class="rio-quiz-complete-actions">
           <button class="rio-quiz-complete-button secondary" type="button" data-rio-quiz-close-action>关闭</button>
           ${
@@ -2248,11 +2034,16 @@ const itemsByType = sections.map((section) => ({
       quizStage
         .querySelector("[data-rio-quiz-next-material]")
         ?.addEventListener("click", startNextQuizMaterial);
+      if (review) quizStage.querySelector(".rio-quiz-complete-actions")?.before(review);
+      if (isVocabularyMatchQuiz(quizState.material)) {
+        vocabularySession?.abort();
+        quizStage.querySelector<HTMLButtonElement>("[data-rio-quiz-next-material], [data-rio-quiz-close-action]")?.focus({ preventScroll: true });
+      }
       launchQuizCompleteConfetti();
     };
 
     const getVocabularyRoundItems = () => {
-      const roundSize = getVocabularyRoundSize();
+      const roundSize = phraseRoundSize;
       const start = quizState.currentIndex * roundSize;
 
       return quizState.cards.slice(start, start + roundSize);
@@ -2293,7 +2084,7 @@ const itemsByType = sections.map((section) => ({
       window.clearTimeout(quizMatchResizeTimer);
       quizMatchResizeTimer = window.setTimeout(() => {
         if (!(quizModal instanceof HTMLElement) || quizModal.hidden) return;
-        if (!isMatchingQuiz(quizState.material)) return;
+        if (!isPhraseMatchQuiz(quizState.material)) return;
 
         syncMatchingCardHeights();
       }, 120);
@@ -2342,7 +2133,7 @@ const itemsByType = sections.map((section) => ({
       if (!(quizStage instanceof HTMLElement)) return;
 
       const roundItems = getVocabularyRoundItems();
-      if (roundItems.length < getVocabularyRoundSize()) {
+      if (roundItems.length < phraseRoundSize) {
         renderQuizBatchWait();
         return;
       }
@@ -2375,7 +2166,7 @@ const itemsByType = sections.map((section) => ({
           <span class="rio-quiz-progress">Round ${quizState.currentIndex + 1}/${roundCount}</span>
           <span class="rio-vocab-match-total">${matchedTotal}/${expectedCount}</span>
         </div>
-        <p class="rio-quiz-scene">${isChunkMatchQuiz(quizState.material) ? "Chunk Match" : "Vocabulary Match"}</p>
+        <p class="rio-quiz-scene">${quizState.material.type === "idiom" ? "Idiom Match" : "Chunk Match"}</p>
         <div class="rio-vocab-match-board">
           <div class="rio-vocab-match-column" aria-label="English items">
             ${roundItems
@@ -2386,7 +2177,7 @@ const itemsByType = sections.map((section) => ({
                 return `<button class="rio-vocab-match-card${isMatched ? " is-matched" : ""}${isSelected ? " is-selected" : ""}" type="button" data-rio-vocab-left="${escapeHtml(
                   item.id
                 )}" ${isMatched ? "disabled" : ""}>
-                  <span class="rio-vocab-match-type">${escapeHtml(getVocabularyTypeLabel(item.type))}</span>
+                  <span class="rio-vocab-match-type">${escapeHtml(item.type)}</span>
                   <span>${escapeHtml(item.left)}</span>
                 </button>`;
               })
@@ -2460,7 +2251,10 @@ const itemsByType = sections.map((section) => ({
             renderVocabularyMatchRound();
 
             if (isRoundComplete) {
-              window.setTimeout(advanceVocabularyRound, 650);
+              const generation = quizState.generationId;
+              window.setTimeout(() => {
+                if (generation === quizState.generationId) advanceVocabularyRound();
+              }, 650);
             }
             return;
           }
@@ -2492,7 +2286,7 @@ const itemsByType = sections.map((section) => ({
 
       stopQuizLoadingMessages();
 
-      if (isMatchingQuiz(quizState.material)) {
+      if (isPhraseMatchQuiz(quizState.material)) {
         renderVocabularyMatchRound();
         return;
       }
@@ -2895,7 +2689,7 @@ const itemsByType = sections.map((section) => ({
       bindQuizNav();
     };
 
-    const requestQuizBatch = async (material, batchIndex) => {
+    const requestQuiz = async (material, batchIndex, signal?: AbortSignal) => {
       const response = await fetch("/api/rio/generate-quiz", {
         method: "POST",
         headers: aiRequestHeaders(),
@@ -2906,7 +2700,8 @@ const itemsByType = sections.map((section) => ({
             text: material.text
           },
           batchIndex
-        })
+        }),
+        signal
       });
       const data = await response.json().catch(() => ({}));
 
@@ -2914,15 +2709,16 @@ const itemsByType = sections.map((section) => ({
         throw new Error(data.error ?? "Quiz 生成失败，请稍后重试。");
       }
 
+      return data;
+    };
+
+    const requestQuizBatch = async (material, batchIndex) => {
+      const data = await requestQuiz(material, batchIndex);
       const cards = Array.isArray(data.cards) ? data.cards : [];
-      const expectedBatchSize = isChunkMatchQuiz(material)
+      const expectedBatchSize = isPhraseMatchQuiz(material)
         ? 6
-        : isVocabularyMatchQuiz(material)
-          ? 20
-          : isSentencePatternQuiz(material)
-            ? batchIndex === 0
-              ? 3
-              : 1
+        : isSentencePatternQuiz(material)
+          ? batchIndex === 0 ? 3 : 1
           : getQuizExpectedCount(material);
 
       if (cards.length !== expectedBatchSize) {
@@ -2934,7 +2730,7 @@ const itemsByType = sections.map((section) => ({
 
     async function loadRemainingQuizBatches(material, currentGeneration, startBatchIndex) {
       if (
-        (!isMatchingQuiz(material) && !isSentencePatternQuiz(material)) ||
+        (!isPhraseMatchQuiz(material) && !isSentencePatternQuiz(material)) ||
         quizState.isBackgroundLoading
       ) return;
 
@@ -2950,11 +2746,11 @@ const itemsByType = sections.map((section) => ({
           const data = await requestQuizBatch(material, batchIndex);
           if (currentGeneration !== quizState.generationId) return;
 
-          const currentItemStart = isMatchingQuiz(material)
-            ? quizState.currentIndex * getVocabularyRoundSize()
+          const currentItemStart = isPhraseMatchQuiz(material)
+            ? quizState.currentIndex * phraseRoundSize
             : quizState.currentIndex;
           const wasWaitingForCurrentItem = currentItemStart >= quizState.cards.length;
-          const nextCards = isMatchingQuiz(material)
+          const nextCards = isPhraseMatchQuiz(material)
             ? (() => {
                 const existingIds = new Set(quizState.cards.map((card) => card.id));
                 return data.cards.filter((card) => !existingIds.has(card.id));
@@ -2970,8 +2766,8 @@ const itemsByType = sections.map((section) => ({
         quizState.batchError =
           error instanceof Error ? error.message : "后续 Quiz 生成失败，请重试当前批次。";
 
-        const currentItemStart = isMatchingQuiz(material)
-          ? quizState.currentIndex * getVocabularyRoundSize()
+        const currentItemStart = isPhraseMatchQuiz(material)
+          ? quizState.currentIndex * phraseRoundSize
           : quizState.currentIndex;
         if (currentItemStart >= quizState.cards.length) renderQuizBatchWait();
       } finally {
@@ -2982,6 +2778,8 @@ const itemsByType = sections.map((section) => ({
     }
 
     const generateQuiz = async (material) => {
+      vocabularySession?.abort();
+      vocabularySession = isVocabularyMatchQuiz(material) ? new AbortController() : undefined;
       const currentGeneration = quizState.generationId + 1;
 
       quizState.generationId = currentGeneration;
@@ -2997,10 +2795,19 @@ const itemsByType = sections.map((section) => ({
       renderQuizLoading();
 
       try {
+        if (vocabularySession && quizStage instanceof HTMLElement) {
+          const { signal } = vocabularySession;
+          const data = await requestQuiz(material, 0, signal);
+          if (currentGeneration !== quizState.generationId) return;
+          const round = readVocabularyRound(data);
+          if (!round) throw new Error("这组例句的格式不完整，请重新生成。");
+          quizState.isLoading = false;
+          stopQuizLoadingMessages();
+          startVocabularyGame(quizStage, round, signal, playQuizTone, renderQuizComplete);
+          return;
+        }
         const data = await requestQuizBatch(material, 0);
-
         if (currentGeneration !== quizState.generationId) return;
-
         quizState.cards = data.cards;
         quizState.batchCount = Number(data.batch.batchCount) || 1;
         quizState.nextBatchIndex = 1;
@@ -3008,7 +2815,7 @@ const itemsByType = sections.map((section) => ({
 
         renderQuizCard();
         if (
-          (isMatchingQuiz(material) || isSentencePatternQuiz(material)) &&
+          (isPhraseMatchQuiz(material) || isSentencePatternQuiz(material)) &&
           quizState.nextBatchIndex < quizState.batchCount
         ) {
           void loadRemainingQuizBatches(material, currentGeneration, quizState.nextBatchIndex);
@@ -3086,14 +2893,13 @@ const itemsByType = sections.map((section) => ({
       }
       passageBox.textContent = "";
       passageBox.classList.add("is-loading");
-      openButton?.setAttribute("disabled", "");
 
       try {
         const response = await fetch("/api/rio/generate", {
           method: "POST",
           headers: aiRequestHeaders(),
           body: JSON.stringify({
-            selected: getSelectedPayload()
+            materials: getPracticeMaterials()
           }),
           signal: activeController.signal
         });
@@ -3164,7 +2970,6 @@ const itemsByType = sections.map((section) => ({
       } finally {
         if (currentGeneration === generationId) {
           passageBox.classList.remove("is-loading");
-          openButton?.removeAttribute("disabled");
           activeReader = undefined;
           activeController = undefined;
         }
@@ -3235,32 +3040,6 @@ const itemsByType = sections.map((section) => ({
         });
       });
     };
-
-    addButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        if (!(button instanceof HTMLButtonElement)) return;
-
-        const type = button.getAttribute("data-rio-item-type");
-        const id = Number(button.getAttribute("data-rio-item-id"));
-        const text = button.getAttribute("data-rio-item-text") ?? "";
-
-        if (!type || !Number.isFinite(id) || !(type in selectedTargets)) return;
-
-        const selectedItems = selectedTargets[type];
-        const existingIndex = selectedItems.findIndex((item) => item.id === id);
-
-        if (existingIndex >= 0) {
-          selectedItems.splice(existingIndex, 1);
-          updateSelectionUi();
-          return;
-        }
-
-        if (selectedItems.length >= (selectionRequirements[type] ?? 0)) return;
-
-        selectedItems.push({ id, text });
-        updateSelectionUi();
-      });
-    });
 
     const renderAnalysis = (analyses) => {
       if (!(analysisList instanceof HTMLElement)) return;
@@ -3352,21 +3131,19 @@ const itemsByType = sections.map((section) => ({
       }
     };
 
-    openButton?.addEventListener("click", openModal);
     closeButtons.forEach((button) => button.addEventListener("click", closeModal));
-    quizMaterialButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        if (!(button instanceof HTMLElement)) return;
+    libraryGrid.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-rio-quiz-material]");
+      if (!(button instanceof HTMLElement)) return;
 
-        const material = {
-          id: Number(button.getAttribute("data-rio-material-id")),
-          type: button.getAttribute("data-rio-material-type") ?? "",
-          text: button.getAttribute("data-rio-material-text") ?? ""
-        };
+      const material = {
+        id: Number(button.getAttribute("data-rio-material-id")),
+        type: button.getAttribute("data-rio-material-type") ?? "",
+        text: button.getAttribute("data-rio-material-text") ?? ""
+      };
 
-        if (!Number.isFinite(material.id) || !material.type || !material.text) return;
-        openQuizModal(material);
-      });
+      if (!Number.isFinite(material.id) || !material.type || !material.text) return;
+      openQuizModal(material);
     });
     quizCloseButtons.forEach((button) => button.addEventListener("click", closeQuizModal));
     pageButtons.next?.addEventListener("click", () => {
@@ -3401,12 +3178,13 @@ const itemsByType = sections.map((section) => ({
     });
     pageButtons.complete?.addEventListener("click", launchCompletionCelebration);
     window.addEventListener("resize", scheduleMatchingCardHeightSync);
-    updateSelectionUi();
+    initRioLibrary();
 
     document.addEventListener("keydown", (event) => {
       if (event.key !== "Escape") return;
 
       if (quizModal instanceof HTMLElement && !quizModal.hidden) {
+        closeQuizModal();
         return;
       }
 

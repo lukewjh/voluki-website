@@ -1,30 +1,11 @@
 import type { APIRoute } from "astro";
+import { rioLists, type RioMaterial } from "../../../lib/rioMaterials";
 import { resolveAiConfig } from "../../../lib/aiConfig";
 import { readJsonBody } from "../../../lib/readJsonBody";
 
 export const prerender = false;
 
-type EnglishItem = {
-  id: number;
-  type: string;
-  text: string;
-};
-
-type D1PreparedStatement = {
-  bind: (...values: unknown[]) => D1PreparedStatement;
-  all: <T>() => Promise<{ results?: T[] }>;
-};
-
-type D1Database = {
-  prepare: (query: string) => D1PreparedStatement;
-};
-
-const requirements = [
-  { label: "Chunks", type: "chunk", count: 3 },
-  { label: "Sentence Pattern", type: "sentence_pattern", count: 1 },
-  { label: "Vocabulary", type: "vocabulary", count: 2 },
-  { label: "Adverb", type: "adverb", count: 1 }
-] as const;
+type MaterialGroup = { label: string; type: string; items: RioMaterial[] };
 
 const scenes = [
   "教育",
@@ -56,35 +37,23 @@ const chunkText = (text: string) => {
   return chunks?.filter(Boolean) ?? [text];
 };
 
-const normalizeSelectedIds = (value: unknown) => {
-  if (!Array.isArray(value)) return [];
-
-  return [
-    ...new Set(
-      value
-        .map((id) => (typeof id === "number" ? id : Number(id)))
-        .filter((id) => Number.isInteger(id) && id > 0)
-    )
-  ];
-};
-
-const readSelectedPayload = async (request: Request) => {
-  try {
-    const body = await readJsonBody(request);
-    const selected = (body as { selected?: Record<string, unknown> }).selected;
-
-    if (!selected || typeof selected !== "object") return {};
-
-    return Object.fromEntries(
-      requirements.map((requirement) => [
-        requirement.type,
-        normalizeSelectedIds(selected[requirement.type])
-      ])
-    );
-  } catch {
-    return {};
+function groupMaterials(value: unknown): MaterialGroup[] {
+  const maxItems = rioLists.reduce((total, list) => total + list.limit, 0);
+  if (!Array.isArray(value) || !value.length || value.length > maxItems) return [];
+  const groups: MaterialGroup[] = [];
+  for (const list of rioLists) {
+    const items = value.filter((item) => item?.type === list.type);
+    if (items.length > list.limit || items.some((item) =>
+      !Number.isSafeInteger(item.id) || item.id < 1 ||
+      typeof item.text !== "string" || !item.text.trim() || item.text.length > 4096
+    )) return [];
+    if (items.length) groups.push({
+      label: list.title, type: list.type,
+      items: items.map(({ id, text }) => ({ id, text: text.trim(), type: list.type }))
+    });
   }
-};
+  return groups.reduce((sum, group) => sum + group.items.length, 0) === value.length ? groups : [];
+}
 
 const getAiErrorMessage = async (response: Response) => {
   const text = await response.text();
@@ -115,20 +84,21 @@ const sample = <T>(items: readonly T[], count: number) => {
 };
 
 const itemsForType = (
-  groups: Array<{ label: string; type: string; items: EnglishItem[] }>,
+  groups: MaterialGroup[],
   type: string
 ) => groups.find((group) => group.type === type)?.items ?? [];
 
 const buildChallengePlan = (
-  groups: Array<{ label: string; type: string; items: EnglishItem[] }>
+  groups: MaterialGroup[]
 ) => {
   const chunks = itemsForType(groups, "chunk");
   const sentencePatterns = itemsForType(groups, "sentence_pattern");
   const vocabulary = itemsForType(groups, "vocabulary");
   const adverbs = itemsForType(groups, "adverb");
+  const idioms = itemsForType(groups, "idiom");
   const outputScenes = sample(scenes, Math.random() < 0.5 ? 2 : 3);
 
-  return [
+  const plan = [
     {
       index: 1,
       scene: outputScenes[0],
@@ -142,9 +112,14 @@ const buildChallengePlan = (
     {
       index: 3,
       scene: outputScenes[2] ?? outputScenes[0],
-      required_items: [chunks[1], chunks[2]].filter(Boolean)
+      required_items: [chunks[1], chunks[2], ...idioms].filter(Boolean)
     }
   ];
+  const pool = groups.flatMap((group) => group.items);
+  return plan.map((challenge, index) => ({
+    ...challenge,
+    required_items: challenge.required_items.length ? challenge.required_items : [pool[index % pool.length]]
+  }));
 };
 
 const extractOutputText = (data: any) => {
@@ -170,95 +145,18 @@ const normalizeChallenge = (value: unknown, fallback: { index: number; scene: st
 };
 
 export const POST: APIRoute = async ({ request, locals }) => {
-  const db = (locals as any).runtime?.env?.DB as D1Database | undefined;
   const config = resolveAiConfig(request, locals);
   if (config instanceof Response) return config;
   const { apiKey, model, apiBaseUrl } = config;
-
-  if (!db) {
-    return jsonResponse({ error: "Missing D1 binding: DB" }, 500);
-  }
 
   if (!apiKey) {
     return jsonResponse({ error: "请在顶部 AI 设置中填写配置，或配置服务器 DEEPSEEK_API_KEY。" }, 500);
   }
 
-  const selectedByType = await readSelectedPayload(request);
-  let selectedGroups: Array<{ label: string; type: string; items: EnglishItem[] }>;
-
-  try {
-    selectedGroups = await Promise.all(
-      requirements.map(async (requirement) => {
-        const requestedIds = selectedByType[requirement.type] ?? [];
-        let selectedItems: EnglishItem[] = [];
-
-        if (requestedIds.length) {
-          const placeholders = requestedIds.map(() => "?").join(", ");
-          const result = await db
-            .prepare(
-              `SELECT id, type, text
-               FROM english_items
-               WHERE type = ? AND id IN (${placeholders})`
-            )
-            .bind(requirement.type, ...requestedIds)
-            .all<EnglishItem>();
-
-          const selectedById = new Map((result.results ?? []).map((item) => [item.id, item]));
-          selectedItems = requestedIds
-            .map((id) => selectedById.get(id))
-            .filter((item): item is EnglishItem => Boolean(item))
-            .slice(0, requirement.count);
-        }
-
-        const remainingCount = requirement.count - selectedItems.length;
-        let randomItems: EnglishItem[] = [];
-
-        if (remainingCount > 0) {
-          const excludedIds = selectedItems.map((item) => item.id);
-          const excludedClause = excludedIds.length
-            ? ` AND id NOT IN (${excludedIds.map(() => "?").join(", ")})`
-            : "";
-          const result = await db
-            .prepare(
-              `SELECT id, type, text
-               FROM english_items
-               WHERE type = ?${excludedClause}
-               ORDER BY RANDOM()
-               LIMIT ?`
-            )
-            .bind(requirement.type, ...excludedIds, remainingCount)
-            .all<EnglishItem>();
-
-          randomItems = result.results ?? [];
-        }
-
-        return {
-          label: requirement.label,
-          type: requirement.type,
-          items: [...selectedItems, ...randomItems]
-        };
-      })
-    );
-  } catch (error) {
-    return jsonResponse(
-      {
-        error: error instanceof Error ? error.message : "Failed to select random RIO items"
-      },
-      500
-    );
-  }
-
-  const missingGroup = selectedGroups.find((group, index) => {
-    return group.items.length < requirements[index].count;
-  });
-
-  if (missingGroup) {
-    return jsonResponse(
-      {
-        error: `Not enough ${missingGroup.label} items in D1 for generation`
-      },
-      400
-    );
+  const body = await readJsonBody(request).catch(() => null);
+  const selectedGroups = groupMaterials(body?.materials);
+  if (!selectedGroups.length) {
+    return jsonResponse({ error: "请先加载已映射的生词本，再开始练习。" }, 400);
   }
 
   const selectedText = selectedGroups
@@ -313,7 +211,7 @@ JSON shape:
 
 Rules:
 - Input passage scene: use only the provided input scene.
-- The input passage must include every provided chunk, sentence pattern, vocabulary item, and adverb exactly as usable language.
+- Use every provided training item naturally in the input passage. Use each idiom with its idiomatic meaning in a suitable context.
 - Distribute the provided items naturally across the 3-4 input passage sentences.
 - Output challenges: create exactly 3 Chinese translation prompts.
 - Each challenge must use its assigned scene and assigned required items only.
