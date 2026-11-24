@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import RioSmallTalk from "../components/RioSmallTalk.astro";
+import RioPatternCard from "../components/RioPatternCard.astro";
 import { rioLists } from "../lib/rioMaterials";
 ---
 
@@ -139,6 +140,7 @@ import { rioLists } from "../lib/rioMaterials";
     </div>
 
     <RioSmallTalk />
+    <RioPatternCard />
     <div class="rio-quiz-modal" hidden data-rio-quiz-modal>
       <div class="rio-modal-backdrop"></div>
       <section
@@ -1432,6 +1434,7 @@ import { rioLists } from "../lib/rioMaterials";
     import { initRioLibrary } from "../lib/rioLibrary";
     import { openSmallTalk } from "../lib/rioSmallTalk";
     import { readChunkCard, type ChunkCard } from "../lib/rioChunk";
+    import { readPatternCard, type PatternCard } from "../lib/rioPattern";
     import { rioLists, usesPhraseMatch } from "../lib/rioMaterials";
     import { exampleCount, readVocabularyRound } from "../lib/rioVocabulary";
     import { startVocabularyGame } from "../lib/rioVocabularyGame";
@@ -2035,6 +2038,29 @@ import { rioLists } from "../lib/rioMaterials";
       renderQuizMaterialBadge(nextMaterial);
       renderQuizLoading();
       generateQuiz(nextMaterial);
+    };
+
+    const renderPatternCard = (stage: HTMLElement, card: PatternCard) => {
+      const template = document.querySelector<HTMLTemplateElement>("#rio-pattern-template")!;
+      const content = template.content.cloneNode(true) as DocumentFragment;
+      content.querySelector("[data-usage]")!.textContent = card.usage_tag;
+      content.querySelector("[data-formula]")!.textContent = card.formula;
+      content.querySelector("[data-tip]")!.textContent = card.grammar_tip;
+      content.querySelector("[data-prompt]")!.textContent = card.quick_prompt;
+      content.querySelectorAll("li").forEach((row, index) => {
+        const { en, zh, highlight } = card.examples[index];
+        const start = en.indexOf(highlight);
+        const mark = document.createElement("mark");
+        mark.className = "rio-quiz-target-word";
+        mark.textContent = highlight;
+        row.querySelector("[data-example]")!.append(en.slice(0, start), mark, en.slice(start + highlight.length));
+        row.querySelector("[data-translation]")!.textContent = zh;
+      });
+      const next = getNextQuizMaterial();
+      const button = content.querySelector("button")!;
+      if (next && next.id !== quizState.material?.id) button.addEventListener("click", startNextQuizMaterial);
+      else button.remove();
+      stage.replaceChildren(content);
     };
 
     const renderChunkCard = (stage: HTMLElement, card: ChunkCard, material) => {
@@ -2876,7 +2902,8 @@ import { rioLists } from "../lib/rioMaterials";
     const generateQuiz = async (material) => {
       singleQuizSession?.abort();
       const isChunk = material.type === "chunk";
-      singleQuizSession = isChunk || isVocabularyMatchQuiz(material) ? new AbortController() : undefined;
+      const isPattern = isSentencePatternQuiz(material);
+      singleQuizSession = isChunk || isPattern || isVocabularyMatchQuiz(material) ? new AbortController() : undefined;
       const currentGeneration = quizState.generationId + 1;
 
       quizState.generationId = currentGeneration;
@@ -2898,6 +2925,12 @@ import { rioLists } from "../lib/rioMaterials";
           if (currentGeneration !== quizState.generationId) return;
           quizState.isLoading = false;
           stopQuizLoadingMessages();
+          if (isPattern) {
+            const card = readPatternCard(data);
+            if (!card) throw new Error("句型卡内容不完整，请重新生成。");
+            renderPatternCard(quizStage, card);
+            return;
+          }
           if (isChunk) {
             const card = readChunkCard(data);
             if (!card) throw new Error("词组卡内容不完整，请重新生成。");

@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import { resolveAiConfig } from "../../../lib/aiConfig";
 import { readChunkCard } from "../../../lib/rioChunk";
+import { readPatternCard } from "../../../lib/rioPattern";
 import { exampleCount, readVocabularyRound } from "../../../lib/rioVocabulary";
 import { rioLists, usesPhraseMatch } from "../../../lib/rioMaterials";
 import { getErrorMessage, readJsonBody } from "../../../lib/readJsonBody";
@@ -301,13 +302,24 @@ export const POST: APIRoute = async ({ request, locals }) => {
   const selectedScenes = sample(scenes, selectedSceneCount);
   const isVocabularyQuiz = material.type === "vocabulary";
   const isChunkQuiz = material.type === "chunk";
-  const useDeepSeekFastQuiz = (isVocabularyQuiz || isChunkQuiz) &&
+  // The older { pattern } request still returns its original batched quiz.
+  const isPatternCard = material.type === "sentence_pattern" && Boolean(body.material);
+  const singleCard = isChunkQuiz || isPatternCard;
+  const useDeepSeekFastQuiz = (isVocabularyQuiz || singleCard) &&
     /^https:\/\/api\.deepseek\.com(?:\/v1)?$/i.test(apiBaseUrl) &&
     /^(?:deepseek-v4-(?:pro|flash)|deepseek-chat|deepseek-flash)$/i.test(model);
   const isAdverbQuiz = material.type === "adverb";
   let systemPrompt: string;
 
-  if (isChunkQuiz) {
+  if (isPatternCard) {
+    systemPrompt = `Create one practice card for the learner's English sentence pattern. Return only this JSON shape, with plain text values:
+{"formula":"...","usage_tag":"...","grammar_tip":"...","examples":[{"en":"...","zh":"...","highlight":"..."},{"en":"...","zh":"...","highlight":"..."}],"quick_prompt":"..."}
+formula: Keep the fixed English words and put variable slots in square brackets. Show the word order.
+usage_tag: Briefly say in Simplified Chinese what this pattern lets the speaker express.
+grammar_tip: Give one specific actionable grammar tip in Simplified Chinese.
+examples: Two short, natural spoken sentences in different everyday situations, both using this pattern. Translate each naturally into Simplified Chinese. For highlight, copy the fixed expression exactly as it appears in that sentence, including its actual tense and case. For a split construction copy its most characteristic contiguous part. No markdown.
+quick_prompt: Ask one short question in Simplified Chinese that invites the learner to use the pattern in a sentence about their own experience.`;
+  } else if (isChunkQuiz) {
     systemPrompt = `Make one English chunk flashcard for a Chinese learner. Return only a JSON object:
 {"chunk":"...","forms":[{"expression":"...","note":"..."}],"alternatives":[{"expression":"...","note":"..."}],"example":"...","translation":"..."}
 chunk: Keep the entry as the heading, fixing clear errors only. If ambiguous, choose one common reading.
@@ -504,7 +516,7 @@ Rules:
     : isAdverbQuiz
       ? "Target adverb"
       : "Target sentence pattern";
-  const userPrompt = isChunkQuiz ? material.text : `${materialLabel}:
+  const userPrompt = singleCard ? material.text : `${materialLabel}:
 ${material.text}
 
 Scenes:
@@ -535,7 +547,7 @@ ${selectedScenes.map((scene, index) => `${index + 1}. ${scene}`).join("\n")}`;
         ...(useDeepSeekFastQuiz ? { thinking: { type: "disabled" } } : {}),
         max_tokens: isPhraseMatchQuiz
           ? 1600
-          : isVocabularyQuiz || isChunkQuiz
+          : isVocabularyQuiz || singleCard
             ? 4096
             : isAdverbQuiz || batch.batchIndex === 0
               ? 1800
@@ -577,6 +589,11 @@ ${selectedScenes.map((scene, index) => `${index + 1}. ${scene}`).join("\n")}`;
 
   try {
     const parsed = JSON.parse(outputText);
+    if (isPatternCard) {
+      const card = readPatternCard(parsed);
+      return card ? jsonResponse({ raw_input: material.text, ...card })
+        : jsonResponse({ error: "句型卡内容或例句高亮不完整，请重新生成。" }, 502);
+    }
     if (isChunkQuiz) {
       const card = readChunkCard(parsed);
       return card ? jsonResponse(card) : jsonResponse({ error: "词组卡内容不完整，请重新生成。" }, 502);

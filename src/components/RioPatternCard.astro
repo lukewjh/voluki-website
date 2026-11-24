@@ -1,0 +1,48 @@
+<template id="rio-pattern-template">
+  <article class="pattern-practice">
+    <header>
+      <h3 data-usage></h3>
+      <p class="formula" data-formula></p>
+    </header>
+    <section>
+      <h4>语法提醒</h4>
+      <p data-tip></p>
+    </section>
+    <section>
+      <h4>口语例句</h4>
+      <ol>
+        {[0, 1].map(() => (
+          <li>
+            <p lang="en" data-example></p>
+            <details>
+              <summary><span class="show">显示中文</span><span class="hide">收起中文</span></summary>
+              <p data-translation></p>
+            </details>
+          </li>
+        ))}
+      </ol>
+    </section>
+    <section>
+      <h4>轮到你</h4>
+      <label for="rio-pattern-answer" data-prompt></label>
+      <textarea id="rio-pattern-answer" lang="en" rows="3" placeholder="用这个句型写一句英语…" spellcheck="true"></textarea>
+    </section>
+    <button class="rio-quiz-complete-button primary" type="button" data-rio-quiz-next-material>下一个句型</button>
+  </article>
+</template>
+
+<style>
+  article { display: grid; gap: 18px; min-width: 0; overflow-wrap: anywhere; }
+  h3, h4, p, ol { margin: 0; }
+  h3 { font-size: 20px; }
+  h4 { margin-bottom: 5px; font-size: 15px; }
+  p, label { line-height: 1.6; }
+  .formula { margin-top: 6px; padding: 10px 12px; background: var(--surface-soft); border-left: 3px solid var(--accent); font-weight: 700; }
+  ol { padding-left: 1.6em; }
+  li + li { margin-top: 8px; }
+  [data-example] { font-size: 17px; }
+  summary { width: fit-content; padding: 8px 0; color: var(--muted); cursor: pointer; }
+  details:not([open]) .hide, details[open] .show { display: none; }
+  textarea { display: block; margin-top: 8px; width: 100%; padding: 10px; resize: vertical; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--text); font: inherit; font-size: 16px; }
+  button { justify-self: start; }
+</style>
