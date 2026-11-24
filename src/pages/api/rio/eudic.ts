@@ -13,7 +13,7 @@ async function fetchList(token: string, resource: "category" | "words", params: 
   try {
     const response = await fetch(api + resource + "?" + params, {
       headers: { Authorization: token, "User-Agent": "Voluki-RIO/1.0" },
-      redirect: "error",
+      redirect: "manual",
       signal: AbortSignal.timeout(20000)
     });
     if (response.status === 401) return json({ error: "欧路授权无效或已过期，请重新填写 API Key。" }, 401);
