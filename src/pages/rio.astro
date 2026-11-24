@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import RioSmallTalk from "../components/RioSmallTalk.astro";
 import { rioLists } from "../lib/rioMaterials";
 ---
 
@@ -137,6 +138,7 @@ import { rioLists } from "../lib/rioMaterials";
       <div class="rio-celebration" hidden aria-hidden="true" data-rio-celebration></div>
     </div>
 
+    <RioSmallTalk />
     <div class="rio-quiz-modal" hidden data-rio-quiz-modal>
       <div class="rio-modal-backdrop"></div>
       <section
@@ -1428,6 +1430,7 @@ import { rioLists } from "../lib/rioMaterials";
 
   <script>
     import { initRioLibrary } from "../lib/rioLibrary";
+    import { openSmallTalk } from "../lib/rioSmallTalk";
     import { readChunkCard, type ChunkCard } from "../lib/rioChunk";
     import { rioLists, usesPhraseMatch } from "../lib/rioMaterials";
     import { exampleCount, readVocabularyRound } from "../lib/rioVocabulary";
@@ -3243,7 +3246,8 @@ import { rioLists } from "../lib/rioMaterials";
       };
 
       if (!Number.isFinite(material.id) || !material.type || !material.text) return;
-      openQuizModal(material);
+      if (material.type === "idiom") openSmallTalk(material.text);
+      else openQuizModal(material);
     });
     quizCloseButtons.forEach((button) => button.addEventListener("click", closeQuizModal));
     pageButtons.next?.addEventListener("click", () => {
