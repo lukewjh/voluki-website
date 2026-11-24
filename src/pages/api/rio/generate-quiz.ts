@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 import { resolveAiConfig } from "../../../lib/aiConfig";
+import { readChunkCard } from "../../../lib/rioChunk";
 import { exampleCount, readVocabularyRound } from "../../../lib/rioVocabulary";
 import { rioLists, usesPhraseMatch } from "../../../lib/rioMaterials";
 import { getErrorMessage, readJsonBody } from "../../../lib/readJsonBody";
@@ -248,7 +249,8 @@ const getBatchConfig = (body: Record<string, unknown>, materialType: string) => 
     };
   }
 
-  const totalCount = usesPhraseMatch(materialType) ? 24 : materialType === "vocabulary" ? exampleCount : 3;
+  const totalCount = usesPhraseMatch(materialType) ? 24
+    : materialType === "vocabulary" ? exampleCount : materialType === "chunk" ? 1 : 3;
   const batchSize = usesPhraseMatch(materialType) ? 6 : totalCount;
   const batchCount = Math.ceil(totalCount / batchSize);
   const batchIndex = Number.isInteger(requestedBatchIndex)
@@ -298,85 +300,22 @@ export const POST: APIRoute = async ({ request, locals }) => {
     isPhraseMatchQuiz ? 2 : material.type === "sentence_pattern" ? 3 : expectedCardCount;
   const selectedScenes = sample(scenes, selectedSceneCount);
   const isVocabularyQuiz = material.type === "vocabulary";
-  const useDeepSeekFastQuiz = isVocabularyQuiz &&
+  const isChunkQuiz = material.type === "chunk";
+  const useDeepSeekFastQuiz = (isVocabularyQuiz || isChunkQuiz) &&
     /^https:\/\/api\.deepseek\.com(?:\/v1)?$/i.test(apiBaseUrl) &&
     /^(?:deepseek-v4-(?:pro|flash)|deepseek-chat|deepseek-flash)$/i.test(model);
   const isAdverbQuiz = material.type === "adverb";
   let systemPrompt: string;
 
-  if (isPhraseMatchQuiz) {
-    systemPrompt = `You are an expert IELTS collocation trainer for Chinese learners.
-
-Create Chunk Mastery Quiz cards.
-
-Return only valid JSON. Do not return Markdown, code fences, headings, or extra explanation.
-
-JSON shape:
-{
-  "cards": [
-    {
-      "index": 1,
-      "scene": "Education",
-      "question_type": "Chinese Intent Match",
-      "english_sentence": "下面哪个中文表达最适合用 TARGET_CHUNK？",
-      "options": [
-        { "label": "A", "text": "中文表达" },
-        { "label": "B", "text": "中文表达" },
-        { "label": "C", "text": "中文表达" },
-        { "label": "D", "text": "中文表达" }
-      ],
-      "correct_label": "A",
-      "feedback": "A brief Chinese explanation."
-    },
-    {
-      "index": 2,
-      "scene": "Education",
-      "question_type": "Sentence Builder",
-      "english_sentence": "请把下面的词块拼成一个自然句子。",
-      "chunks": ["students", "should", "TARGET_CHUNK", "online resources"],
-      "answer_chunks": ["students", "should", "TARGET_CHUNK", "online resources"],
-      "options": [],
-      "correct_label": "A",
-      "feedback": "A brief Chinese explanation."
-    }
-  ]
-}
-
-Rules:
-- Create exactly 5 cards, in this exact order.
-- Use the same target chunk in every card.
-- Use the provided scenes where useful, but prioritize natural IELTS-style examples.
-- Card 1 must be question_type "Chinese Intent Match".
-  - It asks: "下面哪个中文表达最适合用 TARGET_CHUNK？" replacing TARGET_CHUNK with the actual chunk.
-  - Options must be 4 short Chinese meanings or communicative intents.
-  - The correct option should express the chunk's most useful Chinese intent.
-- Card 2 must be question_type "Sentence Builder".
-  - It asks: "请把下面的词块拼成一个自然句子。"
-  - Return chunks as a shuffled array of 6-9 word groups.
-  - Return answer_chunks as the correct ordered array.
-  - The answer must form one natural IELTS-style sentence using the target chunk.
-  - options can be an empty array for this card.
-  - correct_label can be "A" for this card.
-- Card 3 must be question_type "Expression Upgrade".
-  - It asks: "哪个改写更适合雅思写作？"
-  - Include a simple original sentence in english_sentence, prefixed with "原句：".
-  - Options must be 4 full English rewrites.
-  - The correct option upgrades a plain expression by using the target chunk naturally.
-  - Wrong options should misuse other chunks or create unnatural collocations.
-- Card 4 must be question_type "Error Detection".
-  - It asks which sentence uses the target chunk unnaturally.
-  - Options must be 4 full English sentences using the target chunk.
-  - Exactly one option must be unnatural because the object is not a resource, opportunity, cause, responsibility, access target, or semantic fit for the chunk.
-  - feedback must briefly explain why the wrong usage is unnatural and suggest a more natural alternative.
-- Card 5 must be question_type "Quick Reaction".
-  - It asks for the most natural English expression for one short Chinese phrase.
-  - Options must be 4 short English phrases.
-  - The correct option must use the target chunk.
-  - Wrong options should be quick-to-scan but clearly wrong collocations.
-- Cards 1, 3, 4, and 5 must have exactly 4 options: A, B, C, D.
-- Exactly one option must be correct on every multiple-choice card.
-- Keep feedback in Chinese and under 45 Chinese characters.
-- Keep all explanations out of the JSON except the feedback field.`;
+  if (isChunkQuiz) {
+    systemPrompt = `Make one English chunk flashcard for a Chinese learner. Return only a JSON object:
+{"chunk":"...","forms":[{"expression":"...","note":"..."}],"alternatives":[{"expression":"...","note":"..."}],"example":"...","translation":"..."}
+chunk: Keep the entry as the heading, fixing clear errors only. If ambiguous, choose one common reading.
+forms: Give 1–2 distinct standard constructions for that reading. Show required subjects, objects, or complements with A/B, sth or sb where useful. Explain each construction's meaning and roles briefly in Simplified Chinese.
+alternatives: Compare 2–3 common related expressions for the same situation. For each, give the English expression and one short Chinese note contrasting its register, nuance or grammar with the target. Show changed word order or sentence structure when needed; avoid implying literal interchangeability. Prefer everyday options and include a formal one when natural.
+example: One short sentence someone might actually say, using a target form. Wrap its actual use in **double asterisks**.
+translation: Natural Simplified Chinese for that sentence. Keep all other fields plain text.`;
+  } else if (isPhraseMatchQuiz) {
     systemPrompt = `You are an expert IELTS collocation trainer for Chinese learners.
 
 Create a Chunk Match sentence network for one target chunk.
@@ -565,7 +504,7 @@ Rules:
     : isAdverbQuiz
       ? "Target adverb"
       : "Target sentence pattern";
-  const userPrompt = `${materialLabel}:
+  const userPrompt = isChunkQuiz ? material.text : `${materialLabel}:
 ${material.text}
 
 Scenes:
@@ -596,7 +535,7 @@ ${selectedScenes.map((scene, index) => `${index + 1}. ${scene}`).join("\n")}`;
         ...(useDeepSeekFastQuiz ? { thinking: { type: "disabled" } } : {}),
         max_tokens: isPhraseMatchQuiz
           ? 1600
-          : isVocabularyQuiz
+          : isVocabularyQuiz || isChunkQuiz
             ? 4096
             : isAdverbQuiz || batch.batchIndex === 0
               ? 1800
@@ -638,6 +577,10 @@ ${selectedScenes.map((scene, index) => `${index + 1}. ${scene}`).join("\n")}`;
 
   try {
     const parsed = JSON.parse(outputText);
+    if (isChunkQuiz) {
+      const card = readChunkCard(parsed);
+      return card ? jsonResponse(card) : jsonResponse({ error: "词组卡内容不完整，请重新生成。" }, 502);
+    }
     const rawCards: unknown[] = Array.isArray(parsed.cards) ? parsed.cards : [];
 
     if (isPhraseMatchQuiz) {

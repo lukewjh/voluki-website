@@ -800,6 +800,69 @@ import { rioLists } from "../lib/rioMaterials";
       gap: 18px;
     }
 
+    :global(.rio-chunk-card) {
+      display: grid;
+      gap: 14px;
+      min-width: 0;
+      overflow-wrap: anywhere;
+      justify-items: start;
+    }
+
+    :global(.rio-chunk-card section) {
+      width: 100%;
+      min-width: 0;
+    }
+
+    :global(.rio-chunk-card h3) {
+      margin: 0 0 6px;
+      font-size: 15px;
+    }
+
+    :global(.rio-chunk-card dl) {
+      margin: 0;
+    }
+
+    :global(.rio-chunk-card dl > div) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+      gap: 12px;
+      border-top: 1px solid var(--line);
+      padding: 8px 0;
+      line-height: 1.5;
+    }
+
+    :global(.rio-chunk-card dt) { font-weight: 700; }
+    :global(.rio-chunk-card dd) { margin: 0; }
+
+    @media (max-width: 540px) {
+      :global(.rio-chunk-card dl > div) {
+        grid-template-columns: 1fr;
+        gap: 2px;
+      }
+    }
+
+    :global(.rio-chunk-card details) {
+      width: 100%;
+    }
+
+    :global(.rio-chunk-card summary) {
+      width: fit-content;
+      padding: 12px 0;
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    :global(.rio-chunk-card details:not([open]) .when-open),
+    :global(.rio-chunk-card details[open] .when-closed) {
+      display: none;
+    }
+
+    :global(.rio-chunk-card details p) {
+      margin: 0;
+      line-height: 1.7;
+    }
+
     :global(.rio-quiz-question) {
       display: grid;
       gap: 18px;
@@ -1365,6 +1428,7 @@ import { rioLists } from "../lib/rioMaterials";
 
   <script>
     import { initRioLibrary } from "../lib/rioLibrary";
+    import { readChunkCard, type ChunkCard } from "../lib/rioChunk";
     import { rioLists, usesPhraseMatch } from "../lib/rioMaterials";
     import { exampleCount, readVocabularyRound } from "../lib/rioVocabulary";
     import { startVocabularyGame } from "../lib/rioVocabularyGame";
@@ -1427,7 +1491,7 @@ import { rioLists } from "../lib/rioMaterials";
       loadingTypeTimer: undefined,
       lastFocusedElement: null
     };
-    let vocabularySession: AbortController | undefined;
+    let singleQuizSession: AbortController | undefined;
     let quizMatchHeightFrame;
     let quizMatchResizeTimer;
     const quizLoadingMessages = [
@@ -1902,7 +1966,7 @@ import { rioLists } from "../lib/rioMaterials";
       window.cancelAnimationFrame(quizMatchHeightFrame);
       quizModal.classList.remove("is-opening");
       quizModal.hidden = true;
-      vocabularySession?.abort();
+      singleQuizSession?.abort();
       quizState.material = null;
       quizState.cards = [];
       quizState.answers = [];
@@ -1968,6 +2032,34 @@ import { rioLists } from "../lib/rioMaterials";
       renderQuizMaterialBadge(nextMaterial);
       renderQuizLoading();
       generateQuiz(nextMaterial);
+    };
+
+    const renderChunkCard = (stage: HTMLElement, card: ChunkCard, material) => {
+      const next = getNextQuizMaterial();
+      const original = material.text.trim().replace(/\s+/g, " ");
+      const changed = original !== card.chunk.replace(/\s+/g, " ");
+      const sentence = escapeHtml(card.example).replace(/\*\*([^*]+)\*\*/g, '<mark class="rio-quiz-target-word">$1</mark>');
+      const usageList = (rows: ChunkCard["forms"]) => rows.map(({ expression, note }) =>
+        `<div><dt lang="en">${escapeHtml(expression)}</dt><dd>${escapeHtml(note)}</dd></div>`
+      ).join("");
+      stage.innerHTML = `<article class="rio-chunk-card">
+        <details>
+          <summary>标准完整形态</summary>
+          ${changed ? `<p>修订词组 · <strong lang="en">${escapeHtml(card.chunk)}</strong></p>` : ""}
+          <dl>${usageList(card.forms)}</dl>
+        </details>
+        <details>
+          <summary>常见同族 / 替换搭配</summary>
+          <dl>${usageList(card.alternatives)}</dl>
+        </details>
+        <section><h3>口语例句</h3><p class="rio-quiz-sentence" lang="en">${sentence}</p></section>
+        <details>
+          <summary><span class="when-closed">显示中文</span><span class="when-open">收起中文</span></summary>
+          <p>${escapeHtml(card.translation)}</p>
+        </details>
+        ${next && next.id !== material.id ? '<button class="rio-quiz-complete-button primary" type="button" data-rio-quiz-next-material>下一个词组</button>' : ""}
+      </article>`;
+      stage.querySelector("[data-rio-quiz-next-material]")?.addEventListener("click", startNextQuizMaterial);
     };
 
     const launchQuizCompleteConfetti = () => {
@@ -2036,7 +2128,7 @@ import { rioLists } from "../lib/rioMaterials";
         ?.addEventListener("click", startNextQuizMaterial);
       if (review) quizStage.querySelector(".rio-quiz-complete-actions")?.before(review);
       if (isVocabularyMatchQuiz(quizState.material)) {
-        vocabularySession?.abort();
+        singleQuizSession?.abort();
         quizStage.querySelector<HTMLButtonElement>("[data-rio-quiz-next-material], [data-rio-quiz-close-action]")?.focus({ preventScroll: true });
       }
       launchQuizCompleteConfetti();
@@ -2779,8 +2871,9 @@ import { rioLists } from "../lib/rioMaterials";
     }
 
     const generateQuiz = async (material) => {
-      vocabularySession?.abort();
-      vocabularySession = isVocabularyMatchQuiz(material) ? new AbortController() : undefined;
+      singleQuizSession?.abort();
+      const isChunk = material.type === "chunk";
+      singleQuizSession = isChunk || isVocabularyMatchQuiz(material) ? new AbortController() : undefined;
       const currentGeneration = quizState.generationId + 1;
 
       quizState.generationId = currentGeneration;
@@ -2796,14 +2889,20 @@ import { rioLists } from "../lib/rioMaterials";
       renderQuizLoading();
 
       try {
-        if (vocabularySession && quizStage instanceof HTMLElement) {
-          const { signal } = vocabularySession;
+        if (singleQuizSession && quizStage instanceof HTMLElement) {
+          const { signal } = singleQuizSession;
           const data = await requestQuiz(material, 0, signal);
           if (currentGeneration !== quizState.generationId) return;
-          const round = readVocabularyRound(data);
-          if (!round) throw new Error("这组例句的格式不完整，请重新生成。");
           quizState.isLoading = false;
           stopQuizLoadingMessages();
+          if (isChunk) {
+            const card = readChunkCard(data);
+            if (!card) throw new Error("词组卡内容不完整，请重新生成。");
+            renderChunkCard(quizStage, card, material);
+            return;
+          }
+          const round = readVocabularyRound(data);
+          if (!round) throw new Error("这组例句的格式不完整，请重新生成。");
           startVocabularyGame(quizStage, round, signal, playQuizTone, renderQuizComplete);
           return;
         }

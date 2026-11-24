@@ -9,4 +9,4 @@ export const rioLists = [
 export type RioType = (typeof rioLists)[number]["type"];
 export type RioMaterial = { id: number; type: RioType; text: string };
 
-export const usesPhraseMatch = (type: string | undefined) => type === "chunk" || type === "idiom";
+export const usesPhraseMatch = (type: string | undefined) => type === "idiom";
