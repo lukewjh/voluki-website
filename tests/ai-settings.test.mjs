@@ -67,29 +67,32 @@ test("RIO pronunciation reuses the MiniMax key and region for Turbo MP3 synthesi
   const originalFetch = globalThis.fetch;
   const config = { ...settings, baseUrl: "https://api.minimax.io/v1/chat/completions", model: "MiniMax-M3" };
   const send = () => POST({ request: new Request(request(config), { body: JSON.stringify({ text: "give it a shot" }) }), locals });
-  let status = 0;
+  let upstream = Response.json({ base_resp: { status_code: 0 }, data: { status: 2, audio: "49443303" } });
   let upstreamCalls = 0;
   globalThis.fetch = async (url, options) => {
     upstreamCalls++;
     assert.equal(url, "https://api.minimax.io/v1/t2a_v2");
     assert.equal(options.headers.Authorization, "Bearer test-user-key");
-    assert.equal(options.redirect, "error");
+    assert.equal(options.redirect, "manual");
     const body = JSON.parse(options.body);
     assert.equal(body.model, "speech-2.8-turbo");
     assert.equal(body.text, "give it a shot");
     assert.equal(body.audio_setting.format, "mp3");
-    return Response.json({ base_resp: { status_code: status }, data: { status: 2, audio: "49443303" } });
+    return upstream;
   };
   try {
     const response = await send();
     assert.equal(response.headers.get("Content-Type"), "audio/mpeg");
     assert.match(response.headers.get("Cache-Control"), /no-store/);
     assert.equal(Buffer.from(await response.arrayBuffer()).toString("hex"), "49443303");
-    status = 1004;
+    upstream = Response.json({ base_resp: { status_code: 1004 } });
     const rejected = await send();
     assert.equal(rejected.status, 403);
     assert.match((await rejected.json()).error, /Key 是否支持语音合成/);
-    assert.equal(upstreamCalls, 2);
+    upstream = Response.redirect("https://example.com/voice", 307);
+    const redirected = await send();
+    assert.equal(redirected.status, 502);
+    assert.equal(upstreamCalls, 3);
   } finally { globalThis.fetch = originalFetch; }
 });
 

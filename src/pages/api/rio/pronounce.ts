@@ -32,7 +32,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const response = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${config.apiKey}` },
-      redirect: "error",
+      redirect: "manual",
       signal: AbortSignal.timeout(20_000),
       body: JSON.stringify({
         model: "speech-2.8-turbo",
