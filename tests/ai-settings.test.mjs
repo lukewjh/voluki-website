@@ -46,6 +46,53 @@ test("session settings are read anew for each request and can be reset", () => {
   assert.throws(() => client.aiRequestHeaders(), /无法读取 AI 配置/);
 });
 
+test("RIO pronunciation requires an official MiniMax endpoint on the current AI configuration", async () => {
+  const { POST } = await load("src/pages/api/rio/pronounce.ts");
+  const originalFetch = globalThis.fetch;
+  let upstreamCalls = 0;
+  globalThis.fetch = async () => { upstreamCalls++; throw new Error("Unexpected upstream call"); };
+  try {
+    for (const config of [undefined, { ...settings, model: "MiniMax-M3" },
+      { ...settings, baseUrl: "https://api.minimax.cn.unrelated.com/v1" }]) {
+      const response = await POST({ request: new Request(request(config), { body: JSON.stringify({ text: "hello" }) }), locals });
+      assert.equal(response.status, 400);
+      assert.match((await response.json()).error, /AI 请求设置.*MiniMax/);
+    }
+    assert.equal(upstreamCalls, 0);
+  } finally { globalThis.fetch = originalFetch; }
+});
+
+test("RIO pronunciation reuses the MiniMax key and region for Turbo MP3 synthesis", async () => {
+  const { POST } = await load("src/pages/api/rio/pronounce.ts");
+  const originalFetch = globalThis.fetch;
+  const config = { ...settings, baseUrl: "https://api.minimax.io/v1/chat/completions", model: "MiniMax-M3" };
+  const send = () => POST({ request: new Request(request(config), { body: JSON.stringify({ text: "give it a shot" }) }), locals });
+  let status = 0;
+  let upstreamCalls = 0;
+  globalThis.fetch = async (url, options) => {
+    upstreamCalls++;
+    assert.equal(url, "https://api.minimax.io/v1/t2a_v2");
+    assert.equal(options.headers.Authorization, "Bearer test-user-key");
+    assert.equal(options.redirect, "error");
+    const body = JSON.parse(options.body);
+    assert.equal(body.model, "speech-2.8-turbo");
+    assert.equal(body.text, "give it a shot");
+    assert.equal(body.audio_setting.format, "mp3");
+    return Response.json({ base_resp: { status_code: status }, data: { status: 2, audio: "49443303" } });
+  };
+  try {
+    const response = await send();
+    assert.equal(response.headers.get("Content-Type"), "audio/mpeg");
+    assert.match(response.headers.get("Cache-Control"), /no-store/);
+    assert.equal(Buffer.from(await response.arrayBuffer()).toString("hex"), "49443303");
+    status = 1004;
+    const rejected = await send();
+    assert.equal(rejected.status, 403);
+    assert.match((await rejected.json()).error, /Key 是否支持语音合成/);
+    assert.equal(upstreamCalls, 2);
+  } finally { globalThis.fetch = originalFetch; }
+});
+
 test("split API sends the configured key, model and endpoint to the AI provider", async () => {
   const { POST } = await load("src/pages/api/ielts/split.ts");
   const originalFetch = globalThis.fetch;

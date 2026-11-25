@@ -11,8 +11,8 @@ import { rioLists } from "../lib/rioMaterials";
       <h1>RIO</h1>
     </div>
 
-    <details class="rio-panel rio-library" open>
-      <summary>欧路生词本</summary>
+    <details class="rio-panel rio-library">
+      <summary>欧路生词本<span id="rio-sync-status" role="status" aria-live="polite"></span></summary>
       <div class="rio-library-content">
         <form id="rio-connect">
           <label for="rio-eudic-key">欧路 API Key</label>
@@ -36,7 +36,6 @@ import { rioLists } from "../lib/rioMaterials";
             {rioLists.map((list) => <option value={list.type}>{list.title}</option>)}
           </select></label>
         </template>
-        <p id="rio-sync-status" role="status" aria-live="polite"></p>
         <button id="rio-sync-retry" type="button" hidden>重试加载</button>
       </div>
     </details>
@@ -47,6 +46,7 @@ import { rioLists } from "../lib/rioMaterials";
         <button id="rio-clear-search" type="button" hidden>清空搜索</button>
       </div>
       <p id="rio-search-status" role="status"></p>
+      <p id="rio-pronunciation-status" role="status"></p>
       <button type="button" data-rio-focus-exit aria-controls="rio-lists" hidden><span aria-hidden="true">←</span> 退出专注</button>
     </div>
     <div id="rio-lists" class="rio-table-grid" aria-label="已映射的 RIO 列表">
@@ -65,9 +65,11 @@ import { rioLists } from "../lib/rioMaterials";
           <div class="rio-list-content" id={`rio-list-content-${list.type}`}>
             <p class="rio-empty">暂无词条</p>
             <div class="rio-deck" id={`rio-deck-${list.type}`} hidden>
-              <button type="button" data-step="-1" aria-label={list.title + " 上一个词条"}>‹</button>
-              <button class="rio-deck-word" type="button" lang="en" data-rio-quiz-material></button>
-              <button type="button" data-step="1" aria-label={list.title + " 下一个词条"}>›</button>
+              <button type="button" data-step="-1" aria-label={list.title + " 上一个词条"} aria-keyshortcuts="A ArrowLeft">‹</button>
+              <div class="rio-deck-card">
+                <button class="rio-deck-word" type="button" lang="en" aria-keyshortcuts="Space F" data-rio-quiz-material></button>
+              </div>
+              <button type="button" data-step="1" aria-label={list.title + " 下一个词条"} aria-keyshortcuts="D ArrowRight">›</button>
             </div>
             <table hidden>
               <thead><tr><th scope="col">词条</th></tr></thead>
@@ -83,8 +85,15 @@ import { rioLists } from "../lib/rioMaterials";
       ))}
       <template id="rio-word-row">
         <tr>
-          <td><button class="rio-quiz-material-button" type="button" data-rio-quiz-material></button></td>
+          <td><div class="rio-word-entry"><button class="rio-quiz-material-button" type="button" lang="en" data-rio-quiz-material></button></div></td>
         </tr>
+      </template>
+      <template id="rio-pronunciation-button">
+        <button class="rio-pronunciation-button" type="button" data-rio-pronounce aria-label="朗读词条">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 5 6 9H3v6h3l5 4z M15 9a4 4 0 0 1 0 6m3-9a8 8 0 0 1 0 12" />
+          </svg>
+        </button>
       </template>
     </div>
 
@@ -261,6 +270,8 @@ import { rioLists } from "../lib/rioMaterials";
 
     .rio-library { margin-bottom: 22px; }
     .rio-library summary { font-size: 24px; font-weight: 750; cursor: pointer; }
+    #rio-sync-status { color: var(--muted); overflow-wrap: anywhere; }
+    .rio-library summary #rio-sync-status { margin-inline-start: 12px; font-size: 14px; font-weight: 400; }
     .rio-library-content { display: grid; gap: 16px; margin-top: 16px; }
     .rio-library form { display: grid; justify-items: start; gap: 10px; }
     .rio-library [hidden], .rio-table-grid [hidden] { display: none; }
@@ -293,6 +304,7 @@ import { rioLists } from "../lib/rioMaterials";
     .rio-deck button { color: var(--text); cursor: pointer; font: inherit; }
     .rio-deck [data-step] { width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: var(--surface-soft); font-size: 26px; line-height: 1; }
     .rio-deck [data-step]:disabled { opacity: .35; cursor: default; }
+    .rio-deck-card { position: relative; min-width: 0; }
     .rio-deck .rio-deck-word {
       min-height: clamp(152px, 29vw, 248px); width: 100%; padding: 24px clamp(12px, 3vw, 36px);
       border: 1px solid var(--line); border-radius: 12px;
@@ -302,6 +314,8 @@ import { rioLists } from "../lib/rioMaterials";
       font-size: clamp(20px, 3vw, 30px); font-weight: 700; line-height: 1.3;
       touch-action: pan-y pinch-zoom; user-select: none;
     }
+    .rio-deck-word:has(+ .rio-pronunciation-button) { padding-block: 52px; }
+    .rio-deck-card .rio-pronunciation-button { position: absolute; inset-block-start: 6px; inset-inline-end: 6px; }
     #rio-lists[data-focused] {
       grid-template-columns: minmax(0, 1fr);
       max-width: 740px;
@@ -313,10 +327,12 @@ import { rioLists } from "../lib/rioMaterials";
       .rio-search-controls { flex-wrap: wrap; }
       .rio-search-controls input { flex-basis: 60%; }
     }
-    #rio-search-status { margin: 8px 0 0; color: var(--muted); }
-    #rio-search-status:empty { margin: 0; }
+    #rio-search-status, #rio-pronunciation-status { margin: 8px 0 0; color: var(--muted); }
+    #rio-search-status:empty, #rio-pronunciation-status:empty { margin: 0; }
+    .rio-deck[hidden] + #rio-pronunciation-status { display: none; }
 
     .rio-table-grid {
+      --rio-speaker-size: 44px;
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       align-items: start;
@@ -398,8 +414,19 @@ import { rioLists } from "../lib/rioMaterials";
       overflow-wrap: anywhere;
     }
 
+    .rio-word-entry { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: var(--rio-speaker-size); }
+    .rio-pronunciation-button {
+      display: inline-grid; place-items: center; flex: none;
+      width: var(--rio-speaker-size); height: var(--rio-speaker-size); padding: 0; border: 0; border-radius: 6px;
+      background: transparent; color: var(--text); cursor: pointer;
+    }
+    .rio-pronunciation-button svg { width: 19px; height: 19px; }
+    .rio-pronunciation-button:hover, .rio-pronunciation-button:focus-visible { background: var(--surface-soft); }
+    .rio-pronunciation-button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
     .rio-quiz-material-button {
       width: 100%;
+      min-width: 0;
       border: 0;
       background: transparent;
       color: var(--text);
@@ -1551,6 +1578,8 @@ import { rioLists } from "../lib/rioMaterials";
 
   <script>
     import { initRioLibrary } from "../lib/rioLibrary";
+    import { getRioShortcut } from "../lib/rioKeyboard";
+    import { initRioPronunciation } from "../lib/rioPronunciation";
     import { startSmallTalk } from "../lib/rioSmallTalk";
     import { readChunkCard, type ChunkCard } from "../lib/rioChunk";
     import { readPatternCard, type PatternCard } from "../lib/rioPattern";
@@ -1880,26 +1909,18 @@ import { rioLists } from "../lib/rioMaterials";
       return `${minutes}:${seconds}`;
     };
 
-    let quizAudioContext;
+    let audioContext: AudioContext | undefined;
 
-    const getQuizAudioContext = () => {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContext) return null;
-
-      if (!quizAudioContext) {
-        quizAudioContext = new AudioContext();
-      }
-
-      if (quizAudioContext.state === "suspended") {
-        quizAudioContext.resume().catch(() => {});
-      }
-
-      return quizAudioContext;
+    const getRioAudioContext = () => {
+      const { webkitAudioContext } = window as Window & { webkitAudioContext?: typeof AudioContext };
+      const AudioContextClass = window.AudioContext || webkitAudioContext;
+      return AudioContextClass ? (audioContext ??= new AudioContextClass()) : null;
     };
 
     const playQuizTone = (type) => {
-      const context = getQuizAudioContext();
+      const context = getRioAudioContext();
       if (!context) return;
+      if (context.state === "suspended") context.resume().catch(() => {});
 
       const toneSets = {
         correct: [523.25, 659.25],
@@ -3447,6 +3468,16 @@ import { rioLists } from "../lib/rioMaterials";
     });
     practiceBack.addEventListener("click", showPracticeChoices);
     quizCloseButtons.forEach((button) => button.addEventListener("click", closeQuizModal));
+    quizModal.addEventListener("keydown", event => {
+      if (quizModal.dataset.practice !== "choose" || !quizState.lastFocusedElement?.classList.contains("rio-deck-word")) return;
+      const shortcut = getRioShortcut(event);
+      if (shortcut === "previous" || shortcut === "next") {
+        event.preventDefault();
+        (shortcut === "previous" && !quizOption.hidden ? quizOption : talkOption).focus({ preventScroll: true });
+      } else if (shortcut === "activate" && event.repeat) {
+        event.preventDefault();
+      }
+    });
     quizModal.addEventListener("cancel", event => {
       event.preventDefault();
       closeQuizModal();
@@ -3483,7 +3514,8 @@ import { rioLists } from "../lib/rioMaterials";
     });
     pageButtons.complete?.addEventListener("click", launchCompletionCelebration);
     window.addEventListener("resize", scheduleMatchingCardHeightSync);
-    const getQuizMaterials = initRioLibrary();
+    const pronounce = initRioPronunciation(libraryGrid!, getRioAudioContext);
+    const getQuizMaterials = initRioLibrary(pronounce);
 
     document.addEventListener("keydown", (event) => {
       if (event.key !== "Escape") return;

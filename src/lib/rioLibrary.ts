@@ -1,4 +1,5 @@
 import { rioLists, type RioMaterial, type RioType } from "./rioMaterials";
+import { getRioShortcut } from "./rioKeyboard";
 
 type Book = { id: string; name: string };
 type Mapping = Record<string, RioType>;
@@ -21,6 +22,11 @@ function setWordButton(button: HTMLButtonElement, material: RioMaterial) {
   Object.assign(button.dataset, {
     rioMaterialId: String(material.id), rioMaterialType: material.type, rioMaterialText: material.text
   });
+  const speaker = button.parentElement?.querySelector<HTMLButtonElement>("[data-rio-pronounce]");
+  if (speaker) {
+    speaker.dataset.rioPronounce = material.text;
+    speaker.setAttribute("aria-label", `朗读 ${material.text}`);
+  }
 }
 
 async function request<T>(query = "", options: RequestInit = {}): Promise<T> {
@@ -30,7 +36,9 @@ async function request<T>(query = "", options: RequestInit = {}): Promise<T> {
   return data;
 }
 
-export function initRioLibrary() {
+export function initRioLibrary(pronounce: (button: HTMLButtonElement) => Promise<void>) {
+  const library = document.querySelector<HTMLDetailsElement>(".rio-library")!;
+  const summary = library.querySelector("summary")!;
   const connect = document.querySelector<HTMLFormElement>("#rio-connect")!;
   const key = document.querySelector<HTMLInputElement>("#rio-eudic-key")!;
   const disconnect = document.querySelector<HTMLButtonElement>("#rio-disconnect")!;
@@ -45,6 +53,7 @@ export function initRioLibrary() {
   const searchInput = document.querySelector<HTMLInputElement>("#rio-search-input")!;
   const clearSearch = document.querySelector<HTMLButtonElement>("#rio-clear-search")!;
   const searchStatus = document.querySelector<HTMLElement>("#rio-search-status")!;
+  const speakerTemplate = document.querySelector<HTMLTemplateElement>("#rio-pronunciation-button")!;
   const exitFocusButton = search.querySelector<HTMLButtonElement>("[data-rio-focus-exit]")!;
   const grid = document.querySelector<HTMLElement>("#rio-lists")!;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -61,13 +70,21 @@ export function initRioLibrary() {
   const requestTimes: number[] = [];
   const storageKey = () => "rio.eudic.mapping." + scope;
 
+  function addSpeaker(wordButton: HTMLButtonElement, type: string | undefined) {
+    if (type === "vocabulary" || type === "idiom") {
+      wordButton.after(speakerTemplate.content.cloneNode(true));
+    }
+  }
+
   function paintListPage(group: SearchGroup) {
     const { section, matches, page } = group;
     const start = page * listPageSize;
     const rows = document.createDocumentFragment();
     for (const { material } of matches.slice(start, start + listPageSize)) {
       const row = wordRow.cloneNode(true) as HTMLTableRowElement;
-      setWordButton(row.querySelector("button")!, material);
+      const wordButton = row.querySelector<HTMLButtonElement>("[data-rio-quiz-material]")!;
+      addSpeaker(wordButton, material.type);
+      setWordButton(wordButton, material);
       rows.append(row);
     }
     section.querySelector("tbody")!.replaceChildren(rows);
@@ -197,6 +214,7 @@ export function initRioLibrary() {
     const mapped = books.filter((book) => mapping[book.id]);
     render(true);
     if (!mapped.length) {
+      library.open = true;
       status.textContent = books.length ? "选好对应列表后，保存映射即可加载词条。" : "这个账号还没有英语生词本。";
       return;
     }
@@ -234,6 +252,7 @@ export function initRioLibrary() {
     } catch (error) {
       if (signal.aborted) return;
       const count = render();
+      library.open = true;
       status.textContent = `已加载 ${count} 条。` + errorMessage(error);
       retryAction = loadWords;
       retry.hidden = false;
@@ -273,10 +292,12 @@ export function initRioLibrary() {
       if (scope) void loadWords();
       else {
         render();
+        library.open = true;
         status.textContent = "输入欧路 API Key，连接你的英语生词本。";
       }
     } catch (error) {
       showChoices();
+      library.open = true;
       status.textContent = errorMessage(error);
       retryAction = () => connectBooks(method);
       if (method === "GET") disconnect.hidden = false;
@@ -299,6 +320,7 @@ export function initRioLibrary() {
   for (const deck of grid.querySelectorAll<HTMLElement>(".rio-deck")) {
     const section = deck.closest<HTMLElement>("[data-rio-list]")!;
     const face = deck.querySelector<HTMLButtonElement>(".rio-deck-word")!;
+    addSpeaker(face, section.dataset.rioList);
     const focusButton = section.querySelector<HTMLButtonElement>("[data-rio-focus]")!;
     const listToggle = section.querySelector<HTMLButtonElement>(".rio-list-toggle")!;
     const pageButtons = section.querySelectorAll<HTMLButtonElement>("[data-list-page-step]");
@@ -323,7 +345,7 @@ export function initRioLibrary() {
       if (!group?.matches.length) return;
       focus = { group, scrollY: window.scrollY, trigger: focusButton };
       paintView();
-      exitFocusButton.focus({ preventScroll: true });
+      face.focus({ preventScroll: true });
       search.scrollIntoView({ block: "start", behavior: "instant" });
       animateFocusChange(true);
     });
@@ -336,11 +358,6 @@ export function initRioLibrary() {
     }
     deck.querySelectorAll<HTMLButtonElement>("[data-step]").forEach(arrow =>
       arrow.addEventListener("click", () => turn(Number(arrow.dataset.step))));
-    deck.addEventListener("keydown", event => {
-      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-      event.preventDefault();
-      turn(event.key === "ArrowRight" ? 1 : -1);
-    });
     let start: { id: number; x: number; y: number; moved: boolean } | undefined;
     let suppressClick = false;
     face.addEventListener("pointerdown", event => {
@@ -373,7 +390,28 @@ export function initRioLibrary() {
       }
     });
   }
+  document.addEventListener("keydown", (event) => {
+    const shortcut = getRioShortcut(event);
+    if (!shortcut || !focus || document.querySelector("dialog[open], [data-rio-modal]:not([hidden])")) return;
+    const deck = focus.group.section.querySelector<HTMLElement>(".rio-deck:not([hidden])");
+    if (!deck) return;
+    const control = event.target instanceof Element && event.target.closest("button, a[href], summary");
+    if (shortcut === "activate" && control && !deck.contains(control)) return;
+
+    event.preventDefault();
+    if (shortcut === "previous" || shortcut === "next") {
+      deck.querySelector<HTMLButtonElement>(`[data-step="${shortcut === "previous" ? -1 : 1}"]`)?.click();
+    } else if (!event.repeat) {
+      const face = deck.querySelector<HTMLButtonElement>(".rio-deck-word")!;
+      if (shortcut === "pronounce") void pronounce(face);
+      else face.click();
+    }
+  });
   searchInput.addEventListener("input", filterWords);
+  library.addEventListener("toggle", () => {
+    if (library.open) retry.before(status);
+    else summary.append(status);
+  });
   clearSearch.addEventListener("click", () => {
     searchInput.value = "";
     filterWords();
