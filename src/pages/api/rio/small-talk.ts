@@ -1,10 +1,19 @@
 import type { APIRoute } from "astro";
 import { resolveAiConfig } from "../../../lib/aiConfig";
+import { rioLists, type RioType } from "../../../lib/rioMaterials";
 
 export const prerender = false;
 
 const fail = (error: string, status: number) =>
   Response.json({ error }, { status, headers: { "Cache-Control": "no-store" } });
+
+const usage: Record<RioType, string> = {
+  vocabulary: "Use the word in one common sense and make its meaning clear through the situation.",
+  chunk: "Use the phrase as a natural collocation, filling any variable slots and inflecting it as needed.",
+  idiom: "Use the idiom naturally so the situation makes its figurative meaning clear.",
+  sentence_pattern: "Instantiate the sentence pattern with your own words and ask a question that invites a reply using the same structure.",
+  adverb: "Use the adverb in a context that makes its effect on tone, emphasis, or meaning clear."
+};
 
 export const POST: APIRoute = async ({ request, locals }) => {
   const config = resolveAiConfig(request, locals);
@@ -12,7 +21,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
   if (!config.apiKey) return fail("请先在顶部 AI 设置中配置模型。", 400);
 
   const body = await request.json().catch(() => null);
-  if (typeof body?.idiom !== "string" || !body.idiom.trim() || body.idiom.length > 500 ||
+  const material = body?.material ?? { type: "idiom", text: body?.idiom };
+  const category = rioLists.find(list => list.type === material?.type);
+  if (!category || typeof material.text !== "string" || !material.text.trim() || material.text.length > 4000 ||
       !["open", "reply", "hint"].includes(body.action) || !Array.isArray(body.history) ||
       body.history.length > 16) return fail("对话请求格式不正确。", 400);
 
@@ -28,8 +39,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
       (body.action === "hint" && last?.role !== "assistant")) return fail("对话轮次不正确。", 400);
 
   const messages = [
-    { role: "system", content: "Have friendly everyday small talk in English with a language learner. Use the target idiom naturally in the opening, in an everyday situation, with an easy question. Follow their replies, gently recast mistakes, and give them a chance to use the idiom without forcing it. Use one or two short sentences and at most one question per turn. Plain text only." },
-    { role: "user", content: "Start our conversation about this idiom: " + JSON.stringify(body.idiom.trim()) },
+    { role: "system", content: "Have friendly everyday small talk in English with a language learner. Model the target expression in the opening and ask an easy question. " + usage[category.type] + " Follow their replies, gently recast mistakes, and give them a chance to use the expression without forcing it. Use one or two short sentences and at most one question per turn. Plain text only." },
+    { role: "user", content: "Start a conversation using this practice target: " + JSON.stringify(material.text.trim()) },
     ...history
   ];
   if (body.action === "hint") messages.push({ role: "user", content: "Help me reply to your last message. Give me only one unfinished English sentence starter in my voice, ending in an ellipsis." });

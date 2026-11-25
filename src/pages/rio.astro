@@ -11,33 +11,35 @@ import { rioLists } from "../lib/rioMaterials";
       <h1>RIO</h1>
     </div>
 
-    <section class="rio-panel rio-library" aria-labelledby="rio-library-title">
-      <h2 id="rio-library-title">欧路生词本</h2>
-      <form id="rio-connect">
-        <label for="rio-eudic-key">欧路 API Key</label>
-        <div class="rio-connect-actions">
-          <input id="rio-eudic-key" type="password" autocomplete="off" maxlength="2052" required />
-          <button type="submit">连接生词本</button>
-          <button id="rio-disconnect" type="button" hidden>断开连接</button>
-        </div>
-        <p>授权在此浏览器保留 30 天。<a href="https://my.eudic.net/OpenAPI/Authorization" target="_blank" rel="noreferrer">获取欧路授权</a></p>
-      </form>
-      <form id="rio-mapping" hidden>
-        <fieldset>
-          <legend>选择每个生词本对应的 RIO 列表</legend>
-          <div id="rio-book-choices"></div>
-        </fieldset>
-        <button type="submit">保存映射并加载</button>
-      </form>
-      <template id="rio-book-choice">
-        <label><span></span><select>
-          <option value="">不映射</option>
-          {rioLists.map((list) => <option value={list.type}>{list.title}</option>)}
-        </select></label>
-      </template>
-      <p id="rio-sync-status" role="status" aria-live="polite"></p>
-      <button id="rio-sync-retry" type="button" hidden>重试加载</button>
-    </section>
+    <details class="rio-panel rio-library" open>
+      <summary>欧路生词本</summary>
+      <div class="rio-library-content">
+        <form id="rio-connect">
+          <label for="rio-eudic-key">欧路 API Key</label>
+          <div class="rio-connect-actions">
+            <input id="rio-eudic-key" type="password" autocomplete="off" maxlength="2052" required />
+            <button type="submit">连接生词本</button>
+            <button id="rio-disconnect" type="button" hidden>断开连接</button>
+          </div>
+          <p>授权在此浏览器保留 30 天。<a href="https://my.eudic.net/OpenAPI/Authorization" target="_blank" rel="noreferrer">获取欧路授权</a></p>
+        </form>
+        <form id="rio-mapping" hidden>
+          <fieldset>
+            <legend>选择每个生词本对应的 RIO 列表</legend>
+            <div id="rio-book-choices"></div>
+          </fieldset>
+          <button type="submit">保存映射并加载</button>
+        </form>
+        <template id="rio-book-choice">
+          <label><span></span><select>
+            <option value="">不映射</option>
+            {rioLists.map((list) => <option value={list.type}>{list.title}</option>)}
+          </select></label>
+        </template>
+        <p id="rio-sync-status" role="status" aria-live="polite"></p>
+        <button id="rio-sync-retry" type="button" hidden>重试加载</button>
+      </div>
+    </details>
     <div id="rio-library-search" role="search" aria-label="生词本词条" hidden>
       <div class="rio-search-controls">
         <input id="rio-search-input" type="search" placeholder="搜索所有已映射词条"
@@ -45,19 +47,38 @@ import { rioLists } from "../lib/rioMaterials";
         <button id="rio-clear-search" type="button" hidden>清空搜索</button>
       </div>
       <p id="rio-search-status" role="status"></p>
+      <button type="button" data-rio-focus-exit aria-controls="rio-lists" hidden><span aria-hidden="true">←</span> 退出专注</button>
     </div>
     <div id="rio-lists" class="rio-table-grid" aria-label="已映射的 RIO 列表">
       {rioLists.map((list) => (
         <section class="rio-table-card" data-rio-list={list.type} hidden>
           <div class="rio-table-head">
-            <h2>{list.title}</h2>
-            <span data-rio-count>0 条</span>
+            <h2>
+              <button class="rio-list-toggle" type="button" aria-expanded="true" aria-controls={`rio-list-content-${list.type}`}>{list.title}</button>
+              <span class="rio-focused-title">{list.title}</span>
+            </h2>
+            <div class="rio-table-head-actions">
+              <span data-rio-count aria-live="polite">0 条</span>
+              <button type="button" data-rio-focus aria-controls={`rio-deck-${list.type}`}>专注</button>
+            </div>
           </div>
-          <p class="rio-empty">暂无词条</p>
-          <table hidden>
-            <thead><tr><th scope="col">词条</th></tr></thead>
-            <tbody></tbody>
-          </table>
+          <div class="rio-list-content" id={`rio-list-content-${list.type}`}>
+            <p class="rio-empty">暂无词条</p>
+            <div class="rio-deck" id={`rio-deck-${list.type}`} hidden>
+              <button type="button" data-step="-1" aria-label={list.title + " 上一个词条"}>‹</button>
+              <button class="rio-deck-word" type="button" lang="en" data-rio-quiz-material></button>
+              <button type="button" data-step="1" aria-label={list.title + " 下一个词条"}>›</button>
+            </div>
+            <table hidden>
+              <thead><tr><th scope="col">词条</th></tr></thead>
+              <tbody></tbody>
+            </table>
+            <div class="rio-list-pagination" role="group" aria-label={list.title + "分页"} hidden>
+              <button type="button" data-list-page-step="-1">上一页</button>
+              <span data-list-page-number aria-live="polite"></span>
+              <button type="button" data-list-page-step="1">下一页</button>
+            </div>
+          </div>
         </section>
       ))}
       <template id="rio-word-row">
@@ -139,40 +160,37 @@ import { rioLists } from "../lib/rioMaterials";
       <div class="rio-celebration" hidden aria-hidden="true" data-rio-celebration></div>
     </div>
 
-    <RioSmallTalk />
     <RioPatternCard />
-    <div class="rio-quiz-modal" hidden data-rio-quiz-modal>
+    <dialog class="rio-quiz-modal" aria-labelledby="rio-quiz-title" hidden data-rio-quiz-modal>
       <div class="rio-modal-backdrop"></div>
-      <section
-        class="rio-modal-card rio-quiz-card"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="rio-quiz-title"
-      >
+      <section class="rio-modal-card rio-quiz-card">
         <div class="rio-modal-head">
           <div>
             <span>RIO</span>
             <div class="rio-modal-title-row">
-              <h2 id="rio-quiz-title">Quiz</h2>
+              <h2 id="rio-quiz-title">选择练习</h2>
               <div class="rio-material-badges" data-rio-quiz-material-badge></div>
             </div>
           </div>
-          <button
-            class="rio-modal-close"
-            type="button"
-            aria-label="Close quiz"
-            data-rio-quiz-close
-          >
-            ×
-          </button>
-        </div>
-        <div class="rio-modal-body">
-          <div class="rio-quiz-stage" data-rio-quiz-stage>
-            <p class="rio-analysis-placeholder">Quiz will appear here.</p>
+          <div class="rio-practice-actions">
+            <button class="rio-practice-back" type="button" data-rio-practice-back hidden>返回选择</button>
+            <button class="rio-modal-close" type="button" aria-label="关闭练习" data-rio-quiz-close>×</button>
           </div>
         </div>
+        <div class="rio-modal-body">
+          <div class="rio-practice-options" data-rio-practice-options>
+            <button type="button" data-rio-start-quiz>
+              <strong></strong><span></span>
+            </button>
+            <button type="button" data-rio-start-talk>
+              <strong>Small Talk</strong><span>用当前词条练习英语对话</span>
+            </button>
+          </div>
+          <div class="rio-quiz-stage" data-rio-quiz-stage hidden></div>
+        </div>
+        <RioSmallTalk />
       </section>
-    </div>
+    </dialog>
   </section>
 
   <style>
@@ -241,8 +259,9 @@ import { rioLists } from "../lib/rioMaterials";
       color: var(--muted);
     }
 
-    .rio-library { display: grid; gap: 16px; margin-bottom: 22px; }
-    .rio-library h2 { margin: 0; }
+    .rio-library { margin-bottom: 22px; }
+    .rio-library summary { font-size: 24px; font-weight: 750; cursor: pointer; }
+    .rio-library-content { display: grid; gap: 16px; margin-top: 16px; }
     .rio-library form { display: grid; justify-items: start; gap: 10px; }
     .rio-library [hidden], .rio-table-grid [hidden] { display: none; }
     .rio-connect-actions { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -263,12 +282,44 @@ import { rioLists } from "../lib/rioMaterials";
     .rio-search-controls { display: flex; align-items: center; gap: 8px; }
     .rio-search-controls input { flex: 1; min-width: 0; }
     .rio-search-controls button { flex-shrink: 0; cursor: pointer; }
+    .rio-table-head-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 6px; }
+    [data-rio-focus], [data-rio-focus-exit] {
+      min-height: 36px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 6px;
+      background: var(--surface); color: var(--text); font: inherit; font-size: 14px; white-space: nowrap; cursor: pointer;
+    }
+    [data-rio-focus-exit] { margin-top: 12px; }
+    [data-rio-focus]:disabled { opacity: .45; cursor: default; }
+    .rio-deck { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: clamp(6px, 2vw, 16px); align-items: center; }
+    .rio-deck button { color: var(--text); cursor: pointer; font: inherit; }
+    .rio-deck [data-step] { width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: var(--surface-soft); font-size: 26px; line-height: 1; }
+    .rio-deck [data-step]:disabled { opacity: .35; cursor: default; }
+    .rio-deck .rio-deck-word {
+      min-height: clamp(152px, 29vw, 248px); width: 100%; padding: 24px clamp(12px, 3vw, 36px);
+      border: 1px solid var(--line); border-radius: 12px;
+      min-width: 0; height: auto; white-space: normal; overflow-wrap: anywhere;
+      background: color-mix(in srgb, var(--surface-soft) 48%, var(--surface));
+      box-shadow: 0 3px 0 var(--surface-soft);
+      font-size: clamp(20px, 3vw, 30px); font-weight: 700; line-height: 1.3;
+      touch-action: pan-y pinch-zoom; user-select: none;
+    }
+    #rio-lists[data-focused] {
+      grid-template-columns: minmax(0, 1fr);
+      max-width: 740px;
+      margin-inline: auto;
+    }
+    #rio-lists[data-focused] .rio-table-card { padding: clamp(14px, 2.5vw, 24px); }
+    #rio-lists[data-focused] .rio-table-head h2 { font-size: 18px; }
+    @media (max-width: 520px) {
+      .rio-search-controls { flex-wrap: wrap; }
+      .rio-search-controls input { flex-basis: 60%; }
+    }
     #rio-search-status { margin: 8px 0 0; color: var(--muted); }
     #rio-search-status:empty { margin: 0; }
 
     .rio-table-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
       gap: 16px;
     }
 
@@ -277,7 +328,6 @@ import { rioLists } from "../lib/rioMaterials";
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      margin-bottom: 16px;
     }
 
     .rio-table-head h2 {
@@ -285,7 +335,32 @@ import { rioLists } from "../lib/rioMaterials";
       font-size: 24px;
     }
 
-    .rio-table-head span {
+    .rio-list-content { margin-top: 16px; }
+    .rio-list-pagination {
+      display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 12px;
+      color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums;
+    }
+    .rio-list-pagination button {
+      min-height: 36px; padding: 4px 8px; border: 1px solid var(--line); border-radius: 6px;
+      background: var(--surface); color: var(--text); font: inherit; white-space: nowrap; cursor: pointer;
+    }
+    .rio-list-pagination button:disabled { opacity: .45; cursor: default; }
+    #rio-lists[data-focused] .rio-list-pagination { display: none; }
+    .rio-list-toggle {
+      display: inline-flex; align-items: center; gap: 9px; padding: 0;
+      border: 0; background: transparent; color: inherit; font: inherit;
+      text-align: left; cursor: pointer;
+    }
+    .rio-list-toggle::before {
+      content: ""; flex: none; width: 0; height: 0;
+      border: 5px solid transparent; border-left: 7px solid currentColor; border-right: 0;
+    }
+    .rio-list-toggle[aria-expanded="true"]::before { transform: rotate(90deg); }
+    .rio-focused-title, #rio-lists[data-focused] .rio-list-toggle { display: none; }
+    #rio-lists[data-focused] .rio-focused-title { display: inline; }
+    #rio-lists[data-focused] .rio-list-content { margin-top: 14px; }
+
+    .rio-table-head [data-rio-count] {
       display: inline-flex;
       align-items: center;
       min-height: 28px;
@@ -353,7 +428,7 @@ import { rioLists } from "../lib/rioMaterials";
       display: none;
     }
 
-    .rio-quiz-modal[hidden] {
+    .rio-quiz-modal[hidden], .rio-quiz-modal:not([open]) {
       display: none;
     }
 
@@ -366,6 +441,12 @@ import { rioLists } from "../lib/rioMaterials";
       place-items: center;
       padding: 24px;
     }
+
+    .rio-quiz-modal {
+      margin: 0; border: 0; width: 100%; height: 100%; max-width: none; max-height: none;
+      background: transparent; color: inherit; overflow: hidden;
+    }
+    .rio-quiz-modal::backdrop { background: transparent; }
 
     .rio-modal.is-opening .rio-modal-backdrop {
       animation: rio-modal-backdrop-in 180ms ease both;
@@ -413,6 +494,44 @@ import { rioLists } from "../lib/rioMaterials";
 
     .rio-quiz-card {
       width: min(720px, 100%);
+    }
+
+    .rio-practice-actions { display: flex; align-items: center; gap: 8px; }
+    .rio-quiz-card .rio-modal-head > div:first-child { min-width: 0; }
+    .rio-practice-back {
+      min-height: 38px; padding: 4px 8px; border: 1px solid var(--line); border-radius: 6px;
+      background: var(--surface); color: var(--text); font: inherit; font-size: 13px; white-space: nowrap; cursor: pointer;
+    }
+    .rio-practice-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .rio-practice-options:has([data-rio-start-quiz][hidden]) { grid-template-columns: minmax(0, 1fr); }
+    .rio-practice-options[hidden], .rio-quiz-stage[hidden] { display: none; }
+    .rio-practice-options button {
+      min-height: 104px; padding: 16px; text-align: left; border: 1px solid var(--line); border-radius: 10px;
+      background: var(--surface-soft); color: var(--text); font: inherit; cursor: pointer;
+    }
+    .rio-practice-options button:hover, .rio-practice-options button:focus-visible { border-color: var(--text); }
+    .rio-practice-options strong { display: block; margin-bottom: 3px; font-size: 19px; }
+    .rio-practice-options span { display: block; color: var(--muted); font-size: 14px; }
+    .rio-quiz-modal[data-practice="talk"] .rio-quiz-card {
+      display: grid; grid-template-rows: auto minmax(0, 1fr); overflow: hidden;
+      width: min(620px, 100%); height: min(680px, 88dvh);
+    }
+    .rio-quiz-modal[data-practice="talk"] .rio-modal-body { display: none; }
+    .rio-quiz-modal[data-practice="talk"] [data-rio-quiz-material-badge] { max-height: 3.5em; overflow-y: auto; }
+    .rio-quiz-modal[data-practice="talk"] .rio-modal-backdrop {
+      background: rgb(0 0 0 / 45%); backdrop-filter: none;
+    }
+    @media (max-width: 680px), (max-height: 500px) and (pointer: coarse) {
+      .rio-practice-options { grid-template-columns: minmax(0, 1fr); }
+      .rio-quiz-modal[data-practice="talk"] {
+        inset: var(--talk-top, 0px) 0 auto; height: var(--talk-height, 100dvh); padding: 0;
+      }
+      .rio-quiz-modal[data-practice="talk"] .rio-quiz-card {
+        width: 100%; height: 100%; max-height: none; border: 0; border-radius: 0;
+        padding: max(10px, env(safe-area-inset-top)) 14px max(10px, env(safe-area-inset-bottom));
+      }
+      .rio-quiz-modal[data-practice="talk"] .rio-modal-head { gap: 8px; padding-bottom: 8px; }
+      .rio-quiz-modal[data-practice="talk"] .rio-modal-head h2 { font-size: 20px; }
     }
 
     .rio-modal-card.is-celebrating {
@@ -1432,10 +1551,10 @@ import { rioLists } from "../lib/rioMaterials";
 
   <script>
     import { initRioLibrary } from "../lib/rioLibrary";
-    import { openSmallTalk } from "../lib/rioSmallTalk";
+    import { startSmallTalk } from "../lib/rioSmallTalk";
     import { readChunkCard, type ChunkCard } from "../lib/rioChunk";
     import { readPatternCard, type PatternCard } from "../lib/rioPattern";
-    import { rioLists, usesPhraseMatch } from "../lib/rioMaterials";
+    import { rioLists, usesPhraseMatch, type RioMaterial, type RioType } from "../lib/rioMaterials";
     import { exampleCount, readVocabularyRound } from "../lib/rioVocabulary";
     import { startVocabularyGame } from "../lib/rioVocabularyGame";
     import { aiRequestHeaders } from "../lib/aiClient";
@@ -1443,7 +1562,20 @@ import { rioLists } from "../lib/rioMaterials";
     const modalCard = document.querySelector(".rio-modal-card");
     const closeButtons = document.querySelectorAll("[data-rio-modal-close]");
     const libraryGrid = document.querySelector(".rio-table-grid");
-    const quizModal = document.querySelector("[data-rio-quiz-modal]");
+    const quizModal = document.querySelector<HTMLDialogElement>("[data-rio-quiz-modal]")!;
+    const practiceCard = quizModal.querySelector<HTMLElement>(".rio-quiz-card")!;
+    const practiceTitle = quizModal.querySelector<HTMLElement>("#rio-quiz-title")!;
+    const practiceOptions = quizModal.querySelector<HTMLElement>("[data-rio-practice-options]")!;
+    const quizOption = practiceOptions.querySelector<HTMLButtonElement>("[data-rio-start-quiz]")!;
+    const talkOption = practiceOptions.querySelector<HTMLButtonElement>("[data-rio-start-talk]")!;
+    const practiceBack = quizModal.querySelector<HTMLButtonElement>("[data-rio-practice-back]")!;
+    const talkPanel = quizModal.querySelector<HTMLElement>("#rio-talk")!;
+    const quizChoices: Record<Exclude<RioType, "idiom">, [string, string]> = {
+      vocabulary: ["撞撞消", "配对例句和词义"],
+      chunk: ["词组练习", "查看标准搭配、替换表达和口语例句"],
+      sentence_pattern: ["句型练习", "查看句型结构和例句，再试着造句"],
+      adverb: ["副词练习", "根据语境选择合适的副词"]
+    };
     const quizCloseButtons = document.querySelectorAll("[data-rio-quiz-close]");
     const quizStage = document.querySelector("[data-rio-quiz-stage]");
     const quizMaterialBadge = document.querySelector("[data-rio-quiz-material-badge]");
@@ -1497,7 +1629,8 @@ import { rioLists } from "../lib/rioMaterials";
       loadingTypeTimer: undefined,
       lastFocusedElement: null
     };
-    let singleQuizSession: AbortController | undefined;
+    let quizSession: AbortController | undefined;
+    let talkSession: AbortController | undefined;
     let quizMatchHeightFrame;
     let quizMatchResizeTimer;
     const quizLoadingMessages = [
@@ -1677,18 +1810,6 @@ import { rioLists } from "../lib/rioMaterials";
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;");
-
-    const getQuizMaterials = (type = "") =>
-      Array.from(libraryGrid.querySelectorAll("tr:not([hidden]) [data-rio-quiz-material]"))
-        .filter((button) => button instanceof HTMLElement)
-        .map((button) => ({
-          id: Number(button.getAttribute("data-rio-material-id")),
-          type: button.getAttribute("data-rio-material-type") ?? "",
-          text: button.getAttribute("data-rio-material-text") ?? "",
-          button
-        }))
-        .filter((item) => Number.isFinite(item.id) && item.type && item.text)
-        .filter((item) => !type || item.type === type);
 
     const getQuizInstruction = (material) =>
       material?.type === "chunk"
@@ -1964,16 +2085,13 @@ import { rioLists } from "../lib/rioMaterials";
       });
     };
 
-    const closeQuizModal = () => {
-      if (!(quizModal instanceof HTMLElement)) return;
-
+    const resetPractice = () => {
       stopQuizLoadingMessages();
       window.clearTimeout(quizMatchResizeTimer);
       window.cancelAnimationFrame(quizMatchHeightFrame);
-      quizModal.classList.remove("is-opening");
-      quizModal.hidden = true;
-      singleQuizSession?.abort();
-      quizState.material = null;
+      quizSession?.abort();
+      talkSession?.abort();
+      quizStage?.replaceChildren();
       quizState.cards = [];
       quizState.answers = [];
       quizState.currentIndex = 0;
@@ -1984,10 +2102,19 @@ import { rioLists } from "../lib/rioMaterials";
       quizState.batchCount = 1;
       quizState.batchError = "";
       quizState.generationId += 1;
+    };
+
+    const closeQuizModal = () => {
+      if (!quizModal.open) return;
+      resetPractice();
+      quizState.material = null;
+      quizModal.classList.remove("is-opening");
+      quizModal.close();
+      quizModal.hidden = true;
       document.body.style.overflow = "";
 
       if (quizState.lastFocusedElement instanceof HTMLElement) {
-        quizState.lastFocusedElement.focus();
+        quizState.lastFocusedElement.focus({ preventScroll: true });
       }
     };
 
@@ -2000,24 +2127,45 @@ import { rioLists } from "../lib/rioMaterials";
       )}</span>`;
     };
 
-    const openQuizModal = (material) => {
-      if (!(quizModal instanceof HTMLElement)) return;
+    const showPractice = (mode: "choose" | "quiz" | "talk") => {
+      quizModal.dataset.practice = mode;
+      practiceTitle.textContent = { choose: "选择练习", quiz: "Quiz", talk: "Small Talk" }[mode];
+      practiceOptions.hidden = mode !== "choose";
+      if (quizStage instanceof HTMLElement) quizStage.hidden = mode !== "quiz";
+      talkPanel.hidden = mode !== "talk";
+      practiceBack.hidden = mode === "choose";
+      practiceCard.scrollTop = 0;
+    };
 
+    const showPracticeChoices = () => {
+      const material: RioMaterial | null = quizState.material;
+      if (!material) return;
+      resetPractice();
+      quizOption.hidden = material.type === "idiom";
+      if (material.type !== "idiom") {
+        const [name, description] = quizChoices[material.type];
+        quizOption.querySelector("strong")!.textContent = name;
+        quizOption.querySelector("span")!.textContent = description;
+      }
+      showPractice("choose");
+      if (quizModal.open) (quizOption.hidden ? talkOption : quizOption).focus({ preventScroll: true });
+    };
+
+    const openPracticeChooser = (material: RioMaterial, trigger: HTMLElement) => {
+      if (quizModal.open) return;
       closeModal();
       quizState.material = material;
-      quizState.lastFocusedElement = document.activeElement;
+      quizState.lastFocusedElement = trigger;
+      renderQuizMaterialBadge(material);
+      showPracticeChoices();
       quizModal.hidden = false;
+      quizModal.showModal();
+      (quizOption.hidden ? talkOption : quizOption).focus({ preventScroll: true });
       quizModal.classList.add("is-opening");
       document.body.style.overflow = "hidden";
       window.setTimeout(() => {
         quizModal.classList.remove("is-opening");
       }, 230);
-
-      renderQuizMaterialBadge(material);
-
-      renderQuizLoading();
-      quizModal.querySelector("button")?.focus();
-      generateQuiz(material);
     };
 
     const getNextQuizMaterial = () => {
@@ -2036,7 +2184,7 @@ import { rioLists } from "../lib/rioMaterials";
 
       quizState.material = nextMaterial;
       renderQuizMaterialBadge(nextMaterial);
-      renderQuizLoading();
+      practiceCard.scrollTop = 0;
       generateQuiz(nextMaterial);
     };
 
@@ -2157,7 +2305,7 @@ import { rioLists } from "../lib/rioMaterials";
         ?.addEventListener("click", startNextQuizMaterial);
       if (review) quizStage.querySelector(".rio-quiz-complete-actions")?.before(review);
       if (isVocabularyMatchQuiz(quizState.material)) {
-        singleQuizSession?.abort();
+        quizSession?.abort();
         quizStage.querySelector<HTMLButtonElement>("[data-rio-quiz-next-material], [data-rio-quiz-close-action]")?.focus({ preventScroll: true });
       }
       launchQuizCompleteConfetti();
@@ -2835,7 +2983,7 @@ import { rioLists } from "../lib/rioMaterials";
     };
 
     const requestQuizBatch = async (material, batchIndex) => {
-      const data = await requestQuiz(material, batchIndex);
+      const data = await requestQuiz(material, batchIndex, quizSession?.signal);
       const cards = Array.isArray(data.cards) ? data.cards : [];
       const expectedBatchSize = isPhraseMatchQuiz(material)
         ? 6
@@ -2900,10 +3048,11 @@ import { rioLists } from "../lib/rioMaterials";
     }
 
     const generateQuiz = async (material) => {
-      singleQuizSession?.abort();
+      quizSession?.abort();
       const isChunk = material.type === "chunk";
       const isPattern = isSentencePatternQuiz(material);
-      singleQuizSession = isChunk || isPattern || isVocabularyMatchQuiz(material) ? new AbortController() : undefined;
+      quizSession = new AbortController();
+      const { signal } = quizSession;
       const currentGeneration = quizState.generationId + 1;
 
       quizState.generationId = currentGeneration;
@@ -2919,8 +3068,7 @@ import { rioLists } from "../lib/rioMaterials";
       renderQuizLoading();
 
       try {
-        if (singleQuizSession && quizStage instanceof HTMLElement) {
-          const { signal } = singleQuizSession;
+        if ((isChunk || isPattern || isVocabularyMatchQuiz(material)) && quizStage instanceof HTMLElement) {
           const data = await requestQuiz(material, 0, signal);
           if (currentGeneration !== quizState.generationId) return;
           quizState.isLoading = false;
@@ -3274,15 +3422,35 @@ import { rioLists } from "../lib/rioMaterials";
 
       const material = {
         id: Number(button.getAttribute("data-rio-material-id")),
-        type: button.getAttribute("data-rio-material-type") ?? "",
+        type: rioLists.find(list => list.type === button.dataset.rioMaterialType)?.type,
         text: button.getAttribute("data-rio-material-text") ?? ""
       };
 
       if (!Number.isFinite(material.id) || !material.type || !material.text) return;
-      if (material.type === "idiom") openSmallTalk(material.text);
-      else openQuizModal(material);
+      button.focus({ preventScroll: true });
+      openPracticeChooser({ ...material, type: material.type }, button);
     });
+    quizOption.addEventListener("click", () => {
+      const material = quizState.material;
+      if (quizModal.dataset.practice !== "choose" || !material || material.type === "idiom") return;
+      showPractice("quiz");
+      practiceBack.focus({ preventScroll: true });
+      generateQuiz(material);
+    });
+    talkOption.addEventListener("click", () => {
+      const material = quizState.material;
+      if (quizModal.dataset.practice !== "choose" || !material) return;
+      talkSession = new AbortController();
+      showPractice("talk");
+      practiceBack.focus({ preventScroll: true });
+      startSmallTalk(quizModal, material, talkSession.signal);
+    });
+    practiceBack.addEventListener("click", showPracticeChoices);
     quizCloseButtons.forEach((button) => button.addEventListener("click", closeQuizModal));
+    quizModal.addEventListener("cancel", event => {
+      event.preventDefault();
+      closeQuizModal();
+    });
     pageButtons.next?.addEventListener("click", () => {
       showPage(2);
       renderChallenges();
@@ -3315,15 +3483,12 @@ import { rioLists } from "../lib/rioMaterials";
     });
     pageButtons.complete?.addEventListener("click", launchCompletionCelebration);
     window.addEventListener("resize", scheduleMatchingCardHeightSync);
-    initRioLibrary();
+    const getQuizMaterials = initRioLibrary();
 
     document.addEventListener("keydown", (event) => {
       if (event.key !== "Escape") return;
 
-      if (quizModal instanceof HTMLElement && !quizModal.hidden) {
-        closeQuizModal();
-        return;
-      }
+      if (quizModal.open) return;
 
       if (modal instanceof HTMLElement && !modal.hidden) {
         closeModal();

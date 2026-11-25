@@ -1,8 +1,4 @@
-<dialog id="rio-talk" aria-labelledby="rio-talk-title">
-  <header>
-    <h2 id="rio-talk-title">Small Talk</h2><span class="idiom" lang="en"></span>
-    <button type="button" data-close aria-label="关闭对话" autofocus>×</button>
-  </header>
+<div id="rio-talk" hidden>
   <div class="messages" role="log" aria-label="对话记录" aria-live="off" tabindex="0"></div>
   <form>
     <div class="tools">
@@ -14,38 +10,21 @@
       <button type="submit">发送</button>
     </div>
   </form>
-</dialog>
+</div>
 
 <style>
-  :global(body:has(#rio-talk[open])) { overflow: hidden; }
-  dialog {
-    position: fixed; inset: 0; margin: auto; padding: 0;
-    width: min(620px, 94vw); height: min(680px, 88dvh);
-    border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
-    background: var(--surface); color: var(--text);
-  }
-  dialog[open] { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
-  dialog::backdrop { background: rgb(0 0 0 / 45%); }
-  header, form { padding: 14px 18px; }
-  header { display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--line); }
-  h2 { margin: 0; font-size: 22px; white-space: nowrap; }
-  .idiom { font-weight: 700; padding: 4px 8px; border-radius: 8px; background: var(--surface-soft); overflow-wrap: anywhere; max-height: 3.5em; overflow: auto; }
+  #rio-talk:not([hidden]) { display: grid; min-height: 0; grid-template-rows: minmax(0, 1fr) auto; }
+  form { padding: 12px 0 0; }
   button { padding: 7px 12px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface); color: inherit; cursor: pointer; font: inherit; }
   button:disabled { opacity: .5; cursor: default; }
-  [data-close] { margin-left: auto; font-size: 22px; }
-  .messages { overflow-y: auto; overscroll-behavior: contain; padding: 12px 18px; }
+  .messages { overflow-y: auto; overscroll-behavior: contain; padding: 12px 1px; }
   .messages :global(p) { width: fit-content; max-width: 88%; margin: 0 0 12px; padding: 10px 13px; background: var(--surface-soft); border-radius: 10px; overflow-wrap: anywhere; white-space: pre-wrap; line-height: 1.5; }
   .messages :global([data-role="user"]) { margin-left: auto; background: var(--accent); color: var(--surface); }
   .messages :global([data-role="hint"]) { border-left: 3px solid var(--line); }
   form { border-top: 1px solid var(--line); }
   .tools, .composer { display: flex; gap: 8px; align-items: center; }
-  .tools { margin-bottom: 8px; font-size: 13px; }
+  .tools { margin-bottom: 8px; font-size: 13px; flex-wrap: wrap; }
   .tools button { flex-shrink: 0; }
   input { flex: 1; min-width: 0; height: 44px; padding: 0 10px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface); color: inherit; font: inherit; font-size: 16px; }
   [type="submit"] { height: 44px; background: var(--accent); color: var(--surface); }
-  @media (max-width: 680px), (max-height: 500px) and (pointer: coarse) {
-    dialog { inset: var(--talk-top, 0px) 0 auto; margin: 0; width: 100%; max-width: none; height: var(--talk-height, 100dvh); max-height: none; border: 0; border-radius: 0; }
-    header { padding-top: max(10px, env(safe-area-inset-top)); }
-    form { padding-bottom: max(10px, env(safe-area-inset-bottom)); }
-  }
 </style>

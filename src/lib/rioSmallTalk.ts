@@ -1,4 +1,5 @@
 import { aiRequestHeaders } from "./aiClient";
+import type { RioMaterial } from "./rioMaterials";
 
 type Action = "open" | "hint" | "reply";
 type Turn = { role: "assistant" | "user"; content: string };
@@ -37,18 +38,15 @@ async function readReply(body: ReadableStream<Uint8Array>, append: (text: string
   }
 }
 
-export function openSmallTalk(idiom: string) {
-  const dialog = document.querySelector<HTMLDialogElement>("#rio-talk")!;
-  if (dialog.open) return;
-  const log = dialog.querySelector<HTMLElement>(".messages")!;
-  const form = dialog.querySelector("form")!;
+export function startSmallTalk(dialog: HTMLDialogElement, material: RioMaterial, signal: AbortSignal) {
+  const panel = dialog.querySelector<HTMLElement>("#rio-talk")!;
+  const log = panel.querySelector<HTMLElement>(".messages")!;
+  const form = panel.querySelector("form")!;
   const input = form.querySelector("input")!;
   const send = form.querySelector<HTMLButtonElement>('[type="submit"]')!;
   const hint = form.querySelector<HTMLButtonElement>("[data-hint]")!;
   const retry = form.querySelector<HTMLButtonElement>("[data-retry]")!;
   const status = form.querySelector<HTMLElement>('[role="status"]')!;
-  const session = new AbortController();
-  const { signal } = session;
   const history: Turn[] = [];
   let busy = false;
   let failed: Action | undefined;
@@ -93,7 +91,7 @@ export function openSmallTalk(idiom: string) {
     try {
       const response = await fetch("/api/rio/small-talk", {
         method: "POST", signal, headers: { ...aiRequestHeaders(), Accept: "text/event-stream" },
-        body: JSON.stringify({ idiom, action, history: history.slice(-16) })
+        body: JSON.stringify({ material, action, history: history.slice(-16) })
       });
       if (!response.ok || !response.body) {
         const error = await response.json().catch(() => ({}));
@@ -125,16 +123,12 @@ export function openSmallTalk(idiom: string) {
 
   log.replaceChildren();
   input.value = "";
-  dialog.querySelector(".idiom")!.textContent = idiom;
-  dialog.showModal();
   sizeToKeyboard();
   window.visualViewport?.addEventListener("resize", sizeToKeyboard, { signal });
   window.visualViewport?.addEventListener("scroll", sizeToKeyboard, { signal });
   log.addEventListener("scroll", () => {
     follow = log.scrollHeight - log.scrollTop - log.clientHeight < 20;
   }, { signal });
-  dialog.querySelector("[data-close]")!.addEventListener("click", () => dialog.close(), { signal });
-  dialog.addEventListener("close", () => session.abort(), { once: true });
   input.addEventListener("input", controls, { signal });
   hint.addEventListener("click", () => { follow = true; void respond("hint"); }, { signal });
   retry.addEventListener("click", () => { if (failed) void respond(failed); }, { signal });

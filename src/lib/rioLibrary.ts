@@ -1,14 +1,27 @@
-import { rioLists, type RioType } from "./rioMaterials";
+import { rioLists, type RioMaterial, type RioType } from "./rioMaterials";
 
 type Book = { id: string; name: string };
 type Mapping = Record<string, RioType>;
 type BookWords = { words: string[]; page: number; complete: boolean; atLimit: boolean };
+type Entry = { material: RioMaterial; searchText: string };
 type SearchGroup = {
   section: HTMLElement;
   countLabel: HTMLElement;
-  entries: { row: HTMLTableRowElement; text: string }[];
+  entries: Entry[];
+  matches: Entry[];
+  position: number;
+  page: number;
+  preferredWord?: string;
 };
 const endpoint = "/api/rio/eudic";
+const listPageSize = 10;
+
+function setWordButton(button: HTMLButtonElement, material: RioMaterial) {
+  button.textContent = material.text;
+  Object.assign(button.dataset, {
+    rioMaterialId: String(material.id), rioMaterialType: material.type, rioMaterialText: material.text
+  });
+}
 
 async function request<T>(query = "", options: RequestInit = {}): Promise<T> {
   const response = await fetch(endpoint + query, { ...options, cache: "no-store" });
@@ -32,7 +45,13 @@ export function initRioLibrary() {
   const searchInput = document.querySelector<HTMLInputElement>("#rio-search-input")!;
   const clearSearch = document.querySelector<HTMLButtonElement>("#rio-clear-search")!;
   const searchStatus = document.querySelector<HTMLElement>("#rio-search-status")!;
+  const exitFocusButton = search.querySelector<HTMLButtonElement>("[data-rio-focus-exit]")!;
+  const grid = document.querySelector<HTMLElement>("#rio-lists")!;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let focusTransition: Animation | undefined;
+  let focus: { group: SearchGroup; scrollY: number; trigger: HTMLButtonElement } | undefined;
   let searchGroups: SearchGroup[] = [];
+  let searchQuery = "";
   let books: Book[] = [];
   let mapping: Mapping = {};
   let scope: string | null = null;
@@ -42,50 +61,111 @@ export function initRioLibrary() {
   const requestTimes: number[] = [];
   const storageKey = () => "rio.eudic.mapping." + scope;
 
+  function paintListPage(group: SearchGroup) {
+    const { section, matches, page } = group;
+    const start = page * listPageSize;
+    const rows = document.createDocumentFragment();
+    for (const { material } of matches.slice(start, start + listPageSize)) {
+      const row = wordRow.cloneNode(true) as HTMLTableRowElement;
+      setWordButton(row.querySelector("button")!, material);
+      rows.append(row);
+    }
+    section.querySelector("tbody")!.replaceChildren(rows);
+
+    const pageCount = Math.ceil(matches.length / listPageSize);
+    const pagination = section.querySelector<HTMLElement>(".rio-list-pagination")!;
+    pagination.hidden = pageCount <= 1;
+    pagination.querySelector("[data-list-page-number]")!.textContent = pageCount ? `${page + 1} / ${pageCount}` : "";
+    pagination.querySelector<HTMLButtonElement>('[data-list-page-step="-1"]')!.disabled = page === 0;
+    pagination.querySelector<HTMLButtonElement>('[data-list-page-step="1"]')!.disabled = page + 1 >= pageCount;
+  }
+
+  function paintGroup(group: SearchGroup) {
+    const { section, entries, countLabel, matches, position } = group;
+    const filtering = Boolean(searchQuery);
+    const isFocused = focus?.group === group;
+    const entry = matches[position];
+    const deck = section.querySelector<HTMLElement>(".rio-deck")!;
+    const button = deck.querySelector<HTMLButtonElement>(".rio-deck-word")!;
+    const focusButton = section.querySelector<HTMLButtonElement>("[data-rio-focus]")!;
+    const listToggle = section.querySelector<HTMLButtonElement>(".rio-list-toggle")!;
+    const listContent = section.querySelector<HTMLElement>(".rio-list-content")!;
+    const empty = section.querySelector<HTMLElement>(".rio-empty")!;
+    section.hidden = focus ? !isFocused : filtering && !matches.length;
+    listContent.hidden = !isFocused && listToggle.getAttribute("aria-expanded") === "false";
+    section.querySelector("table")!.hidden = isFocused || !entries.length;
+    deck.hidden = !isFocused || !entry;
+    focusButton.hidden = isFocused;
+    focusButton.disabled = !matches.length;
+    empty.hidden = isFocused ? Boolean(entry) : Boolean(entries.length);
+    empty.textContent = isFocused && filtering ? "该分类没有匹配的词条" : "暂无词条";
+    if (isFocused && entry) {
+      setWordButton(button, entry.material);
+      countLabel.textContent = `${position + 1} / ${matches.length}`;
+      deck.querySelectorAll<HTMLButtonElement>("[data-step]").forEach(arrow => { arrow.disabled = matches.length <= 1; });
+    } else {
+      countLabel.textContent = filtering ? `${matches.length} / ${entries.length} 条` : `${entries.length} 条`;
+    }
+  }
+
+  function paintView() {
+    grid.toggleAttribute("data-focused", Boolean(focus));
+    exitFocusButton.hidden = !focus;
+    searchGroups.forEach(paintGroup);
+    const hasMatches = searchGroups.some(group => group.matches.length);
+    searchStatus.textContent = !focus && searchQuery && !hasMatches && searchGroups.length
+      ? "没有找到匹配的词条" : "";
+  }
+
+  function animateFocusChange(entering: boolean) {
+    focusTransition?.cancel();
+    if (reducedMotion.matches || typeof grid.animate !== "function") return;
+
+    const frames = entering
+      ? [{ opacity: 0.35, transform: "translateY(8px)" }, { opacity: 1, transform: "translateY(0)" }]
+      : [{ opacity: 0.5 }, { opacity: 1 }];
+    focusTransition = grid.animate(frames, { duration: entering ? 180 : 140, easing: "ease-out" });
+  }
+
   function filterWords() {
     const query = searchInput.value.trim().toLowerCase();
-    let totalMatches = 0;
-    for (const { section, countLabel, entries } of searchGroups) {
-      let matches = 0;
-      for (const { row, text } of entries) {
-        const hidden = !text.includes(query);
-        if (row.hidden !== hidden) row.hidden = hidden;
-        if (!hidden) matches++;
-      }
-      section.hidden = Boolean(query) && matches === 0;
-      countLabel.textContent = query ? `${matches} / ${entries.length} 条` : `${entries.length} 条`;
-      totalMatches += matches;
+    const resetPage = query !== searchQuery;
+    searchQuery = query;
+    for (const group of searchGroups) {
+      group.matches = group.entries.filter(({ searchText }) => searchText.includes(query));
+      group.position = Math.max(0, group.matches.findIndex(({ material }) => material.text === group.preferredWord));
+      if (resetPage) group.page = 0;
+      paintListPage(group);
     }
     search.hidden = !searchGroups.length;
     clearSearch.hidden = !searchInput.value;
-    searchStatus.textContent = !search.hidden && query && !totalMatches ? "没有找到匹配的词条" : "";
+    paintView();
   }
 
   function render(loading = false) {
     let count = 0;
+    focusTransition?.cancel();
+    focus = undefined;
     searchGroups = [];
     for (const list of rioLists) {
       const section = document.querySelector<HTMLElement>(`[data-rio-list="${list.type}"]`)!;
       const sources = books.filter((book) => mapping[book.id] === list.type);
-      const rows = document.createDocumentFragment();
-      const entries: SearchGroup["entries"] = [];
       const words = new Set(loading ? [] : sources.flatMap((book) => cache.get(book.id)?.words ?? []));
-      for (const word of words) {
-        const row = wordRow.cloneNode(true) as HTMLTableRowElement;
-        const quiz = row.querySelector<HTMLButtonElement>("[data-rio-quiz-material]")!;
-        const id = String(++count);
-        Object.assign(quiz.dataset, { rioMaterialId: id, rioMaterialType: list.type, rioMaterialText: word });
-        quiz.textContent = word;
-        entries.push({ row, text: word.toLowerCase() });
-        rows.append(row);
-      }
-      section.querySelector("tbody")!.replaceChildren(rows);
-      section.querySelector("table")!.hidden = !words.size;
+      const entries = Array.from(words, text => ({
+        material: { id: ++count, type: list.type, text },
+        searchText: text.toLowerCase()
+      }));
+      section.querySelector("tbody")!.replaceChildren();
+      const face = section.querySelector<HTMLButtonElement>(".rio-deck-word")!;
+      face.textContent = "";
+      delete face.dataset.rioMaterialId;
+      delete face.dataset.rioMaterialText;
+      delete face.dataset.rioMaterialType;
       section.querySelector<HTMLElement>(".rio-empty")!.hidden = Boolean(words.size);
       section.hidden = loading || !sources.length;
       if (!section.hidden) {
         const countLabel = section.querySelector<HTMLElement>("[data-rio-count]")!;
-        searchGroups.push({ section, countLabel, entries });
+        searchGroups.push({ section, countLabel, entries, matches: [], position: 0, page: 0 });
       }
     }
     filterWords();
@@ -206,6 +286,93 @@ export function initRioLibrary() {
     }
   }
 
+  exitFocusButton.addEventListener("click", () => {
+    if (!focus) return;
+    const { group, scrollY, trigger } = focus;
+    focus = undefined;
+    paintView();
+    (group.section.hidden ? searchInput : trigger).focus({ preventScroll: true });
+    window.scrollTo({ top: scrollY, behavior: "instant" });
+    animateFocusChange(false);
+  });
+
+  for (const deck of grid.querySelectorAll<HTMLElement>(".rio-deck")) {
+    const section = deck.closest<HTMLElement>("[data-rio-list]")!;
+    const face = deck.querySelector<HTMLButtonElement>(".rio-deck-word")!;
+    const focusButton = section.querySelector<HTMLButtonElement>("[data-rio-focus]")!;
+    const listToggle = section.querySelector<HTMLButtonElement>(".rio-list-toggle")!;
+    const pageButtons = section.querySelectorAll<HTMLButtonElement>("[data-list-page-step]");
+    pageButtons.forEach(button => button.addEventListener("click", () => {
+      const group = searchGroups.find(item => item.section === section);
+      if (focus || !group || button.disabled) return;
+      group.page += Number(button.dataset.listPageStep);
+      paintListPage(group);
+      if (button.disabled) {
+        Array.from(pageButtons).find(control => !control.disabled)?.focus({ preventScroll: true });
+      }
+    }));
+    listToggle.addEventListener("click", () => {
+      const group = searchGroups.find(item => item.section === section);
+      if (!group) return;
+      const expanded = listToggle.getAttribute("aria-expanded") === "true";
+      listToggle.setAttribute("aria-expanded", String(!expanded));
+      paintGroup(group);
+    });
+    focusButton.addEventListener("click", () => {
+      const group = searchGroups.find(item => item.section === section);
+      if (!group?.matches.length) return;
+      focus = { group, scrollY: window.scrollY, trigger: focusButton };
+      paintView();
+      exitFocusButton.focus({ preventScroll: true });
+      search.scrollIntoView({ block: "start", behavior: "instant" });
+      animateFocusChange(true);
+    });
+    function turn(step: number) {
+      const group = focus?.group;
+      if (group?.section !== section || group.matches.length < 2) return;
+      group.position = (group.position + step + group.matches.length) % group.matches.length;
+      group.preferredWord = group.matches[group.position].material.text;
+      paintGroup(group);
+    }
+    deck.querySelectorAll<HTMLButtonElement>("[data-step]").forEach(arrow =>
+      arrow.addEventListener("click", () => turn(Number(arrow.dataset.step))));
+    deck.addEventListener("keydown", event => {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      turn(event.key === "ArrowRight" ? 1 : -1);
+    });
+    let start: { id: number; x: number; y: number; moved: boolean } | undefined;
+    let suppressClick = false;
+    face.addEventListener("pointerdown", event => {
+      if (!event.isPrimary || event.button !== 0) return;
+      suppressClick = false;
+      start = { id: event.pointerId, x: event.clientX, y: event.clientY, moved: false };
+      face.setPointerCapture(event.pointerId);
+    });
+    face.addEventListener("pointermove", event => {
+      if (start?.id !== event.pointerId) return;
+      if (Math.max(Math.abs(event.clientX - start.x), Math.abs(event.clientY - start.y)) > 10) {
+        start.moved = true;
+      }
+    });
+    face.addEventListener("pointerup", event => {
+      if (start?.id !== event.pointerId) return;
+      const dx = event.clientX - start.x, dy = event.clientY - start.y;
+      const moved = start.moved || Math.max(Math.abs(dx), Math.abs(dy)) > 10;
+      start = undefined;
+      // Handle touch taps here because the browser can suppress a click after a swipe.
+      suppressClick = moved || event.pointerType === "touch";
+      if (Math.abs(dx) >= 32 && Math.abs(dx) > 1.3 * Math.abs(dy)) turn(dx < 0 ? 1 : -1);
+      else if (event.pointerType === "touch" && !moved) face.click();
+    });
+    face.addEventListener("pointercancel", () => { start = undefined; suppressClick = true; });
+    face.addEventListener("click", event => {
+      if (suppressClick && event.detail !== 0) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    });
+  }
   searchInput.addEventListener("input", filterWords);
   clearSearch.addEventListener("click", () => {
     searchInput.value = "";
@@ -231,4 +398,7 @@ export function initRioLibrary() {
     }
   });
   void connectBooks("GET");
+  return (type = "") => searchGroups.flatMap(group =>
+    !type || group.section.dataset.rioList === type ? group.matches.map(({ material }) => material) : []
+  );
 }
