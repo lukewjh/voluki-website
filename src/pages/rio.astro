@@ -43,8 +43,27 @@ import { rioLists } from "../lib/rioMaterials";
       <div class="rio-search-controls">
         <input id="rio-search-input" type="search" placeholder="搜索所有已映射词条"
           aria-label="搜索所有已映射词条" aria-controls="rio-lists" autocomplete="off" />
-        <button id="rio-clear-search" type="button" hidden>清空搜索</button>
+        <button id="rio-clear-search" type="button" aria-label="清空关键词" title="清空关键词" hidden>×</button>
+        <button id="rio-search-time" type="button" aria-haspopup="dialog" aria-controls="rio-date-dialog" aria-expanded="false">
+          <span data-rio-date-label>按天</span><span aria-hidden="true">▾</span>
+        </button>
       </div>
+      <dialog id="rio-date-dialog" aria-labelledby="rio-date-title">
+        <div class="rio-date-panel">
+          <div class="rio-date-header">
+            <h2 id="rio-date-title">按添加日期</h2>
+            <form method="dialog">
+              <button class="rio-date-close" type="submit" aria-label="关闭日期筛选">×</button>
+            </form>
+          </div>
+          <div class="rio-date-list" id="rio-date-list"></div>
+        </div>
+      </dialog>
+      <template id="rio-date-option">
+        <button class="rio-date-option" type="button">
+          <span></span><span class="rio-date-count"></span>
+        </button>
+      </template>
       <p id="rio-search-status" role="status"></p>
       <p id="rio-pronunciation-status" role="status"></p>
       <button type="button" data-rio-focus-exit aria-controls="rio-lists" hidden><span aria-hidden="true">←</span> 退出专注</button>
@@ -284,8 +303,7 @@ import { rioLists } from "../lib/rioMaterials";
     .rio-library form { display: grid; justify-items: start; gap: 10px; }
     .rio-library [hidden], .rio-table-grid [hidden] { display: none; }
     .rio-connect-actions { display: flex; flex-wrap: wrap; gap: 8px; }
-    .rio-library input, .rio-library select, .rio-library button,
-    .rio-search-controls input, .rio-search-controls button {
+    .rio-library input, .rio-library select, .rio-library button {
       min-height: 38px; max-width: 100%; padding: 6px 12px; border: 1px solid var(--line);
       border-radius: 5px; color: var(--text); background: var(--surface); font: inherit;
     }
@@ -298,9 +316,65 @@ import { rioLists } from "../lib/rioMaterials";
     #rio-book-choices label { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; overflow-wrap: anywhere; }
 
     #rio-library-search { margin-bottom: 16px; }
-    .rio-search-controls { display: flex; align-items: center; gap: 8px; }
-    .rio-search-controls input { flex: 1; min-width: 0; }
-    .rio-search-controls button { flex-shrink: 0; cursor: pointer; }
+    .rio-search-controls {
+      display: flex; border: 1px solid var(--line); border-radius: 5px; background: var(--surface);
+    }
+    .rio-search-controls :is(input, button) {
+      min-height: 36px; border: 0; border-radius: 4px; background: var(--surface); color: var(--text); font: inherit;
+    }
+    .rio-search-controls :focus-visible, .rio-date-panel button:focus-visible {
+      outline: 2px solid var(--accent); outline-offset: -2px;
+    }
+    #rio-search-input { flex: 1; min-width: 0; padding: 6px 12px; }
+    #rio-search-input::-webkit-search-cancel-button { display: none; }
+    #rio-clear-search { flex: 0 0 36px; padding: 0; color: var(--muted); font-size: 20px; cursor: pointer; }
+    #rio-search-time {
+      display: flex; align-items: center; gap: 6px; max-inline-size: 44%; padding: 4px 10px;
+      border-inline-start: 1px solid var(--line);
+      border-start-start-radius: 0; border-end-start-radius: 0; font-size: 14px; cursor: pointer;
+    }
+    #rio-search-time [data-rio-date-label] {
+      min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    #rio-date-dialog {
+      width: min(360px, calc(100% - 24px)); padding: 0; overflow: hidden;
+      border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--text);
+    }
+    #rio-date-dialog::backdrop { background: rgb(0 0 0 / 38%); }
+    .rio-date-panel {
+      display: flex; flex-direction: column; max-block-size: min(520px, calc(100dvh - 24px));
+    }
+    .rio-date-header {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      padding: 8px 12px 8px 16px; border-bottom: 1px solid var(--line);
+    }
+    .rio-date-header h2 { margin: 0; font-size: 17px; }
+    .rio-date-panel button {
+      min-height: 44px; border: 0; border-radius: 6px; background: var(--surface);
+      color: var(--text); font: inherit; cursor: pointer;
+    }
+    .rio-date-panel .rio-date-close { width: 44px; padding: 0; font-size: 22px; }
+    .rio-date-list { min-block-size: 0; overflow-y: auto; overscroll-behavior: contain; padding: 4px 12px 8px; }
+    .rio-date-panel .rio-date-option {
+      display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px;
+      width: 100%; padding: 7px 8px; text-align: start;
+    }
+    .rio-date-option + .rio-date-option { border-block-start: 1px solid var(--line); }
+    .rio-date-panel button:hover, .rio-date-option[aria-pressed="true"] { background: var(--surface-soft); }
+    .rio-date-option[aria-pressed="true"] { font-weight: 650; }
+    .rio-date-count { white-space: nowrap; color: var(--muted); font-variant-numeric: tabular-nums; }
+    @media (max-width: 640px) {
+      .rio-search-controls :is(input, button) { min-height: 44px; }
+      #rio-clear-search { flex-basis: 44px; }
+      #rio-date-dialog {
+        position: fixed; inset: auto 0 0; width: 100%; max-width: 100%; margin: 0;
+        border-radius: 14px 14px 0 0;
+      }
+      .rio-date-panel {
+        max-block-size: min(520px, 75dvh);
+        padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      }
+    }
     .rio-table-head-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 6px; }
     [data-rio-focus], [data-rio-focus-exit] {
       min-height: 36px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 6px;
@@ -331,10 +405,6 @@ import { rioLists } from "../lib/rioMaterials";
     }
     #rio-lists[data-focused] .rio-table-card { padding: clamp(14px, 2.5vw, 24px); }
     #rio-lists[data-focused] .rio-table-head h2 { font-size: 18px; }
-    @media (max-width: 520px) {
-      .rio-search-controls { flex-wrap: wrap; }
-      .rio-search-controls input { flex-basis: 60%; }
-    }
     #rio-search-status, #rio-pronunciation-status { margin: 8px 0 0; color: var(--muted); }
     #rio-search-status:empty, #rio-pronunciation-status:empty { margin: 0; }
     .rio-deck[hidden] + #rio-pronunciation-status { display: none; }

@@ -58,8 +58,15 @@ export const GET: APIRoute = async ({ cookies, url, request }) => {
     category_id: book, page, page_size: "100", sort: "desc"
   }));
   if (rows instanceof Response) return rows;
+  const entries = rows.flatMap((row) => {
+    const word = typeof row?.word === "string" ? row.word.trim() : "";
+    if (!word) return [];
+    const addedAt = typeof row.add_time === "string" ? Date.parse(row.add_time) : NaN;
+    return [{ word, addedAt: Number.isFinite(addedAt) ? addedAt : null }];
+  });
   return json({
-    words: rows.flatMap((row) => typeof row?.word === "string" && row.word.trim() ? [row.word.trim()] : []),
+    words: entries.map(({ word }) => word),
+    entries,
     hasMore: rows.length >= 100 && Number(page) < 50,
     atLimit: rows.length >= 100 && Number(page) === 50
   });

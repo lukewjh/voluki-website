@@ -3,8 +3,9 @@ import { getRioShortcut } from "./rioKeyboard";
 
 type Book = { id: string; name: string };
 type Mapping = Record<string, RioType>;
-type BookWords = { words: string[]; page: number; complete: boolean; atLimit: boolean };
-type Entry = { material: RioMaterial; searchText: string };
+type BookWord = { word: string; addedAt: number | null };
+type BookWords = { entries: BookWord[]; page: number; complete: boolean; atLimit: boolean };
+type Entry = { material: RioMaterial; searchText: string; addedDays: Set<string> };
 type SearchGroup = {
   section: HTMLElement;
   countLabel: HTMLElement;
@@ -16,6 +17,21 @@ type SearchGroup = {
 };
 const endpoint = "/api/rio/eudic";
 const listPageSize = 10;
+const recentDayCount = 7;
+const shortDayFormat = new Intl.DateTimeFormat("zh-CN", { month: "long", day: "numeric" });
+const fullDayFormat = new Intl.DateTimeFormat("zh-CN", {
+  year: "numeric", month: "long", day: "numeric", weekday: "short"
+});
+
+function localDay(date: Date) {
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${day}`;
+}
+
+function daysAgo(today: Date, offset: number) {
+  return new Date(today.getFullYear(), today.getMonth(), today.getDate() - offset, 12);
+}
 
 function setWordButton(button: HTMLButtonElement, material: RioMaterial) {
   button.textContent = material.text;
@@ -51,6 +67,11 @@ export function initRioLibrary(pronounce: (button: HTMLButtonElement) => Promise
   const wordRow = rowTemplate.content.querySelector("tr")!;
   const search = document.querySelector<HTMLElement>("#rio-library-search")!;
   const searchInput = document.querySelector<HTMLInputElement>("#rio-search-input")!;
+  const dateButton = document.querySelector<HTMLButtonElement>("#rio-search-time")!;
+  const dateButtonLabel = dateButton.querySelector<HTMLElement>("[data-rio-date-label]")!;
+  const dateDialog = document.querySelector<HTMLDialogElement>("#rio-date-dialog")!;
+  const dateList = document.querySelector<HTMLElement>("#rio-date-list")!;
+  const dateOptionTemplate = document.querySelector<HTMLTemplateElement>("#rio-date-option")!;
   const clearSearch = document.querySelector<HTMLButtonElement>("#rio-clear-search")!;
   const searchStatus = document.querySelector<HTMLElement>("#rio-search-status")!;
   const speakerTemplate = document.querySelector<HTMLTemplateElement>("#rio-pronunciation-button")!;
@@ -61,6 +82,7 @@ export function initRioLibrary(pronounce: (button: HTMLButtonElement) => Promise
   let focus: { group: SearchGroup; scrollY: number; trigger: HTMLButtonElement } | undefined;
   let searchGroups: SearchGroup[] = [];
   let searchQuery = "";
+  let searchDay = "";
   let books: Book[] = [];
   let mapping: Mapping = {};
   let scope: string | null = null;
@@ -69,6 +91,7 @@ export function initRioLibrary(pronounce: (button: HTMLButtonElement) => Promise
   const cache = new Map<string, BookWords>();
   const requestTimes: number[] = [];
   const storageKey = () => "rio.eudic.mapping." + scope;
+  const isFiltering = () => Boolean(searchQuery || searchDay);
 
   function addSpeaker(wordButton: HTMLButtonElement, type: string | undefined) {
     if (type === "vocabulary" || type === "idiom") {
@@ -99,7 +122,7 @@ export function initRioLibrary(pronounce: (button: HTMLButtonElement) => Promise
 
   function paintGroup(group: SearchGroup) {
     const { section, entries, countLabel, matches, position } = group;
-    const filtering = Boolean(searchQuery);
+    const filtering = isFiltering();
     const isFocused = focus?.group === group;
     const entry = matches[position];
     const deck = section.querySelector<HTMLElement>(".rio-deck")!;
@@ -130,7 +153,7 @@ export function initRioLibrary(pronounce: (button: HTMLButtonElement) => Promise
     exitFocusButton.hidden = !focus;
     searchGroups.forEach(paintGroup);
     const hasMatches = searchGroups.some(group => group.matches.length);
-    searchStatus.textContent = !focus && searchQuery && !hasMatches && searchGroups.length
+    searchStatus.textContent = !focus && isFiltering() && !hasMatches && searchGroups.length
       ? "没有找到匹配的词条" : "";
   }
 
@@ -144,12 +167,14 @@ export function initRioLibrary(pronounce: (button: HTMLButtonElement) => Promise
     focusTransition = grid.animate(frames, { duration: entering ? 180 : 140, easing: "ease-out" });
   }
 
-  function filterWords() {
+  function filterWords(dateChanged = false) {
     const query = searchInput.value.trim().toLowerCase();
-    const resetPage = query !== searchQuery;
+    const resetPage = dateChanged || query !== searchQuery;
     searchQuery = query;
     for (const group of searchGroups) {
-      group.matches = group.entries.filter(({ searchText }) => searchText.includes(query));
+      group.matches = group.entries.filter(({ searchText, addedDays }) =>
+        searchText.includes(query) && (!searchDay || addedDays.has(searchDay))
+      );
       group.position = Math.max(0, group.matches.findIndex(({ material }) => material.text === group.preferredWord));
       if (resetPage) group.page = 0;
       paintListPage(group);
@@ -157,6 +182,49 @@ export function initRioLibrary(pronounce: (button: HTMLButtonElement) => Promise
     search.hidden = !searchGroups.length;
     clearSearch.hidden = !searchInput.value;
     paintView();
+  }
+
+  function updateDateButton(today = new Date()) {
+    let label = "按天";
+    if (searchDay) {
+      label = searchDay === localDay(today) ? "今天" : searchDay === localDay(daysAgo(today, 1)) ? "昨天"
+        : shortDayFormat.format(new Date(`${searchDay}T12:00:00`));
+    }
+    dateButtonLabel.textContent = label;
+    dateButton.setAttribute("aria-label", searchDay ? `${label}，按天筛选` : "按天筛选");
+  }
+
+  function openDates() {
+    const today = new Date();
+    const recentDays = Array.from({ length: recentDayCount }, (_, offset) => localDay(daysAgo(today, offset)));
+    const counts = new Map<string, number>(recentDays.map(day => [day, 0]));
+    let total = 0;
+    for (const { entries } of searchGroups) {
+      for (const { searchText, addedDays } of entries) {
+        const matchesKeyword = searchText.includes(searchQuery);
+        if (matchesKeyword) total++;
+        for (const day of addedDays) {
+          counts.set(day, (counts.get(day) ?? 0) + Number(matchesKeyword));
+        }
+      }
+    }
+    const rows = document.createDocumentFragment();
+    for (const day of ["", ...Array.from(counts.keys()).sort().reverse()]) {
+      const option = dateOptionTemplate.content.firstElementChild!.cloneNode(true) as HTMLButtonElement;
+      const date = day ? new Date(`${day}T12:00:00`) : today;
+      const relative = day === recentDays[0] ? "今天" : day === recentDays[1] ? "昨天" : "";
+      option.firstElementChild!.textContent = !day ? "全部时间" : relative
+        ? `${relative} · ${shortDayFormat.format(date)}` : fullDayFormat.format(date);
+      option.lastElementChild!.textContent = `${day ? counts.get(day) : total} 条`;
+      option.setAttribute("aria-pressed", String(day === searchDay));
+      option.dataset.rioDay = day;
+      rows.append(option);
+    }
+    dateList.replaceChildren(rows);
+    updateDateButton(today);
+    dateDialog.showModal();
+    dateButton.setAttribute("aria-expanded", "true");
+    dateList.querySelector<HTMLButtonElement>('[aria-pressed="true"]')?.focus();
   }
 
   function render(loading = false) {
@@ -167,10 +235,20 @@ export function initRioLibrary(pronounce: (button: HTMLButtonElement) => Promise
     for (const list of rioLists) {
       const section = document.querySelector<HTMLElement>(`[data-rio-list="${list.type}"]`)!;
       const sources = books.filter((book) => mapping[book.id] === list.type);
-      const words = new Set(loading ? [] : sources.flatMap((book) => cache.get(book.id)?.words ?? []));
-      const entries = Array.from(words, text => ({
+      const words = new Map<string, Set<string>>();
+      if (!loading) {
+        for (const book of sources) {
+          for (const { word, addedAt } of cache.get(book.id)?.entries ?? []) {
+            const days = words.get(word) ?? new Set<string>();
+            if (addedAt !== null) days.add(localDay(new Date(addedAt)));
+            words.set(word, days);
+          }
+        }
+      }
+      const entries = Array.from(words, ([text, addedDays]) => ({
         material: { id: ++count, type: list.type, text },
-        searchText: text.toLowerCase()
+        searchText: text.toLowerCase(),
+        addedDays
       }));
       section.querySelector("tbody")!.replaceChildren();
       const face = section.querySelector<HTMLButtonElement>(".rio-deck-word")!;
@@ -221,7 +299,7 @@ export function initRioLibrary(pronounce: (button: HTMLButtonElement) => Promise
     const limited = [];
     try {
       for (const book of mapped) {
-        const entry = cache.get(book.id) ?? { words: [], page: 0, complete: false, atLimit: false };
+        const entry = cache.get(book.id) ?? { entries: [], page: 0, complete: false, atLimit: false };
         cache.set(book.id, entry);
         while (!entry.complete) {
           status.textContent = `正在读取「${book.name}」第 ${entry.page + 1} 页…`;
@@ -235,11 +313,11 @@ export function initRioLibrary(pronounce: (button: HTMLButtonElement) => Promise
           }
           requestTimes.push(Date.now());
           const params = new URLSearchParams({ book: book.id, page: String(entry.page) });
-          const data = await request<{ words: string[]; hasMore: boolean; atLimit: boolean }>("?" + params, {
+          const data = await request<{ words: string[]; entries?: BookWord[]; hasMore: boolean; atLimit: boolean }>("?" + params, {
             signal, headers: { "X-RIO-Scope": scope! }
           });
           if (signal.aborted) return;
-          entry.words.push(...data.words);
+          entry.entries.push(...(data.entries ?? data.words.map(word => ({ word, addedAt: null }))));
           entry.page++;
           entry.complete = !data.hasMore;
           entry.atLimit = data.atLimit;
@@ -274,7 +352,11 @@ export function initRioLibrary(pronounce: (button: HTMLButtonElement) => Promise
         method,
         ...(method === "POST" ? { headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: key.value }) } : {})
       });
-      if (scope !== (data.scope ?? null)) searchInput.value = "";
+      if (scope !== (data.scope ?? null)) {
+        searchInput.value = "";
+        searchDay = "";
+        updateDateButton();
+      }
       scope = data.scope ?? null;
       books = data.books ?? [];
       mapping = {};
@@ -407,7 +489,25 @@ export function initRioLibrary(pronounce: (button: HTMLButtonElement) => Promise
       else face.click();
     }
   });
-  searchInput.addEventListener("input", filterWords);
+  searchInput.addEventListener("input", () => filterWords());
+  dateButton.addEventListener("click", openDates);
+  dateList.addEventListener("click", event => {
+    const option = event.target instanceof Element ? event.target.closest<HTMLButtonElement>("[data-rio-day]") : null;
+    if (!option) return;
+    const day = option.dataset.rioDay!;
+    const changed = day !== searchDay;
+    searchDay = day;
+    updateDateButton();
+    dateDialog.close();
+    if (changed) filterWords(true);
+  });
+  dateDialog.addEventListener("click", event => {
+    if (event.target === dateDialog) dateDialog.close();
+  });
+  dateDialog.addEventListener("close", () => {
+    dateButton.setAttribute("aria-expanded", "false");
+    dateButton.focus({ preventScroll: true });
+  });
   library.addEventListener("toggle", () => {
     if (library.open) retry.before(status);
     else summary.append(status);
