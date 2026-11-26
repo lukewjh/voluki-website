@@ -188,9 +188,17 @@ import { rioLists } from "../lib/rioMaterials";
         </div>
         <div class="rio-modal-body">
           <div class="rio-practice-options" data-rio-practice-options>
-            <button type="button" data-rio-start-quiz>
-              <strong></strong><span></span>
-            </button>
+            <div class="rio-practice-quiz" data-rio-practice-quiz>
+              <button type="button" data-rio-start-quiz>
+                <strong></strong><span></span>
+              </button>
+              <div class="rio-vocabulary-style" data-rio-vocabulary-style hidden>
+                <input type="range" min="0" max="1" step="1" value="1" aria-label="出题风格" aria-valuetext="学术化" />
+                <div class="rio-vocabulary-style-labels" aria-hidden="true">
+                  <span>口语化</span><span>学术化</span>
+                </div>
+              </div>
+            </div>
             <button type="button" data-rio-start-talk>
               <strong>Small Talk</strong><span>用当前词条练习英语对话</span>
             </button>
@@ -530,8 +538,11 @@ import { rioLists } from "../lib/rioMaterials";
       background: var(--surface); color: var(--text); font: inherit; font-size: 13px; white-space: nowrap; cursor: pointer;
     }
     .rio-practice-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-    .rio-practice-options:has([data-rio-start-quiz][hidden]) { grid-template-columns: minmax(0, 1fr); }
-    .rio-practice-options[hidden], .rio-quiz-stage[hidden] { display: none; }
+    .rio-practice-options:has(.rio-practice-quiz[hidden]) { grid-template-columns: minmax(0, 1fr); }
+    .rio-practice-options[hidden], .rio-quiz-stage[hidden],
+    .rio-practice-quiz[hidden], .rio-vocabulary-style[hidden] { display: none; }
+    .rio-practice-quiz { display: grid; min-width: 0; }
+    .rio-practice-quiz > * { grid-area: 1 / 1; }
     .rio-practice-options button {
       min-height: 104px; padding: 16px; text-align: left; border: 1px solid var(--line); border-radius: 10px;
       background: var(--surface-soft); color: var(--text); font: inherit; cursor: pointer;
@@ -539,6 +550,17 @@ import { rioLists } from "../lib/rioMaterials";
     .rio-practice-options button:hover, .rio-practice-options button:focus-visible { border-color: var(--text); }
     .rio-practice-options strong { display: block; margin-bottom: 3px; font-size: 19px; }
     .rio-practice-options span { display: block; color: var(--muted); font-size: 14px; }
+    .rio-practice-quiz:has(.rio-vocabulary-style:not([hidden])) button { padding-inline-end: 134px; }
+    .rio-vocabulary-style {
+      align-self: center; justify-self: end; width: 108px; margin-inline-end: 16px;
+    }
+    .rio-vocabulary-style input {
+      display: block; width: 100%; height: 30px; margin: 0; accent-color: var(--accent); cursor: pointer;
+    }
+    .rio-vocabulary-style-labels { display: flex; justify-content: space-between; gap: 8px; }
+    .rio-vocabulary-style-labels span { font-size: 12px; }
+    .rio-vocabulary-style:has(input[aria-valuetext="口语化"]) span:first-child,
+    .rio-vocabulary-style:has(input[aria-valuetext="学术化"]) span:last-child { color: var(--text); font-weight: 600; }
     .rio-quiz-modal[data-practice="talk"] .rio-quiz-card {
       display: grid; grid-template-rows: auto minmax(0, 1fr); overflow: hidden;
       width: min(620px, 100%); height: min(680px, 88dvh);
@@ -1584,7 +1606,7 @@ import { rioLists } from "../lib/rioMaterials";
     import { readChunkCard, type ChunkCard } from "../lib/rioChunk";
     import { readPatternCard, type PatternCard } from "../lib/rioPattern";
     import { rioLists, usesPhraseMatch, type RioMaterial, type RioType } from "../lib/rioMaterials";
-    import { exampleCount, readVocabularyRound } from "../lib/rioVocabulary";
+    import { readVocabularyRound, vocabularyExampleCounts } from "../lib/rioVocabulary";
     import { startVocabularyGame } from "../lib/rioVocabularyGame";
     import { aiRequestHeaders } from "../lib/aiClient";
     const modal = document.querySelector("[data-rio-modal]");
@@ -1595,7 +1617,15 @@ import { rioLists } from "../lib/rioMaterials";
     const practiceCard = quizModal.querySelector<HTMLElement>(".rio-quiz-card")!;
     const practiceTitle = quizModal.querySelector<HTMLElement>("#rio-quiz-title")!;
     const practiceOptions = quizModal.querySelector<HTMLElement>("[data-rio-practice-options]")!;
-    const quizOption = practiceOptions.querySelector<HTMLButtonElement>("[data-rio-start-quiz]")!;
+    const quizTile = practiceOptions.querySelector<HTMLElement>("[data-rio-practice-quiz]")!;
+    const quizOption = quizTile.querySelector<HTMLButtonElement>("[data-rio-start-quiz]")!;
+    const vocabularyStyle = quizTile.querySelector<HTMLElement>("[data-rio-vocabulary-style]")!;
+    const vocabularyStyleSlider = vocabularyStyle.querySelector("input")!;
+    const getVocabularyStyle = () => vocabularyStyleSlider.value === "0" ? "spoken" : "academic";
+    const updateVocabularyStyleLabel = () => {
+      vocabularyStyleSlider.setAttribute("aria-valuetext", getVocabularyStyle() === "spoken" ? "口语化" : "学术化");
+    };
+    vocabularyStyleSlider.addEventListener("input", updateVocabularyStyleLabel);
     const talkOption = practiceOptions.querySelector<HTMLButtonElement>("[data-rio-start-talk]")!;
     const practiceBack = quizModal.querySelector<HTMLButtonElement>("[data-rio-practice-back]")!;
     const talkPanel = quizModal.querySelector<HTMLElement>("#rio-talk")!;
@@ -1879,7 +1909,7 @@ import { rioLists } from "../lib/rioMaterials";
       isPhraseMatchQuiz(material)
         ? 24
         : isVocabularyMatchQuiz(material)
-          ? exampleCount
+          ? vocabularyExampleCounts[getVocabularyStyle()]
           : isSentencePatternQuiz(material)
             ? 4
             : 3;
@@ -2162,14 +2192,16 @@ import { rioLists } from "../lib/rioMaterials";
       const material: RioMaterial | null = quizState.material;
       if (!material) return;
       resetPractice();
-      quizOption.hidden = material.type === "idiom";
+      quizTile.hidden = material.type === "idiom";
+      vocabularyStyle.hidden = material.type !== "vocabulary";
+      updateVocabularyStyleLabel();
       if (material.type !== "idiom") {
         const [name, description] = quizChoices[material.type];
         quizOption.querySelector("strong")!.textContent = name;
         quizOption.querySelector("span")!.textContent = description;
       }
       showPractice("choose");
-      if (quizModal.open) (quizOption.hidden ? talkOption : quizOption).focus({ preventScroll: true });
+      if (quizModal.open) (quizTile.hidden ? talkOption : quizOption).focus({ preventScroll: true });
     };
 
     const openPracticeChooser = (material: RioMaterial, trigger: HTMLElement) => {
@@ -2181,7 +2213,7 @@ import { rioLists } from "../lib/rioMaterials";
       showPracticeChoices();
       quizModal.hidden = false;
       quizModal.showModal();
-      (quizOption.hidden ? talkOption : quizOption).focus({ preventScroll: true });
+      (quizTile.hidden ? talkOption : quizOption).focus({ preventScroll: true });
       quizModal.classList.add("is-opening");
       document.body.style.overflow = "hidden";
       window.setTimeout(() => {
@@ -2305,7 +2337,9 @@ import { rioLists } from "../lib/rioMaterials";
         <span class="rio-quiz-progress">${expectedCount}/${expectedCount}</span>
         <span class="rio-quiz-complete-mark">✓</span>
         <h3 class="rio-quiz-complete-title">这一轮完成了</h3>
-        <p class="rio-quiz-complete-copy">${isVocabularyMatchQuiz(quizState.material) ? (review ? "五个例句已完成。" : "五句全部一次配对成功。") : escapeHtml(getQuizCompleteCopy(quizState.material))}</p>
+        <p class="rio-quiz-complete-copy">${isVocabularyMatchQuiz(quizState.material)
+          ? (review ? `已完成 ${expectedCount} 道例句配对。` : `${expectedCount} 道题全部一次配对成功。`)
+          : escapeHtml(getQuizCompleteCopy(quizState.material))}</p>
         <div class="rio-quiz-complete-actions">
           <button class="rio-quiz-complete-button secondary" type="button" data-rio-quiz-close-action>关闭</button>
           ${
@@ -2989,7 +3023,8 @@ import { rioLists } from "../lib/rioMaterials";
             type: material.type,
             text: material.text
           },
-          batchIndex
+          batchIndex,
+          ...(isVocabularyMatchQuiz(material) ? { vocabularyStyle: getVocabularyStyle() } : {})
         }),
         signal
       });
@@ -3106,7 +3141,7 @@ import { rioLists } from "../lib/rioMaterials";
             renderChunkCard(quizStage, card, material);
             return;
           }
-          const round = readVocabularyRound(data);
+          const round = readVocabularyRound(data, getQuizExpectedCount(material));
           if (!round) throw new Error("这组例句的格式不完整，请重新生成。");
           startVocabularyGame(quizStage, round, signal, playQuizTone, renderQuizComplete);
           return;
@@ -3473,7 +3508,7 @@ import { rioLists } from "../lib/rioMaterials";
       const shortcut = getRioShortcut(event);
       if (shortcut === "previous" || shortcut === "next") {
         event.preventDefault();
-        (shortcut === "previous" && !quizOption.hidden ? quizOption : talkOption).focus({ preventScroll: true });
+        (shortcut === "previous" && !quizTile.hidden ? quizOption : talkOption).focus({ preventScroll: true });
       } else if (shortcut === "activate" && event.repeat) {
         event.preventDefault();
       }

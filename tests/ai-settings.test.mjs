@@ -96,6 +96,46 @@ test("RIO pronunciation reuses the MiniMax key and region for Turbo MP3 synthesi
   } finally { globalThis.fetch = originalFetch; }
 });
 
+test("RIO vocabulary quiz uses the selected style and requires the matching number of examples", async () => {
+  const { POST } = await load("src/pages/api/rio/generate-quiz.ts");
+  const originalFetch = globalThis.fetch;
+  const meanings = ["v. 跑", "v. 运行"];
+  const examples = [
+    { sentence: "I **ran** to catch the bus.", meaning: 0 },
+    { sentence: "Is the dishwasher **running**?", meaning: 1 },
+    { sentence: "She **runs** with me on Sundays.", meaning: 0 },
+    { sentence: "The system **runs** continuously during periods of high demand.", meaning: 1 },
+    { sentence: "Participants **ran** along the same route under controlled conditions.", meaning: 0 }
+  ];
+  for (const { style, count, returnedCount } of [
+    { style: undefined, count: 5, returnedCount: 5 },
+    { style: "academic", count: 5, returnedCount: 5 },
+    { style: "spoken", count: 3, returnedCount: 3 },
+    { style: "spoken", count: 3, returnedCount: 5 }
+  ]) {
+    let prompt;
+    globalThis.fetch = async (_url, options) => {
+      prompt = JSON.parse(options.body).messages[0].content;
+      return Response.json({
+        choices: [{ message: { content: JSON.stringify({ meanings, examples: examples.slice(0, returnedCount) }) } }]
+      });
+    };
+    try {
+      const body = { material: { id: 1, type: "vocabulary", text: "run" }, vocabularyStyle: style };
+      const response = await POST({ request: new Request(request(settings), { body: JSON.stringify(body) }), locals });
+      assert.match(prompt, style === "spoken" ? /everyday spoken English/ : /IELTS Reading passages/);
+      assert.match(prompt, new RegExp(`exactly ${count} distinct sentences`));
+      assert.equal(response.status, returnedCount === count ? 200 : 502);
+      if (response.ok) {
+        const round = await response.json();
+        assert.equal(round.examples.length, count);
+        assert.deepEqual(new Map(round.examples.map(({ sentence, meaning }) => [sentence, round.meanings[meaning]])),
+          new Map(examples.slice(0, count).map(({ sentence, meaning }) => [sentence, meanings[meaning]])));
+      }
+    } finally { globalThis.fetch = originalFetch; }
+  }
+});
+
 test("split API sends the configured key, model and endpoint to the AI provider", async () => {
   const { POST } = await load("src/pages/api/ielts/split.ts");
   const originalFetch = globalThis.fetch;

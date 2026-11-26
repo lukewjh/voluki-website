@@ -2,7 +2,7 @@ import type { APIRoute } from "astro";
 import { resolveAiConfig } from "../../../lib/aiConfig";
 import { readChunkCard } from "../../../lib/rioChunk";
 import { readPatternCard } from "../../../lib/rioPattern";
-import { exampleCount, readVocabularyRound } from "../../../lib/rioVocabulary";
+import { readVocabularyRound, vocabularyExampleCounts } from "../../../lib/rioVocabulary";
 import { rioLists, usesPhraseMatch } from "../../../lib/rioMaterials";
 import { getErrorMessage, readJsonBody } from "../../../lib/readJsonBody";
 
@@ -58,6 +58,8 @@ const scenes = [
   "国际化与全球化",
   "健康与生活方式"
 ] as const;
+
+const spokenScenes = ["和朋友聊天", "家中日常", "购物", "出门安排", "同事闲聊", "兴趣爱好"];
 
 const jsonResponse = (body: Record<string, unknown>, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -233,9 +235,7 @@ const getMaterial = (body: Record<string, unknown>) => {
   };
 };
 
-const getBatchConfig = (body: Record<string, unknown>, materialType: string) => {
-  const requestedBatchIndex = Number(body.batchIndex);
-
+const getBatchConfig = (requestedBatchIndex: number, materialType: string, vocabularyCount: number) => {
   if (materialType === "sentence_pattern") {
     const batchIndex = Number.isInteger(requestedBatchIndex)
       ? Math.min(Math.max(requestedBatchIndex, 0), 1)
@@ -251,7 +251,7 @@ const getBatchConfig = (body: Record<string, unknown>, materialType: string) => 
   }
 
   const totalCount = usesPhraseMatch(materialType) ? 24
-    : materialType === "vocabulary" ? exampleCount : materialType === "chunk" ? 1 : 3;
+    : materialType === "vocabulary" ? vocabularyCount : materialType === "chunk" ? 1 : 3;
   const batchSize = usesPhraseMatch(materialType) ? 6 : totalCount;
   const batchCount = Math.ceil(totalCount / batchSize);
   const batchIndex = Number.isInteger(requestedBatchIndex)
@@ -294,13 +294,15 @@ export const POST: APIRoute = async ({ request, locals }) => {
     return jsonResponse({ error: "Unsupported Quiz material type" }, 400);
   }
 
-  const batch = getBatchConfig(body, material.type);
+  const isVocabularyQuiz = material.type === "vocabulary";
+  const vocabularyStyle = body.vocabularyStyle === "spoken" ? "spoken" : "academic";
+  const isSpokenVocabularyQuiz = isVocabularyQuiz && vocabularyStyle === "spoken";
+  const batch = getBatchConfig(Number(body.batchIndex), material.type, vocabularyExampleCounts[vocabularyStyle]);
   const expectedCardCount = batch.batchSize;
   const isPhraseMatchQuiz = usesPhraseMatch(material.type);
   const selectedSceneCount =
     isPhraseMatchQuiz ? 2 : material.type === "sentence_pattern" ? 3 : expectedCardCount;
-  const selectedScenes = sample(scenes, selectedSceneCount);
-  const isVocabularyQuiz = material.type === "vocabulary";
+  const selectedScenes = sample(isSpokenVocabularyQuiz ? spokenScenes : scenes, selectedSceneCount);
   const isChunkQuiz = material.type === "chunk";
   // The older { pattern } request still returns its original batched quiz.
   const isPatternCard = material.type === "sentence_pattern" && Boolean(body.material);
@@ -369,14 +371,17 @@ Rules:
 - The type field must combine scene and sentence_type, for example "Education / Passive Voice".
 - Do not include notes, explanations, Markdown, or fields outside id, type, scene, sentence_type, left, and right.`;
   } else if (isVocabularyQuiz) {
-    systemPrompt = `Write a five-example IELTS Reading word-sense matching game for a Chinese learner.
+    systemPrompt = `Write a word-sense matching game for a Chinese learner, using ${isSpokenVocabularyQuiz ? "everyday spoken English" : "IELTS Reading passages"}.
 Return one JSON object with exactly these two fields:
 {"meanings":["v. 产生","n. 产量"],"examples":[{"meaning":0,"sentence":"Their observations **yielded** insights into how the colony survived."}]}
-This example illustrates the format. Use the requested word and produce exactly five distinct sentences.
-- Estimate the word's common parts of speech and senses in IELTS-style reading. Pick 2–4 distinct, non-overlapping meanings. For a word with only one useful sense, use just that one. Never invent a sense.
+This example illustrates the format only. Use the requested word and produce exactly ${expectedCardCount} distinct sentences.
+${isSpokenVocabularyQuiz
+  ? `- Pick 1–3 distinct meanings that fit natural everyday speech. Prioritize the dominant sense and repeat it in different situations unless other common senses fit. Never invent a sense.
+- Use the provided everyday situations in order, one sentence per situation. Write short sentences people would actually say, usually 6–14 words. Use everyday phrasing and clear context clues that make exactly one meaning fit. Avoid academic vocabulary and long clauses.`
+  : `- Estimate the word's common parts of speech and senses in IELTS-style reading. Pick 2–4 distinct, non-overlapping meanings. For a word with only one useful sense, use just that one. Never invent a sense.
 - Give 3–4 examples to the common uses, repeating the dominant sense across different contexts. If appropriate, mix in 1–2 examples of less frequent but useful senses. Use all five for the core usage if no secondary sense fits.
+- Each sentence should read like an excerpt from an IELTS Reading passage, typically 12–22 words. Include a contextual clue that makes exactly one meaning fit. Vary topics and constructions.`}
 - Each label is a short part of speech plus a clear Simplified Chinese gloss. Merge synonyms of the same sense. Use every listed meaning.
-- Each sentence should read like an excerpt from an IELTS Reading passage, typically 12–22 words. Include a contextual clue that makes exactly one meaning fit. Vary topics and constructions.
 - In each sentence, put exactly one pair of double asterisks around the target word or its inflected form as it occurs. Use the zero-based index of the correct meaning as an integer. No explanations or additional fields.`;
   } else if (isAdverbQuiz) {
     systemPrompt = `You are an expert IELTS discourse and tone trainer for Chinese learners.
@@ -580,7 +585,7 @@ ${selectedScenes.map((scene, index) => `${index + 1}. ${scene}`).join("\n")}`;
   const outputText = extractOutputText(data);
 
   if (isVocabularyQuiz && data?.choices?.[0]?.finish_reason === "length") {
-    return jsonResponse({ error: "AI 已达到输出长度上限，未能生成完整的五个例句。请重新生成或调整模型配置。" }, 502);
+    return jsonResponse({ error: `AI 已达到输出长度上限，未能生成完整的 ${expectedCardCount} 个例句。请重新生成或调整模型配置。` }, 502);
   }
   if (!outputText.trim()) {
     if (isVocabularyQuiz) return jsonResponse({ error: "AI 返回了空答案，请重新生成；如果持续出现，请检查所选模型。" }, 502);
@@ -620,10 +625,10 @@ ${selectedScenes.map((scene, index) => `${index + 1}. ${scene}`).join("\n")}`;
     }
 
     if (isVocabularyQuiz) {
-      const round = readVocabularyRound(parsed);
+      const round = readVocabularyRound(parsed, expectedCardCount);
       if (!round) return jsonResponse({ error: "这组例句的格式不完整，请重新生成。" }, 502);
       const meanings = sample(round.meanings, round.meanings.length);
-      const examples = sample(round.examples, exampleCount).map(({ sentence, meaning }) => ({
+      const examples = sample(round.examples, expectedCardCount).map(({ sentence, meaning }) => ({
         sentence, meaning: meanings.indexOf(round.meanings[meaning])
       }));
       return jsonResponse({ meanings, examples });
