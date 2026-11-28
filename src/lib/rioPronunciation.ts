@@ -1,6 +1,29 @@
 import { aiRequestHeaders } from "./aiClient";
 import { AI_SETTINGS_HEADER } from "./aiSettings";
 
+function useSpeechPlaybackSession() {
+  const session = (navigator as Navigator & { audioSession?: { type: string } }).audioSession;
+  // Spoken practice is media playback. iOS can mute the default Web Audio session in Silent Mode.
+  if (session && (session.type === "auto" || session.type === "ambient")) session.type = "playback";
+}
+
+async function resumeForSpeech(context: AudioContext) {
+  if (context.state === "running") return;
+  let timer: number | undefined;
+  try {
+    await Promise.race([
+      context.resume(),
+      new Promise<never>((_, reject) => {
+        timer = window.setTimeout(reject, 2_000);
+      })
+    ]);
+  } catch {
+    throw new Error("浏览器暂未启动音频，请点喇叭重试。");
+  } finally {
+    window.clearTimeout(timer);
+  }
+}
+
 async function fetchPronunciation(context: AudioContext, text: string, headers: Record<string, string>) {
   const response = await fetch("/api/rio/pronounce", {
     method: "POST", headers, body: JSON.stringify({ text })
@@ -9,7 +32,12 @@ async function fetchPronunciation(context: AudioContext, text: string, headers: 
     const body = await response.json().catch(() => null);
     throw new Error(body?.error || "生成发音失败，请重试。");
   }
-  return context.decodeAudioData(await response.arrayBuffer());
+  const bytes = await response.arrayBuffer();
+  try {
+    return await context.decodeAudioData(bytes);
+  } catch {
+    throw new Error("已收到发音，但浏览器无法解析音频。请重试。");
+  }
 }
 
 export function initRioPronunciation(grid: Element, getAudioContext: () => AudioContext | null) {
@@ -52,12 +80,12 @@ export function initRioPronunciation(grid: Element, getAudioContext: () => Audio
     const request = latest;
     onStatus("正在获取发音…");
     try {
+      useSpeechPlaybackSession();
       const context = getAudioContext();
       if (!context) throw new Error("当前浏览器无法播放词条发音。");
       const audio = getAudio(context, text);
       // Resume during the click, before waiting for the network response.
-      const ready = context.state === "running" ? Promise.resolve() : context.resume();
-      const [buffer] = await Promise.all([audio, ready]);
+      const [buffer] = await Promise.all([audio, resumeForSpeech(context)]);
       if (request !== latest) return;
       onStatus("");
       if (!isCurrent()) return;
