@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import RioDictation from "../components/RioDictation.astro";
 import RioSmallTalk from "../components/RioSmallTalk.astro";
 import RioPatternCard from "../components/RioPatternCard.astro";
 import { rioLists } from "../lib/rioMaterials";
@@ -79,6 +80,9 @@ import { rioLists } from "../lib/rioMaterials";
             <div class="rio-table-head-actions">
               <span data-rio-count aria-live="polite">0 条</span>
               <button type="button" data-rio-focus aria-controls={`rio-deck-${list.type}`}>专注</button>
+              {list.type === "vocabulary" && (
+                <button type="button" data-rio-dictation aria-haspopup="dialog" aria-controls="rio-dictation" disabled>听写</button>
+              )}
             </div>
           </div>
           <div class="rio-list-content" id={`rio-list-content-${list.type}`}>
@@ -115,6 +119,8 @@ import { rioLists } from "../lib/rioMaterials";
         </button>
       </template>
     </div>
+
+    <RioDictation />
 
     <div class="rio-modal" hidden data-rio-modal>
       <div class="rio-modal-backdrop" data-rio-modal-close></div>
@@ -376,12 +382,12 @@ import { rioLists } from "../lib/rioMaterials";
       }
     }
     .rio-table-head-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 6px; }
-    [data-rio-focus], [data-rio-focus-exit] {
+    [data-rio-focus], [data-rio-focus-exit], [data-rio-dictation] {
       min-height: 36px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 6px;
       background: var(--surface); color: var(--text); font: inherit; font-size: 14px; white-space: nowrap; cursor: pointer;
     }
     [data-rio-focus-exit] { margin-top: 12px; }
-    [data-rio-focus]:disabled { opacity: .45; cursor: default; }
+    [data-rio-focus]:disabled, [data-rio-dictation]:disabled { opacity: .45; cursor: default; }
     .rio-deck { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: clamp(6px, 2vw, 16px); align-items: center; }
     .rio-deck button { color: var(--text); cursor: pointer; font: inherit; }
     .rio-deck [data-step] { width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: var(--surface-soft); font-size: 26px; line-height: 1; }
@@ -1670,6 +1676,7 @@ import { rioLists } from "../lib/rioMaterials";
 
   <script>
     import { initRioLibrary } from "../lib/rioLibrary";
+    import { initRioDictation } from "../lib/rioDictation";
     import { getRioShortcut } from "../lib/rioKeyboard";
     import { initRioPronunciation } from "../lib/rioPronunciation";
     import { startSmallTalk } from "../lib/rioSmallTalk";
@@ -1989,7 +1996,7 @@ import { rioLists } from "../lib/rioMaterials";
     const getVocabularyRoundCount = () =>
       Math.ceil(getQuizExpectedCount(quizState.material) / phraseRoundSize);
 
-    const shuffleItems = (items) => {
+    const shuffleItems = <T,>(items: readonly T[]) => {
       const shuffled = [...items];
 
       for (let index = shuffled.length - 1; index > 0; index -= 1) {
@@ -3619,8 +3626,9 @@ import { rioLists } from "../lib/rioMaterials";
     });
     pageButtons.complete?.addEventListener("click", launchCompletionCelebration);
     window.addEventListener("resize", scheduleMatchingCardHeightSync);
-    const pronounce = initRioPronunciation(libraryGrid!, getRioAudioContext);
-    const getQuizMaterials = initRioLibrary(pronounce);
+    const speech = initRioPronunciation(libraryGrid!, getRioAudioContext);
+    const { getQuizMaterials, getDictationWords } = initRioLibrary(speech.pronounce);
+    initRioDictation(getDictationWords, speech, shuffleItems);
 
     document.addEventListener("keydown", (event) => {
       if (event.key !== "Escape") return;

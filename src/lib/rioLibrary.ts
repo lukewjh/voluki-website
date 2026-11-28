@@ -6,6 +6,7 @@ type Mapping = Record<string, RioType>;
 type BookWord = { word: string; addedAt: number | null };
 type BookWords = { entries: BookWord[]; page: number; complete: boolean; atLimit: boolean };
 type Entry = { material: RioMaterial; searchText: string; addedDays: Set<string> };
+export type RioDictationWord = { text: string; day: string };
 type SearchGroup = {
   section: HTMLElement;
   countLabel: HTMLElement;
@@ -31,6 +32,12 @@ function localDay(date: Date) {
 
 function daysAgo(today: Date, offset: number) {
   return new Date(today.getFullYear(), today.getMonth(), today.getDate() - offset, 12);
+}
+
+export function formatRioDay(day: string, today = new Date()) {
+  const date = new Date(`${day}T12:00:00`);
+  const relative = day === localDay(today) ? "今天" : day === localDay(daysAgo(today, 1)) ? "昨天" : "";
+  return relative ? `${relative} · ${shortDayFormat.format(date)}` : fullDayFormat.format(date);
 }
 
 function setWordButton(button: HTMLButtonElement, material: RioMaterial) {
@@ -128,6 +135,7 @@ export function initRioLibrary(pronounce: (button: HTMLButtonElement) => Promise
     const deck = section.querySelector<HTMLElement>(".rio-deck")!;
     const button = deck.querySelector<HTMLButtonElement>(".rio-deck-word")!;
     const focusButton = section.querySelector<HTMLButtonElement>("[data-rio-focus]")!;
+    const dictationButton = section.querySelector<HTMLButtonElement>("[data-rio-dictation]");
     const listToggle = section.querySelector<HTMLButtonElement>(".rio-list-toggle")!;
     const listContent = section.querySelector<HTMLElement>(".rio-list-content")!;
     const empty = section.querySelector<HTMLElement>(".rio-empty")!;
@@ -137,6 +145,10 @@ export function initRioLibrary(pronounce: (button: HTMLButtonElement) => Promise
     deck.hidden = !isFocused || !entry;
     focusButton.hidden = isFocused;
     focusButton.disabled = !matches.length;
+    if (dictationButton) {
+      dictationButton.hidden = isFocused;
+      dictationButton.disabled = !matches.length;
+    }
     empty.hidden = isFocused ? Boolean(entry) : Boolean(entries.length);
     empty.textContent = isFocused && filtering ? "该分类没有匹配的词条" : "暂无词条";
     if (isFocused && entry) {
@@ -212,10 +224,7 @@ export function initRioLibrary(pronounce: (button: HTMLButtonElement) => Promise
     const rows = document.createDocumentFragment();
     for (const day of ["", ...Array.from(counts.keys()).sort().reverse()]) {
       const option = dateOptionTemplate.content.firstElementChild!.cloneNode(true) as HTMLButtonElement;
-      const date = day ? new Date(`${day}T12:00:00`) : today;
-      const relative = day === recentDays[0] ? "今天" : day === recentDays[1] ? "昨天" : "";
-      option.firstElementChild!.textContent = !day ? "全部时间" : relative
-        ? `${relative} · ${shortDayFormat.format(date)}` : fullDayFormat.format(date);
+      option.firstElementChild!.textContent = day ? formatRioDay(day, today) : "全部时间";
       option.lastElementChild!.textContent = `${day ? counts.get(day) : total} 条`;
       option.setAttribute("aria-pressed", String(day === searchDay));
       option.dataset.rioDay = day;
@@ -537,7 +546,19 @@ export function initRioLibrary(pronounce: (button: HTMLButtonElement) => Promise
     }
   });
   void connectBooks("GET");
-  return (type = "") => searchGroups.flatMap(group =>
-    !type || group.section.dataset.rioList === type ? group.matches.map(({ material }) => material) : []
-  );
+  return {
+    getQuizMaterials(type = "") {
+      return searchGroups.flatMap(group =>
+        !type || group.section.dataset.rioList === type ? group.matches.map(({ material }) => material) : []
+      );
+    },
+    getDictationWords(): RioDictationWord[] {
+      const vocabulary = searchGroups.find(group => group.section.dataset.rioList === "vocabulary");
+      return vocabulary?.matches.map(({ material, addedDays }) => ({
+        text: material.text,
+        // Match the selected day, or use the latest addition for words found in multiple books.
+        day: searchDay || Array.from(addedDays).sort().at(-1) || ""
+      })) ?? [];
+    }
+  };
 }

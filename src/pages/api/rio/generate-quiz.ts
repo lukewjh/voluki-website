@@ -2,7 +2,7 @@ import type { APIRoute } from "astro";
 import { resolveAiConfig } from "../../../lib/aiConfig";
 import { readChunkCard } from "../../../lib/rioChunk";
 import { readPatternCard } from "../../../lib/rioPattern";
-import { readVocabularyRound, vocabularyExampleCounts } from "../../../lib/rioVocabulary";
+import { readVocabularyRound, vocabularyExampleCounts, vocabularyMeaningRule } from "../../../lib/rioVocabulary";
 import { rioLists, usesPhraseMatch } from "../../../lib/rioMaterials";
 import { getErrorMessage, readJsonBody } from "../../../lib/readJsonBody";
 
@@ -381,7 +381,7 @@ ${isSpokenVocabularyQuiz
   : `- Estimate the word's common parts of speech and senses in IELTS-style reading. Pick 2–4 distinct, non-overlapping meanings. For a word with only one useful sense, use just that one. Never invent a sense.
 - Give 3–4 examples to the common uses, repeating the dominant sense across different contexts. If appropriate, mix in 1–2 examples of less frequent but useful senses. Use all five for the core usage if no secondary sense fits.
 - Each sentence should read like an excerpt from an IELTS Reading passage, typically 12–22 words. Include a contextual clue that makes exactly one meaning fit. Vary topics and constructions.`}
-- Each label is a short part of speech plus a clear Simplified Chinese gloss. Merge synonyms of the same sense. Use every listed meaning.
+- ${vocabularyMeaningRule} Use every listed meaning.
 - In each sentence, put exactly one pair of double asterisks around the target word or its inflected form as it occurs. Use the zero-based index of the correct meaning as an integer. No explanations or additional fields.`;
   } else if (isAdverbQuiz) {
     systemPrompt = `You are an expert IELTS discourse and tone trainer for Chinese learners.

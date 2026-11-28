@@ -1,17 +1,22 @@
 export const vocabularyExampleCounts = { spoken: 3, academic: 5 } as const;
+export const vocabularyMeaningRule = "Each label is a short part of speech plus a clear Simplified Chinese gloss. Merge synonyms of the same sense.";
 export type VocabularyRound = {
   meanings: string[];
   examples: { meaning: number; sentence: string }[];
 };
 
+export function readVocabularyMeanings(meanings: unknown): string[] | null {
+  if (!Array.isArray(meanings) || meanings.length < 1 || meanings.length > 4) return null;
+  if (!meanings.every((m) => typeof m === "string" && m.trim() && m.length <= 100)) return null;
+  const labels = meanings.map((m: string) => m.trim());
+  return new Set(labels).size === labels.length ? labels : null;
+}
+
 export function readVocabularyRound(value: unknown, expectedCount: number): VocabularyRound | null {
   if (!value || typeof value !== "object") return null;
   const { meanings, examples } = value as Partial<VocabularyRound>;
-  if (!Array.isArray(meanings) || meanings.length < 1 || meanings.length > 4 ||
-      !Array.isArray(examples) || examples.length !== expectedCount) return null;
-  if (!meanings.every((m) => typeof m === "string" && m.trim() && m.length <= 100)) return null;
-  const labels = meanings.map((m) => m.trim());
-  if (new Set(labels).size !== labels.length) return null;
+  const labels = readVocabularyMeanings(meanings);
+  if (!labels || !Array.isArray(examples) || examples.length !== expectedCount) return null;
 
   const seen = new Set<string>();
   const used = new Set<number>();

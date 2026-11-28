@@ -1,0 +1,219 @@
+<dialog id="rio-dictation" class="dictation" aria-labelledby="rio-dictation-title">
+  <header class="dictation-head">
+    <div>
+      <h2 id="rio-dictation-title">单词听写</h2>
+      <p data-dictation-progress></p>
+    </div>
+    <form method="dialog">
+      <button class="dictation-close" type="submit" aria-label="关闭听写">×</button>
+    </form>
+  </header>
+
+  <section data-dictation-groups>
+    <div data-dictation-group-list></div>
+    <template data-dictation-day-template>
+      <section class="dictation-day">
+        <h3 class="dictation-day-label"></h3>
+        <div class="dictation-groups"></div>
+      </section>
+    </template>
+    <template data-dictation-group-template>
+      <button class="dictation-group" type="button">
+        <strong></strong><span></span>
+      </button>
+    </template>
+  </section>
+
+  <form data-dictation-question hidden>
+    <div class="dictation-card" data-dictation-card>
+      <div class="dictation-answer">
+        <input class="dictation-input" data-dictation-input type="text" lang="en" aria-label="输入听到的英文"
+          aria-keyshortcuts="ArrowLeft ArrowRight" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="500" />
+        <svg class="dictation-correct-mark" aria-hidden="true" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m5 12 5 5L19 7" pathLength="1" />
+        </svg>
+      </div>
+      <p class="dictation-feedback" data-dictation-feedback role="status"></p>
+      <div class="dictation-audio-and-hint" data-dictation-slide>
+        <button class="dictation-speaker" type="button" data-dictation-replay aria-label="重听发音"
+          aria-keyshortcuts="Tab" title="重听发音（输入时按 Tab）">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 5 6 9H3v6h3l5 4z M15 9a4 4 0 0 1 0 6m3-9a8 8 0 0 1 0 12" />
+          </svg>
+        </button>
+        <p class="dictation-audio-status" data-dictation-audio-status role="status"></p>
+        <button class="dictation-hint" type="button" data-dictation-hint aria-expanded="false" aria-controls="rio-dictation-meaning"
+          aria-keyshortcuts="` ·" title="显示或隐藏词性与释义（Tab 上方的键）">
+          <span id="rio-dictation-meaning" data-dictation-meaning aria-live="polite"></span>
+        </button>
+      </div>
+    </div>
+    <div class="dictation-actions">
+      <button type="button" data-dictation-back>分组列表</button>
+      <button class="dictation-primary" type="submit" data-dictation-submit>检查</button>
+    </div>
+  </form>
+
+  <section data-dictation-result hidden>
+    <div class="dictation-result" data-dictation-summary tabindex="-1">
+      <span class="dictation-result-mark" aria-hidden="true">✓</span>
+      <strong>本组完成</strong>
+      <p data-dictation-score></p>
+    </div>
+    <div class="dictation-actions">
+      <button type="button" data-dictation-back>分组列表</button>
+      <button type="button" data-dictation-retry aria-keyshortcuts="Tab" title="重练错词（Tab）">重练错词</button>
+      <button class="dictation-primary" type="button" data-dictation-next-group aria-keyshortcuts="Enter" title="下一组（回车）">下一组</button>
+    </div>
+  </section>
+</dialog>
+
+<style>
+  .dictation {
+    --dictation-success: #357354;
+    box-sizing: border-box;
+    width: min(540px, calc(100% - 24px));
+    max-height: calc(100dvh - 24px);
+    padding: clamp(16px, 4vw, 26px);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--surface);
+    color: var(--text);
+  }
+  :global([data-theme="dark"]) .dictation { --dictation-success: #85cba6; }
+  .dictation:has([data-dictation-groups]:not([hidden])) {
+    max-height: min(560px, calc(100dvh - 24px));
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .dictation:has([data-dictation-groups]:not([hidden]))::-webkit-scrollbar { display: none; }
+  @media (max-width: 600px) {
+    .dictation:has([data-dictation-question]:not([hidden])) { inset-block: 12px auto; margin-block: 0; }
+  }
+  .dictation::backdrop {
+    background: color-mix(in srgb, var(--bg) 72%, transparent);
+    backdrop-filter: blur(8px);
+  }
+  .dictation [hidden] { display: none; }
+  .dictation-head { display: flex; justify-content: space-between; align-items: start; gap: 12px; margin-bottom: 16px; }
+  .dictation-head h2 { margin: 0; font-size: 22px; }
+  .dictation-head p { margin: 3px 0 0; color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; }
+  .dictation button {
+    min-height: 42px;
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    cursor: pointer;
+  }
+  .dictation button:hover { border-color: var(--text); }
+  .dictation button:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+  .dictation button:disabled { opacity: .45; cursor: default; }
+  .dictation .dictation-close { width: 42px; padding: 0; font-size: 23px; }
+  .dictation-day + .dictation-day { margin-top: 10px; }
+  .dictation-day-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 5px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.25;
+  }
+  .dictation-day-label::after { content: ""; flex: 1; border-top: 1px solid var(--line); }
+  .dictation-groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(110px, 100%), 1fr));
+    grid-auto-rows: 64px;
+    gap: 8px;
+  }
+  .dictation .dictation-group {
+    display: grid;
+    align-content: center;
+    justify-items: start;
+    gap: 2px;
+    padding: 5px 9px;
+    text-align: start;
+    line-height: 1.25;
+  }
+  .dictation-group span { color: var(--muted); font-size: 12px; }
+  .dictation-card, .dictation-result {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--surface-soft) 48%, var(--surface));
+    padding: 20px clamp(14px, 5vw, 28px);
+    text-align: center;
+  }
+  .dictation-card { display: grid; justify-items: center; overflow: clip; touch-action: pan-y pinch-zoom; }
+  .dictation-answer { position: relative; width: 100%; margin-top: 10px; }
+  .dictation-input {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 54px;
+    padding: 4px 30px;
+    border: 0;
+    border-bottom: 1px solid var(--muted);
+    border-radius: 0;
+    outline: none;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: clamp(20px, 5vw, 28px);
+    text-align: center;
+  }
+  .dictation-input:focus { box-shadow: 0 1px 0 var(--text); border-color: var(--text); }
+  .dictation-correct-mark {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 4px;
+    width: 22px;
+    height: 22px;
+    margin-block: auto;
+    color: var(--dictation-success);
+    visibility: hidden;
+    pointer-events: none;
+  }
+  [data-correct] .dictation-input { border-color: var(--dictation-success); box-shadow: 0 1px 0 var(--dictation-success); }
+  [data-correct] .dictation-correct-mark { visibility: visible; }
+  [data-correct] .dictation-feedback { color: var(--dictation-success); }
+  .dictation-audio-and-hint { display: grid; justify-items: center; width: 100%; min-width: 0; }
+  .dictation-feedback, .dictation-audio-status {
+    min-height: 1.4em;
+    margin: 5px 0 8px;
+    color: var(--muted);
+    font-size: 14px;
+    overflow-wrap: anywhere;
+  }
+  .dictation-feedback b { color: var(--text); }
+  .dictation .dictation-speaker { display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border-radius: 50%; }
+  .dictation-speaker svg { width: 22px; height: 22px; }
+  .dictation .dictation-hint { width: 100%; min-height: 54px; white-space: pre-line; overflow-wrap: anywhere; }
+  .dictation .dictation-hint[aria-expanded="false"] { border-style: dashed; background: transparent; color: var(--muted); }
+  .dictation-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+  .dictation-actions button:first-child { margin-inline-end: auto; }
+  .dictation .dictation-primary { border-color: var(--text); background: var(--text); color: var(--surface); }
+  .dictation-result { display: grid; justify-items: center; gap: 4px; }
+  .dictation-result-mark {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    margin-bottom: 5px;
+    border-radius: 50%;
+    color: var(--dictation-success);
+    background: color-mix(in srgb, var(--dictation-success) 12%, transparent);
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .dictation-result p { margin: 0; color: var(--muted); }
+  @media (prefers-reduced-motion: no-preference) {
+    [data-correct] .dictation-correct-mark path { animation: dictation-check-draw 230ms ease-out both; }
+    .dictation-result-mark { animation: dictation-result-in 280ms ease-out both; }
+  }
+  @keyframes dictation-check-draw { from { stroke-dasharray: 1; stroke-dashoffset: 1; } to { stroke-dasharray: 1; stroke-dashoffset: 0; } }
+  @keyframes dictation-result-in { from { opacity: 0; transform: scale(.8); } to { opacity: 1; transform: scale(1); } }
+</style>

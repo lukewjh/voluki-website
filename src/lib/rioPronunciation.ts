@@ -19,43 +19,48 @@ export function initRioPronunciation(grid: Element, getAudioContext: () => Audio
   let playing: AudioBufferSourceNode | undefined;
   let latest = 0;
 
-  async function pronounce(button: HTMLButtonElement) {
-    const readText = () => button.dataset.rioPronounce ?? button.dataset.rioMaterialText;
-    const text = readText();
-    if (!text) return;
+  function getAudio(context: AudioContext, text: string) {
+    const headers = aiRequestHeaders();
+    if (headers[AI_SETTINGS_HEADER] !== configuration) {
+      configuration = headers[AI_SETTINGS_HEADER];
+      cache.clear();
+    }
+    const audio = cache.get(text);
+    if (audio) return audio;
 
-    const request = ++latest;
-    const cell = button.closest("td");
-    if (cell) cell.append(status);
-    else button.closest(".rio-deck")?.after(status);
-    const stillVisible = () => button.isConnected && readText() === text && !button.closest("[hidden]");
+    const pending = fetchPronunciation(context, text, headers);
+    cache.set(text, pending);
+    if (cache.size > 100) cache.delete(cache.keys().next().value!);
+    void pending.catch(() => { if (cache.get(text) === pending) cache.delete(text); });
+    return pending;
+  }
 
+  function stop() {
+    latest++;
+    playing?.stop();
+    playing = undefined;
+    status.textContent = "";
+  }
+
+  async function preload(text: string) {
+    const context = getAudioContext();
+    if (context) await getAudio(context, text);
+  }
+
+  async function play(text: string, onStatus: (message: string) => void, isCurrent: () => boolean) {
+    stop();
+    const request = latest;
+    onStatus("正在获取发音…");
     try {
-      playing?.stop();
-      playing = undefined;
-      const headers = aiRequestHeaders();
-      if (headers[AI_SETTINGS_HEADER] !== configuration) {
-        configuration = headers[AI_SETTINGS_HEADER];
-        cache.clear();
-      }
       const context = getAudioContext();
       if (!context) throw new Error("当前浏览器无法播放词条发音。");
+      const audio = getAudio(context, text);
       // Resume during the click, before waiting for the network response.
       const ready = context.state === "running" ? Promise.resolve() : context.resume();
-      let audio = cache.get(text);
-      status.textContent = audio ? "" : "正在获取发音…";
-      if (!audio) {
-        const pending = fetchPronunciation(context, text, headers);
-        cache.set(text, pending);
-        if (cache.size > 100) cache.delete(cache.keys().next().value!);
-        void pending.catch(() => { if (cache.get(text) === pending) cache.delete(text); });
-        audio = pending;
-      }
-
       const [buffer] = await Promise.all([audio, ready]);
       if (request !== latest) return;
-      status.textContent = "";
-      if (!stillVisible()) return;
+      onStatus("");
+      if (!isCurrent()) return;
       const source = context.createBufferSource();
       source.buffer = buffer;
       source.connect(context.destination);
@@ -67,8 +72,20 @@ export function initRioPronunciation(grid: Element, getAudioContext: () => Audio
       playing = source;
     } catch (error) {
       if (request !== latest) return;
-      status.textContent = stillVisible() && error instanceof Error ? error.message : "";
+      onStatus(isCurrent() && error instanceof Error ? error.message : "");
     }
+  }
+
+  async function pronounce(button: HTMLButtonElement) {
+    const readText = () => button.dataset.rioPronounce ?? button.dataset.rioMaterialText;
+    const text = readText();
+    if (!text) return;
+
+    const cell = button.closest("td");
+    if (cell) cell.append(status);
+    else button.closest(".rio-deck")?.after(status);
+    await play(text, (message) => { status.textContent = message; },
+      () => button.isConnected && readText() === text && !button.closest("[hidden]"));
   }
 
   grid.addEventListener("click", (event) => {
@@ -76,5 +93,5 @@ export function initRioPronunciation(grid: Element, getAudioContext: () => Audio
     const button = event.target.closest<HTMLButtonElement>("[data-rio-pronounce]");
     if (button) void pronounce(button);
   });
-  return pronounce;
+  return { pronounce, preload, play, stop };
 }
