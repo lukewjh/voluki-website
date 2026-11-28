@@ -150,6 +150,7 @@ export function initRioLibrary(pronounce: (button: HTMLButtonElement) => Promise
 
   function paintView() {
     grid.toggleAttribute("data-focused", Boolean(focus));
+    library.hidden = Boolean(focus);
     exitFocusButton.hidden = !focus;
     searchGroups.forEach(paintGroup);
     const hasMatches = searchGroups.some(group => group.matches.length);
